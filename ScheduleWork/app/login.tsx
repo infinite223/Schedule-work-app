@@ -1,30 +1,106 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions } from 'react-native'
-import React from 'react'
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions, Platform, FlatList, FlatListProps } from 'react-native'
+import React, { useRef, useState } from 'react'
 import { useRouter } from 'expo-router'
 import { colors, globalStyles } from '../utils/globalStyles'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { authenticateEmail, sendEmail } from '../services/user';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const widthScreen = Dimensions.get('screen').width
+const isWeb = Platform.OS === 'web'
+
+const stagesLogin = [
+    {
+        header: 'Podaj email by dołączyć',
+        input: 'Email',
+        type: 'Email',
+        buttonText: 'Wyślij mi kod'
+    },
+    {
+        header: 'Wpisz kod otrzymany na maila',
+        input: 'Kod ',
+        type: 'Code',
+        buttonText: 'Zaluguj się'
+    }
+]
 
 const login = () => {
   const router = useRouter()
+  const [inputValue, setInputValue] = useState('')
+  const [emailSended, setEmailSended] = useState('')
 
-  const loadingTest = () => {
-    router.push('/messageModal')
-    router.setParams({ message: "Coś pooszło nie tak oło nie tak", type: 'SUCCESS' })
+  const flatListRef = useRef<FlatList>(null)
+  const [index, setIndex] = useState(0)
 
-    // router.push('/loadingModal')
+  const hendleClickButton = async () => {   
+    if(inputValue.length>4){
+        if(index){
+            const res = await authenticateEmail(emailSended, inputValue)
 
-    // setTimeout(() => {
-    //     router.push('/login')
-    // }, 5000)
+            if(res.ok){
+                const userData = await res.json()
+                await AsyncStorage.setItem('my-key',  JSON.stringify(userData));
+
+                 router.push('/schedule')
+
+                 router.push('/messageModal')
+                 router.setParams({ message: `Udało się zalogować`, type: 'SUCCESS' })                
+            }
+            else {
+                router.push('/messageModal')
+                router.setParams({ message: "Nie prawidłowy kod", type: 'ERROR' })
+            }    
+        }
+        else {
+            const res = await sendEmail(inputValue)
+
+            if(res === 'SUCCESS'){
+                setEmailSended(inputValue)
+
+                router.push('/messageModal')
+                router.setParams({ message: `Kod został wysłany na: ${inputValue}`, type: 'SUCCESS' })
+                
+                goToNextStep()
+            }
+            else {
+                router.push('/messageModal')
+                router.setParams({ message: `Coś poszło nie tak`, type: 'ERROR' })
+            }              
+        }
+       
+        setInputValue('')
+    }
+    else {
+        const errorType = index?"Kod":"Email"
+
+        router.push('/messageModal')
+        router.setParams({ message: `${errorType} musi być dłuższy`, type: 'ERROR' })
+    }
   }
 
+    const goToNextStep = () => {
+        setIndex(index + 1)
+        flatListRef?.current?.scrollToOffset({
+            offset: (index+1) * widthScreen,
+            animated: true
+        })
+    }
+
+    const goBack = () => {
+        if(!index){
+            router.back()
+        }
+        else {
+            setIndex(index - 1)
+            flatListRef?.current?.scrollToIndex({index: 0, animated: true})
+        }
+    }
+ 
   return (
     <View style={styles.container}>
         <TouchableOpacity 
-            onPress={() => router.back()}
+            onPress={goBack}
             style={[styles.backButton, globalStyles.boxShadow]}
         >
             <Ionicons name="arrow-back-sharp" size={20} color="black" />
@@ -39,30 +115,48 @@ const login = () => {
                 <MaterialCommunityIcons 
                     name="account-plus-outline" 
                     size={35} 
-                    color="#888" 
+                    color="#2b3" 
                 />
                 <Text style={styles.headerText}>Tworzenie konta</Text>
             </View>
 
-            <Text style={styles.text}>
-                Podaj email by dołączyć
-            </Text>
-
-            <TextInput
-                placeholder='Email'
-                style={[styles.emailInput, globalStyles.boxShadow]}
-            />
-
-            <TouchableOpacity 
-                onPress={() =>loadingTest()}
-                style={[styles.sendButton, globalStyles.boxShadow]}
-            >
-                <Text style={{color: 'white', fontWeight: '700'}}>
-                    Wyślij mi kod
-                </Text>
-                <Ionicons name="arrow-forward-outline" size={20} color="white" />
-
-            </TouchableOpacity>
+            <View style={{height: 200}}>
+                <FlatList
+                    scrollEnabled={false}
+                    ref={flatListRef}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    data={stagesLogin}
+                    contentContainerStyle={{}}
+                    renderItem={({ item }) =>
+                        <View style={{alignItems:'center', gap: 10, width: widthScreen}}>
+                            <Text style={styles.text}>
+                                {item.header}
+                            </Text>
+            
+                            <TextInput
+                                placeholder={item.input}
+                                style={[styles.emailInput, globalStyles.boxShadow]}
+                                value={inputValue}
+                                onChangeText={setInputValue}
+                                textContentType={index?'oneTimeCode':'emailAddress'}
+                                keyboardType={index?'numeric':'default'}
+                            />
+            
+                            <TouchableOpacity 
+                                onPress={hendleClickButton}
+                                style={[styles.sendButton, globalStyles.boxShadow]}
+                            >
+                                <Text style={{color: 'white', fontWeight: '700'}}>
+                                    {item.buttonText}
+                                </Text>
+                                <Ionicons name="arrow-forward-outline" size={20} color="white" />
+            
+                            </TouchableOpacity>
+                        </View>
+                    }
+                />
+            </View>
         </View>
 
         <Text style={styles.descriptionText}>
@@ -82,19 +176,19 @@ const styles = StyleSheet.create({
     },
     backButton: {
         borderRadius: 50, 
-        backgroundColor: '#eee',
+        backgroundColor: '#fff',
         padding: 10,
         position:'absolute',
         left: 20,
-        top: 50
+        top: isWeb?20:50
     },
     header: {
         alignItems: 'center'
     },
     headerText: {
-        fontSize: 17,
+        fontSize: 14,
         marginVertical: 20,
-        fontWeight:'400'
+        fontWeight:'300'
     },
     sendButton: {
         borderRadius: 50, 
@@ -112,14 +206,14 @@ const styles = StyleSheet.create({
         fontWeight: '300',
         maxWidth: 300,
         fontSize: 12,
-        marginBottom: 10
+        marginBottom: 20
     },
     text: {
         marginHorizontal: 30,
         maxWidth: 300,
         textAlign: 'center',
         fontSize: 17,
-        fontWeight: '900',
+        fontWeight: '700',
         marginBottom: 20
     },
     emailInput: {
@@ -130,6 +224,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 10,
         width: widthScreen - 50,
+        maxWidth: 400
     }
 })
 

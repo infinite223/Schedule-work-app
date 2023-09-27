@@ -6,7 +6,7 @@ export const globalStyles = StyleSheet.create({
         alignItems: 'center'
     },
     boxShadow: {
-        shadowColor: "#000",
+        shadowColor: "#777",
         shadowOffset: {
             width: 0,
             height: 4,
@@ -20,6 +20,6 @@ export const globalStyles = StyleSheet.create({
 
 export const colors = {
     baseColor: '#12cf21',
-    errorColor: '#fc2244',
+    errorColor: '#cc2244',
     successColor: '#44aa44'
 }
