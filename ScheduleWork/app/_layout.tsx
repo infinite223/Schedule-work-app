@@ -6,28 +6,30 @@ export default function Layout() {
       <Stack.Screen
         name="index"
         options={{
-          // Hide the header for all other routes.
           headerShown: false,
         }}
       />
-       <Stack.Screen
-        name="schedule"
+      <Stack.Screen
+        name="Drawer"
         options={{
-          // Hide the header for all other routes.
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="editUser"
+        options={{
           headerShown: false,
         }}
       />
       <Stack.Screen
         name="login"
         options={{
-          // Hide the header for all other routes.
           headerShown: false,
         }}
       />
       <Stack.Screen
         name="loadingModal"
         options={{
-          // Set the presentation mode to modal for our modal route.
           presentation: 'modal',
           headerShown: false,
         }}
@@ -35,7 +37,6 @@ export default function Layout() {
        <Stack.Screen
         name="messageModal"
         options={{
-          // Set the presentation mode to modal for our modal route.
           presentation: 'transparentModal',
           headerShown: false,
         }}

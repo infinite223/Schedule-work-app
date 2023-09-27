@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions, Platform, FlatList, FlatListProps } from 'react-native'
+import { View, Image, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions, Platform, FlatList, FlatListProps } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { useRouter } from 'expo-router'
 import { colors, globalStyles } from '../utils/globalStyles'
@@ -6,16 +6,18 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { authenticateEmail, sendEmail } from '../services/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import logo from './../assets/images/logo.png'
 
 const widthScreen = Dimensions.get('screen').width
+const widthFlatList = Platform.OS ==='web'?450:widthScreen
 const isWeb = Platform.OS === 'web'
 
 const stagesLogin = [
     {
-        header: 'Podaj email by dołączyć',
+        header: 'Podaj swój email by dołączyć',
         input: 'Email',
         type: 'Email',
-        buttonText: 'Wyślij mi kod'
+        buttonText: 'Zweryfikuj'
     },
     {
         header: 'Wpisz kod otrzymany na maila',
@@ -25,7 +27,7 @@ const stagesLogin = [
     }
 ]
 
-const login = () => {
+const Page = () => {
   const router = useRouter()
   const [inputValue, setInputValue] = useState('')
   const [emailSended, setEmailSended] = useState('')
@@ -42,7 +44,7 @@ const login = () => {
                 const userData = await res.json()
                 await AsyncStorage.setItem('my-key',  JSON.stringify(userData));
 
-                 router.push('/schedule')
+                 router.push('/Drawer/schedule')
 
                  router.push('/messageModal')
                  router.setParams({ message: `Udało się zalogować`, type: 'SUCCESS' })                
@@ -119,6 +121,7 @@ const login = () => {
                 />
                 <Text style={styles.headerText}>Tworzenie konta</Text>
             </View>
+            <Image style={{width: 255, height: 70}} source={logo}/>
 
             <View style={{height: 200}}>
                 <FlatList
@@ -127,9 +130,9 @@ const login = () => {
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     data={stagesLogin}
-                    contentContainerStyle={{}}
+                    style={{maxWidth: widthFlatList}}
                     renderItem={({ item }) =>
-                        <View style={{alignItems:'center', gap: 10, width: widthScreen}}>
+                        <View style={{alignItems:'center', gap: 10, width: widthFlatList}}>
                             <Text style={styles.text}>
                                 {item.header}
                             </Text>
@@ -187,7 +190,7 @@ const styles = StyleSheet.create({
     },
     headerText: {
         fontSize: 14,
-        marginVertical: 20,
+        marginVertical: 10,
         fontWeight:'300'
     },
     sendButton: {
@@ -228,4 +231,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default login
+export default Page
