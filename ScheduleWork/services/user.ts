@@ -1,32 +1,20 @@
-export const sendEmail = async (email: string) => {
-    const res = await fetch('http://192.168.100.16:3000/auth/login', {
+import { appConfig } from "../appConfig"
+
+export const updateUser = async (
+        authToken: string,
+        userName: string,
+        name: string,
+        id: string
+    ) => {
+        console.log(userName, name, id)
+    const res = await fetch(`${appConfig.endpointsUrl}/user/${id}`, {
         headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type':'application/json',
+            Authorization: `Bearer ${authToken}`,
           },
-          method: "POST",
-          body: JSON.stringify({email})
-    })
-
-    if(res.status === 200){
-        return 'SUCCESS'
-    }
-
-    else {
-        return "ERROR"
-    }
-    }
-
-export const authenticateEmail = async (email: string, emailToken: string) => {
-    const res = await fetch('http://192.168.100.16:3000/auth/authenticate', {
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          method: "POST",
-          body: JSON.stringify({email, emailToken})
+          method: "PUT",  
+          body: JSON.stringify({userName, name})  
     })
 
     return res
 }
-

@@ -1,9 +1,9 @@
+import { appConfig } from "../appConfig"
+
 export const getAllWorkPlace = async (authToken: string) => {
-    const res = await fetch('http://192.168.100.16:3000/workPlace', {
+    const res = await fetch(`${appConfig.endpointsUrl}/workPlace`, {
         headers: {
             Authorization: `Bearer ${authToken}`,
-            // 'Accept': 'application/json',
-            // 'Content-Type': 'application/json',
           },
           method: "GET",    
     })

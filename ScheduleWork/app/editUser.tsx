@@ -1,5 +1,5 @@
 import { View, TouchableOpacity, Text, TextInput, StyleSheet, SafeAreaView, Dimensions, Platform } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { colors, globalStyles } from '../utils/globalStyles'
 import {
   SafeAreaProvider,
@@ -8,14 +8,40 @@ import {
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router, useRouter, useNavigation } from 'expo-router';
+import { updateUser } from '../services/user';
 
 const widthScreen = Dimensions.get('screen').width
 
 const Page = () => {
   const insets = useSafeAreaInsets();
+  const [name, setName] = useState('')
+  const [userName, setUserName] = useState('')
 
-  const hendleClickButton = () => {
-    router.push('/Drawer/schedule')
+  const hendleClickButton = async () => {
+    const jsonValue = await AsyncStorage.getItem('my-key');
+
+    if(jsonValue != null){
+        const data = JSON.parse(jsonValue)
+        const res = await updateUser(data.authToken, userName, name, data.user.id)
+
+        if(res.status === 200) {
+          const updatedUser = await res.json()
+          const newData = {
+            user: updatedUser,
+            authToken: data.authToken
+          }
+          
+          await AsyncStorage.setItem('my-key', JSON.stringify(newData));
+
+          router.push('/Drawer/schedule')
+        }
+        else {
+          // logout()
+        }
+    }
+    else {
+      logout()
+    }
   }
 
   const logout = async () => {
@@ -36,11 +62,15 @@ const Page = () => {
       <TextInput
           placeholder='Imię'
           style={[styles.input, globalStyles.boxShadow]}
+          value={name}
+          onChangeText={setName}
       />
 
       <TextInput
           placeholder='Nazwa użytkownika (nickname)'
           style={[styles.input, globalStyles.boxShadow]}
+          value={userName}
+          onChangeText={setUserName}
       />
 
       <View style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>

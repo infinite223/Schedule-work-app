@@ -10,7 +10,7 @@ export default function Layout() {
         }}
       />
       <Stack.Screen
-        name="Drawer"
+        name="(Drawer)"
         options={{
           headerShown: false,
         }}
@@ -39,6 +39,13 @@ export default function Layout() {
         options={{
           presentation: 'transparentModal',
           headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="selectHoursModal" 
+        options={{
+          headerShown:false,
+          presentation: 'transparentModal',
         }}
       />
     </Stack>

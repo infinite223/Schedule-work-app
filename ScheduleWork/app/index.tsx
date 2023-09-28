@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import { colors, globalStyles } from '../utils/globalStyles'
-import { Link, useRouter } from 'expo-router'
+import { Link, useRouter, usePathname } from 'expo-router'
 import calendar from './../assets/images/calendar.png'
 import logo from './../assets/images/logo.png'
 import * as SplashScreen from 'expo-splash-screen';
@@ -12,6 +12,8 @@ SplashScreen.preventAutoHideAsync();
 
 const HomeScreen = () => {
     const router = useRouter()
+    // const pathname = usePathname()
+
     useEffect(() => {
         const getData = async () => {
             try {
@@ -20,11 +22,13 @@ const HomeScreen = () => {
                 if(jsonValue != null){
                     const data = JSON.parse(jsonValue)
                     console.log(data.authToken)
-                    if(!data.user.userName) {
+                    if(!data.user.userName && !data.user.name) {
                         router.push('/editUser')
                     }
                     else {
-                        router.push('/Drawer/schedule')
+                        // if(pathname==='/'){
+                            router.push('/(Drawer)/schedule')
+                        // }
                     }
                 }
             } catch (e) {

@@ -5,35 +5,50 @@ import DatePicker from 'react-native-modern-datepicker';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getAllWorkPlace } from "../../services/workPlace";
 import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
-import { colors } from "../../utils/globalStyles";
+import { colors, globalStyles } from "../../utils/globalStyles";
+import { User } from "../../utils/types";
+import Loading from "../../components/Loading";
+import { Entypo } from "@expo/vector-icons";
+import DayDetails from "../../components/DayDetails";
 
 export default function Page() {
     const [selectedDate, setSelectedDate] = useState('');
-    const [userData, setUserData] = useState<any>({})
+    const [user, setUser] = useState<User | null>(null)
     const insets = useSafeAreaInsets();
-
 
     useEffect(() => {
       const getData = async () => {
         try {
           const jsonValue = await AsyncStorage.getItem('my-key');
-          setUserData(jsonValue != null ? JSON.parse(jsonValue) : null)
-
-          const res = await getAllWorkPlace(userData.authToken)
+          
+          if(jsonValue != null) {
+            const res = await getAllWorkPlace(JSON.parse(jsonValue).authToken)
+            setUser(JSON.parse(jsonValue).user)
+          }
                 
-          console.log(await res.json())
         } catch (e) {
           // error reading value
         }
       };
 
       getData()
+
+      console.log(user)
+
     }, [])
 
+  if(!user) {
+    return <Loading/>
+  }
+
   return (
-    <SafeAreaProvider style={[styles.container, { paddingTop: insets.top }]}>
+    <SafeAreaProvider style={[styles.container]}>
       <DatePicker
           onSelectedChange={date => setSelectedDate(date)}
+          mode="calendar"
+          selected="2023/09/23"
+          locale=""
+
           options={{
             textHeaderColor: 'black',
             textDefaultColor: 'black',
@@ -44,6 +59,8 @@ export default function Page() {
             textFontSize: 13
           }}
       />
+
+      <DayDetails selectedDate={selectedDate}/>
     </SafeAreaProvider>
   )
 }
@@ -52,6 +69,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
     flex: 1, 
-    alignItems: 'center' 
-  }
+    alignItems: 'center',
+    marginTop: -10 
+  },
 })

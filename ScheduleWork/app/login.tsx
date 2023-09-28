@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router'
 import { colors, globalStyles } from '../utils/globalStyles'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { authenticateEmail, sendEmail } from '../services/user';
+import { authenticateEmail, sendEmail } from '../services/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import logo from './../assets/images/logo.png'
 
@@ -39,12 +39,13 @@ const Page = () => {
     if(inputValue.length>4){
         if(index){
             const res = await authenticateEmail(emailSended, inputValue)
+            console.log(res)
 
             if(res.ok){
                 const userData = await res.json()
                 await AsyncStorage.setItem('my-key',  JSON.stringify(userData));
 
-                 router.push('/Drawer/schedule')
+                 router.push('/(Drawer)/schedule')
 
                  router.push('/messageModal')
                  router.setParams({ message: `Udało się zalogować`, type: 'SUCCESS' })                
