@@ -48,7 +48,7 @@ export default function Page() {
           mode="calendar"
           selected="2023/09/23"
           locale=""
-
+          
           options={{
             textHeaderColor: 'black',
             textDefaultColor: 'black',

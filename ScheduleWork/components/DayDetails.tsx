@@ -4,13 +4,14 @@ import { colors } from '../utils/globalStyles'
 import { Entypo } from '@expo/vector-icons'
 import Loading from './Loading'
 import { User } from '../utils/types'
-import {  router } from 'expo-router'
+import {  router, useNavigation, usePathname } from 'expo-router'
 
 const widthScreen = Dimensions.get('screen').width
 
 const DayDetails:FC<{selectedDate: string}> = ({selectedDate}) => {
     const [users, setUsers] = useState<User[] | null>(null)
-
+    const pathname = usePathname()
+    console.log(pathname)
     useEffect(() => {
         const getUsersInDay = () => {
             setUsers([{name: 'Mateusz', groupId: '', id: '', userName: 'Mati21', workPlaceId: ''}])
@@ -39,12 +40,12 @@ const DayDetails:FC<{selectedDate: string}> = ({selectedDate}) => {
                     </TouchableOpacity>
                 }
             />
-            <TouchableOpacity 
+            {pathname!=='/selectHoursModal'&&<TouchableOpacity 
                 style={styles.plusButton}
                 onPress={() => router.push({ pathname: "/selectHoursModal", params: { day: selectedDate } })}
             >
                 <Entypo name="plus" size={30} color={'white'}/>
-            </TouchableOpacity>
+            </TouchableOpacity>}
         </View>
     )
 }
