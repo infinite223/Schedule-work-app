@@ -14,7 +14,7 @@ const DayDetails:FC<{selectedDate: string}> = ({selectedDate}) => {
     console.log(pathname)
     useEffect(() => {
         const getUsersInDay = () => {
-            setUsers([{name: 'Mateusz', groupId: '', id: '', userName: 'Mati21', workPlaceId: ''}])
+            setUsers([{email: '',name: 'Mateusz', groupId: '', id: '', userName: 'Mati21', workPlaceId: ''}])
         }
 
         getUsersInDay()

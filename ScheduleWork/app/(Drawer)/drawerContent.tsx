@@ -7,7 +7,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { User } from '../../utils/types';
 import { Ionicons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import logo from './../../assets/images/logo.png'
 
 const DrawerContent = () => {
@@ -44,7 +44,10 @@ const DrawerContent = () => {
 
             </View>
 
-            <TouchableOpacity style={styles.optionButton}>
+            <TouchableOpacity
+                onPress={() => router.push('/(Drawer)/settings')}
+                style={styles.optionButton}
+            >
                 <Ionicons name='settings-outline' size={25}/> 
                 <Text style={styles.optionText}>Ustawienia</Text>
             </TouchableOpacity>

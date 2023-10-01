@@ -33,7 +33,7 @@ const Page = () => {
           
           await AsyncStorage.setItem('my-key', JSON.stringify(newData));
 
-          router.push('/Drawer/schedule')
+          router.push('/(Drawer)/schedule')
         }
         else {
           // logout()

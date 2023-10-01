@@ -1,12 +1,17 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Stack, router } from 'expo-router';
 import { Drawer } from 'expo-router/drawer';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { View } from 'react-native'
 import DrawerContent from './drawerContent';
+import { useSelector } from 'react-redux';
+import { selectGroups } from '../../slices/groupsSlice';
+import { Group } from '../../utils/types';
 
 export default function Layout() {
-  const groupName = "Kierowcy"
+  const groups = useSelector(selectGroups)
+  const [groupName, setGroupName] = useState('')
+
   useEffect(() => {
     const getData = async () => {
       try {
@@ -14,7 +19,10 @@ export default function Layout() {
         if(jsonValue !== null && JSON.parse(jsonValue).user?.name === null){
           router.push('/editUser')
         }
-
+        else if(jsonValue !== null && JSON.parse(jsonValue).user?.name !== null){
+          console.log(JSON.parse(jsonValue).user, 'tuu')
+          setGroupName(groups.find((group: Group) => group.id === JSON.parse(jsonValue).user.groupId).name)
+        }
       } catch (e) {
         // error reading value
       }
