@@ -42,6 +42,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 7,
     backgroundColor: '#eee',
-    width: widthScreen - 40
+    width: widthScreen - 30
   }
 })

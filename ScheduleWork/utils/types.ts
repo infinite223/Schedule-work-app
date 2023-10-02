@@ -3,6 +3,7 @@ type User = {
     name: string, 
     userName: string,
     email: string,
+    phoneNumber?: number 
 
     workPlaceId: string,
     groupId:  string
@@ -18,7 +19,8 @@ type Group = {
     id: string, 
     name: string,
     description: string,
-    workPlaceId: string
+    workPlaceId: string,
+    users?: User[] 
 }
 
 type Day = {

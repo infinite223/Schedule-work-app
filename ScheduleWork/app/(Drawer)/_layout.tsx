@@ -12,24 +12,24 @@ export default function Layout() {
   const groups = useSelector(selectGroups)
   const [groupName, setGroupName] = useState('')
 
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const jsonValue = await AsyncStorage.getItem('my-key');
-        if(jsonValue !== null && JSON.parse(jsonValue).user?.name === null){
-          router.push('/editUser')
-        }
-        else if(jsonValue !== null && JSON.parse(jsonValue).user?.name !== null){
-          console.log(JSON.parse(jsonValue).user, 'tuu')
-          setGroupName(groups.find((group: Group) => group.id === JSON.parse(jsonValue).user.groupId).name)
-        }
-      } catch (e) {
-        // error reading value
-      }
-    };
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     try {
+  //       const jsonValue = await AsyncStorage.getItem('my-key');
+  //       if(jsonValue !== null && JSON.parse(jsonValue).user?.name === null){
+  //         router.push('/editUser')
+  //       }
+  //       else if(jsonValue !== null && JSON.parse(jsonValue).user?.name !== null){
+  //         console.log(groups, 'tuu')
+  //         setGroupName(groups.find((group: Group) => group.id === JSON.parse(jsonValue).user.groupId).name)
+  //       }
+  //     } catch (e) { 
+  //       // error reading value
+  //     }
+  //   };
 
-    getData()
-  }, [])
+  //   getData()
+  // }, [groups])
 
   return (
     <Drawer       
@@ -39,15 +39,20 @@ export default function Layout() {
         name="schedule" 
         options={{
           drawerLabel: "Home",
-          title: `Harmonogram ${groupName}`,
+          title: `Harmonogram`,
           headerTitleStyle: { fontSize: 18 },
         }}
       />
       <Drawer.Screen
         name="profile" 
         options={{
-          drawerLabel: "User",
           title: "Twój profil",
+        }}
+      />
+      <Drawer.Screen
+        name="groups" 
+        options={{
+          title: "Grupy",
         }}
       />
     </Drawer>

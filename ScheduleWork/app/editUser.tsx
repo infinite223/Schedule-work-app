@@ -9,20 +9,45 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router, useRouter, useNavigation } from 'expo-router';
 import { updateUser } from '../services/user';
+import { User } from '../utils/types';
 
 const widthScreen = Dimensions.get('screen').width
 
 const Page = () => {
   const insets = useSafeAreaInsets();
+  const [user, setUser] = useState<User | null>(null)
   const [name, setName] = useState('')
   const [userName, setUserName] = useState('')
+  const [phoneNumber, setPhoneNumber] = useState('')
+
+  useEffect(() => {
+    const getData = async () => {
+      const jsonValue = await AsyncStorage.getItem('my-key');
+      if(jsonValue != null){
+        const data = JSON.parse(jsonValue)
+        setUser(data.user)
+
+        if(data.user.name){
+          setName(data.user.name)
+        }
+        if(data.user.userName){
+          setUserName(data.user.userName)
+        }
+        if(data.user.phoneNumber){
+          setPhoneNumber(data.user.phoneNumber.toString())
+        }
+      }
+    }
+
+    getData()
+  }, [])
 
   const hendleClickButton = async () => {
     const jsonValue = await AsyncStorage.getItem('my-key');
 
     if(jsonValue != null){
         const data = JSON.parse(jsonValue)
-        const res = await updateUser(data.authToken, userName, name, data.user.id)
+        const res = await updateUser(data.authToken, userName, phoneNumber, name, data.user.id)
 
         if(res.status === 200) {
           const updatedUser = await res.json()
@@ -49,12 +74,12 @@ const Page = () => {
 
     router.push('/')
   }
-
+  console.log(user, 'dada')
   return (
     <SafeAreaProvider style={[styles.container, { paddingTop: insets.top }]}>
-      <Text style={styles.descriptionText}>
+      {user?.name&&<Text style={styles.descriptionText}>
         Jescze jeden krok!
-      </Text>
+      </Text>}
       <Text style={styles.headerText}>
         Uzupełnij dane profilu 
       </Text>
@@ -71,6 +96,16 @@ const Page = () => {
           style={[styles.input, globalStyles.boxShadow]}
           value={userName}
           onChangeText={setUserName}
+      />
+
+      <TextInput
+          placeholder='Numer telefonu (opcjonalnie)'
+          style={[styles.input, globalStyles.boxShadow]}
+          value={phoneNumber}
+          textContentType='telephoneNumber'
+          keyboardType='phone-pad'
+          maxLength={9}
+          onChangeText={setPhoneNumber}
       />
 
       <View style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>

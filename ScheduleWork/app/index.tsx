@@ -6,7 +6,6 @@ import calendar from './../assets/images/calendar.png'
 import logo from './../assets/images/logo.png'
 import * as SplashScreen from 'expo-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { getAllWorkPlace } from '../services/workPlace'
 
 SplashScreen.preventAutoHideAsync();
 
@@ -21,8 +20,8 @@ const HomeScreen = () => {
 
                 if(jsonValue != null){
                     const data = JSON.parse(jsonValue)
-                    console.log(data.authToken)
-                    if(!data.user.userName && !data.user.name) {
+                    console.log(data, 'd')
+                    if(!data.user.userName || !data.user.name) {
                         router.push('/editUser')
                     }
                     else {

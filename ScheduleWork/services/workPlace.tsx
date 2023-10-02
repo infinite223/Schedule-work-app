@@ -1,7 +1,7 @@
 import { appConfig } from "../appConfig"
 
-export const getAllWorkPlace = async (authToken: string) => {
-    const res = await fetch(`${appConfig.endpointsUrl}/workPlace`, {
+export const getWorkPlace = async (authToken: string, workPlaceId: string) => {
+    const res = await fetch(`${appConfig.endpointsUrl}/workPlace/${workPlaceId}`, {
         headers: {
             Authorization: `Bearer ${authToken}`,
           },

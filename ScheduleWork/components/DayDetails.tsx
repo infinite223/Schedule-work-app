@@ -44,7 +44,7 @@ const DayDetails:FC<{selectedDate: string}> = ({selectedDate}) => {
                 style={styles.plusButton}
                 onPress={() => router.push({ pathname: "/selectHoursModal", params: { day: selectedDate } })}
             >
-                <Entypo name="plus" size={30} color={'white'}/>
+                <Entypo name="plus" size={25} color={'white'}/>
             </TouchableOpacity>}
         </View>
     )
@@ -65,11 +65,11 @@ const styles = StyleSheet.create({
       fontWeight: '400'
     },
     plusButton: {
-      borderRadius: 10,
+      borderRadius: 50,
       backgroundColor: colors.baseColor,
       alignItems:'center',
       justifyContent: 'center',
-      padding: 10,
+      padding: 15,
       margin:20
     },
     userItem: {

@@ -1,24 +1,153 @@
-import { View, Text, StyleSheet } from 'react-native'
-import React from 'react'
-import { Ionicons } from '@expo/vector-icons'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
+import { AntDesign, Entypo, Feather, Ionicons } from '@expo/vector-icons'
+import { User } from '../../utils/types'
+import Loading from '../../components/Loading'
+import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router'
+import { getUser } from '../../services/user'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { colors, globalStyles } from '../../utils/globalStyles'
+import * as Linking from "expo-linking";
 
 const Page = () => {
+  const [user, setUser] = useState<User | null>(null)
+  const router = useRouter()
+  const navigation = useNavigation()
+  const { userId }: { userId: string} = useLocalSearchParams()
+  const isMyProfile = user?.id.toString() === userId
+  const phoneNumber = '692714148'
+  console.log(userId)
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: isMyProfile?"Twój profil":user?.name,
+      headerRight: () => 
+      <View>
+        {!isMyProfile?<View style={styles.rightOptions}>
+          <TouchableOpacity style={{ padding: 7 }} onPress={() => Linking.openURL(`:${phoneNumber}`)}>
+            <AntDesign name='message1' size={22}/>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.phoneButton} onPress={() => Linking.openURL(`tel:${phoneNumber}`)}>
+            <Entypo name='phone' color={'white'} size={18}/>
+          </TouchableOpacity>
+        </View>:
+        <View style={styles.rightOptions}>
+          <TouchableOpacity 
+            onPress={() => router.push('/editUser')}
+            style={{ padding: 7 }}
+          >
+            <Feather name='edit-3' size={23} color={'black'}/>
+          </TouchableOpacity>
+        </View>
+      }
+    </View>
+    })
+  }, [user])
+
+  useEffect(() => {
+    console.log(userId, 'dada')
+    const getUserData = async () => {
+      const jsonValue = await AsyncStorage.getItem('my-key');
+      if(jsonValue) {
+        const res = await getUser(JSON.parse(jsonValue).authToken, userId)
+
+        if(res.status === 200){
+          setUser(await res.json())
+        }
+        else {
+          alert('Error, getUserData')
+        }
+      }
+    }
+
+    getUserData()
+  }, [])
+
+  console.log(user?.phoneNumber, 'd')
+
+
+  if(!user) {
+    return (
+      <Loading/>
+    )
+  }
+
   return (
     <View style={styles.container}>
 
-      <Ionicons name='person-sharp' size={55}/> 
+      <View style={styles.headerContainer}>
+        <View style={[styles.item, {flexDirection:'row', alignItems: 'center', backgroundColor: colors.baseColor}]}>
+          <Ionicons name='person-sharp' size={25} style={{marginRight: 25}} color={'white'}/> 
 
-      <Text>Profile</Text>
+          <View style={[styles.dataContainer]}>
+            <Text style={{color: 'white', fontSize: 12}}>Imię:</Text>
+            <Text style={[styles.name, { color: 'white' }]}>{user.name}</Text>
+          </View>
+        </View>
+
+        <View style={[styles.item]}>
+          <Text style={{fontSize: 12}}>Nick:</Text>
+          <Text style={styles.userName}>{user.userName}</Text>
+        </View>
+      </View>
+
+      <View>
+        <Text>Należysz do grupy: </Text>
+      </View>
+      
+      <View>
+        <Text>Najbliższe dni pracy:</Text>
+      </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+    rightOptions: {
+      marginHorizontal: 15,
+      flexDirection: 'row',
+      gap: 5,
+      alignItems:'center'
+    },
+    dataContainer: {
+      flexDirection: 'column',
+      alignItems: 'flex-start',
+      gap: -5
+    },
+    phoneButton: {
+      backgroundColor: '#19f',
+      borderRadius: 50,
+      padding: 7
+    },
     container: {
       backgroundColor: 'white',
       flex: 1, 
-      alignItems: 'center',
-      justifyContent: 'center' 
+      // alignItems: 'center',
+      // justifyContent: 'center',
+      paddingHorizontal: 15,
+      gap: 10,
+    },
+    headerContainer: {
+      flexDirection: 'row', 
+      alignItems: 'center', 
+      // justifyContent: 'space-between', 
+      width: '100%',
+      marginVertical: 10 
+    },
+    item: {
+      flexDirection: 'column',
+      alignItems: 'flex-start',
+      paddingHorizontal: 25,
+      paddingVertical: 15,
+      borderRadius: 50,
+      gap: -5
+    },
+    name: {
+      fontSize: 20,
+      fontWeight: 'bold'
+    },
+    userName: {
+      fontSize: 18
     }
   })
 

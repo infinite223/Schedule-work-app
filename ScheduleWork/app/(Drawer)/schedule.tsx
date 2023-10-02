@@ -1,48 +1,81 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { DatePickerModal } from 'react-native-paper-dates';
 import DatePicker from 'react-native-modern-datepicker';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getAllWorkPlace } from "../../services/workPlace";
+import { getWorkPlace } from "../../services/workPlace";
 import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors, globalStyles } from "../../utils/globalStyles";
-import { User } from "../../utils/types";
+import { Group, User } from "../../utils/types";
 import Loading from "../../components/Loading";
 import { Entypo } from "@expo/vector-icons";
 import DayDetails from "../../components/DayDetails";
 import { getGroupsInWorkPlace } from "../../services/group";
 import { useDispatch, useSelector } from "react-redux";
 import { selectGroups, setGroups } from "../../slices/groupsSlice";
+import { setWorkPlace } from "../../slices/workPlaceSlice";
+import { getUser } from "../../services/user";
+import { router, useNavigation } from "expo-router";
 
 export default function Page() {
     const [selectedDate, setSelectedDate] = useState('');
     const [user, setUser] = useState<User | null>(null)
+    const [groups, setGroups_] = useState<Group[]>([])
+    const [loading, setLoading] = useState(false)
     const insets = useSafeAreaInsets();
-    const groups = useSelector(selectGroups)
+    // const groups = useSelector(selectGroups)
     const dispatch = useDispatch()
+    const navigation = useNavigation()
+  
+    useLayoutEffect(() => {
+      navigation.setOptions({
+        headerTitle: `Harmonogram ${groups.find((group: Group) => group?.id === user?.groupId)?.name}`
+      })
+    }, [groups])
 
     useEffect(() => {
       const getData = async () => {
+        setLoading(true)
         try {
           const jsonValue = await AsyncStorage.getItem('my-key');
-          
           if(jsonValue != null) {
-            // const res = await getAllWorkPlace(JSON.parse(jsonValue).authToken)
-            setUser(JSON.parse(jsonValue).user)
-            const groups = await getGroupsInWorkPlace(JSON.parse(jsonValue).authToken, JSON.parse(jsonValue).user?.workPlaceId)
-            dispatch(setGroups(await groups.json()))
-            
+            if(!JSON.parse(jsonValue).user.id) {
+              router.push('/login')
+            }
+
+            const userFromDb =  await getUser(JSON.parse(jsonValue).authToken, JSON.parse(jsonValue).user?.id)
+            setUser(await userFromDb.json())
+
+            if(user && user.workPlaceId) {
+              await AsyncStorage.setItem('my-key', JSON.stringify({authToken: JSON.parse(jsonValue).authToken, user}))
+
+              const workPlace = await getWorkPlace(JSON.parse(jsonValue).authToken, user.workPlaceId)
+              dispatch(setWorkPlace(await workPlace.json()))
+              // console.log(workPlace.status, 'status') 
+  
+              const groups = await getGroupsInWorkPlace(JSON.parse(jsonValue).authToken, user.workPlaceId)
+              dispatch(setGroups(await groups.json()))
+              const groupsRes = await groups.json()
+              
+              if(groupsRes){
+                setGroups_(await groups.json())
+              }
+            }
+            await setLoading(false)
+          
           }                
         } catch (e) {
-          // error reading value
+          console.log(e)
+          alert('error') 
+          setLoading(false)
         }
+        
       };
 
       getData()
-
     }, [])
-    console.log(user)
-  if(!user) {
+
+  if(loading || !user) {
     return <Loading/>
   }
 
