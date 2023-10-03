@@ -77,7 +77,7 @@ const Page = () => {
 
       <View style={styles.headerContainer}>
         <View style={[styles.item, {flexDirection:'row', alignItems: 'center', backgroundColor: colors.baseColor}]}>
-          <Ionicons name='person-sharp' size={25} style={{marginRight: 25}} color={'white'}/> 
+          <Ionicons name='person-sharp' size={20} style={{marginRight: 20}} color={'white'}/> 
 
           <View style={[styles.dataContainer]}>
             <Text style={{color: 'white', fontSize: 12}}>Imię:</Text>
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
       flexDirection: 'column',
       alignItems: 'flex-start',
       paddingHorizontal: 25,
-      paddingVertical: 15,
+      paddingVertical: 10,
       borderRadius: 50,
       gap: -5
     },

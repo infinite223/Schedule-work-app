@@ -18,24 +18,23 @@ import { getUser } from "../../services/user";
 import { router, useNavigation } from "expo-router";
 
 export default function Page() {
+  console.log('scheddue')
+
     const [selectedDate, setSelectedDate] = useState('');
     const [user, setUser] = useState<User | null>(null)
-    const [groups, setGroups_] = useState<Group[]>([])
-    const [loading, setLoading] = useState(false)
-    const insets = useSafeAreaInsets();
-    // const groups = useSelector(selectGroups)
-    const dispatch = useDispatch()
+    const groups = useSelector(selectGroups)
     const navigation = useNavigation()
-  
+    
+    const groupName = groups.find((group: Group) => group?.id === user?.groupId)?.name
+    
     useLayoutEffect(() => {
       navigation.setOptions({
-        headerTitle: `Harmonogram ${groups.find((group: Group) => group?.id === user?.groupId)?.name}`
+        headerTitle: `Harmonogram ${groupName}`
       })
-    }, [groups])
+    }, [groups])  
 
     useEffect(() => {
       const getData = async () => {
-        setLoading(true)
         try {
           const jsonValue = await AsyncStorage.getItem('my-key');
           if(jsonValue != null) {
@@ -44,38 +43,18 @@ export default function Page() {
             }
 
             const userFromDb =  await getUser(JSON.parse(jsonValue).authToken, JSON.parse(jsonValue).user?.id)
-            setUser(await userFromDb.json())
-
-            if(user && user.workPlaceId) {
-              await AsyncStorage.setItem('my-key', JSON.stringify({authToken: JSON.parse(jsonValue).authToken, user}))
-
-              const workPlace = await getWorkPlace(JSON.parse(jsonValue).authToken, user.workPlaceId)
-              dispatch(setWorkPlace(await workPlace.json()))
-              // console.log(workPlace.status, 'status') 
-  
-              const groups = await getGroupsInWorkPlace(JSON.parse(jsonValue).authToken, user.workPlaceId)
-              dispatch(setGroups(await groups.json()))
-              const groupsRes = await groups.json()
-              
-              if(groupsRes){
-                setGroups_(await groups.json())
-              }
-            }
-            await setLoading(false)
-          
+            setUser(await userFromDb.json())  
           }                
         } catch (e) {
           console.log(e)
           alert('error') 
-          setLoading(false)
         }
-        
       };
 
       getData()
     }, [])
 
-  if(loading || !user) {
+  if(!user) {
     return <Loading/>
   }
 

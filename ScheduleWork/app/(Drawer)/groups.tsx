@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { selectGroups } from "../../slices/groupsSlice";
 import { Group } from "../../utils/types";
 import { Ionicons } from "@expo/vector-icons";
+import { colors } from "../../utils/globalStyles";
 
 const widthScreen = Dimensions.get('screen').width
 
@@ -25,8 +26,17 @@ export default function Page() {
               <View
                 style={styles.groupContainer}
               >
-                  <Text style={styles.headerTitle}>{item.name}</Text>
-                  {item.description?.length>0&&<Text style={styles.description}>{item.description}</Text>}
+                  <View style={styles.headerGroup}>
+                    <View style={styles.leftBox}>
+                      <Text style={styles.headerTitle}>{item.name}</Text>
+                      <Text style={[styles.description, {fontSize: 11}]}>
+                        {item.users?.length} osób/a w grupie
+                      </Text>
+
+                    </View>
+                    {item.description?.length>0&&<Text style={styles.description}>{item.description}</Text>}
+                  </View>
+                 
                   <FlatList
                     data={item.users}
                     renderItem={({ item }) => 
@@ -66,12 +76,27 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingVertical: 10 
   },
+  headerGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 20
+  },
+  leftBox: {
+    backgroundColor: colors.baseColor,
+    borderRadius: 50,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    width: 150,
+    marginBottom: 10
+  },
   headerTitle: {
-    fontSize: 20,
-    fontWeight: '700'
+    fontSize: 18,
+    fontWeight: '700',
+    color: 'white',
   },
   description: {
-    fontSize: 15
+    fontSize: 15,
+    color: 'white'
   },
   groupContainer: {
     width: widthScreen,
