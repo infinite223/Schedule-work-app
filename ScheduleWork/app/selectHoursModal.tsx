@@ -4,6 +4,9 @@ import { colors, globalStyles } from '../utils/globalStyles'
 import { router, useLocalSearchParams } from 'expo-router'
 import DatePicker from 'react-native-modern-datepicker';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { createDay, getDay } from '../services/day';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createUserInDay } from '../services/userInDay';
 const widthScreen = Dimensions.get('screen').width
 
 const getTimeFromTimestamp = (timestamp?: number) => {
@@ -21,17 +24,44 @@ const getTimeFromTimestamp = (timestamp?: number) => {
 const Page = () => {
   const [selectedTime, setSelectedTime] = useState<{from: string, to: string}>({from: '12:00', to: '22:00'})
   const [showTimePicker, setShowTimePicker] = useState<number>(0)
-  const params = useLocalSearchParams();
+  const params: { day: string } = useLocalSearchParams();
   const options = [
     {from: '12:00', to: '22:00'},
     {from: '14:00', to: '22:00'},
     {from: '17:00', to: '22:00'},
   ]
 
-  const saveDay= () => {
+  const saveDay = async () => {
     // find "userIdDay" in day?
     // create new "userInDay":
     // create "day" id DB -> create new "userInDay"
+    try {
+      const jsonValue = await AsyncStorage.getItem('my-key');
+      if(jsonValue != null) {
+        const res = await getDay(JSON.parse(jsonValue).authToken, params.day)
+
+        if(res.status === 200) {
+          const day = await res.json()
+          const newUserInDay = await createUserInDay(JSON.parse(jsonValue).authToken,selectedTime.from, selectedTime.to, day.id)
+          
+          console.log(newUserInDay.status)
+        }
+        else {
+          const newDay = await createDay(JSON.parse(jsonValue).authToken, params.day)
+          
+          if(newDay.status === 200) {
+            const day = await newDay.json()
+            const newUserInDay = await createUserInDay(JSON.parse(jsonValue).authToken,selectedTime.from, selectedTime.to, day.id)
+            
+            console.log(newUserInDay.status)
+          }
+        }
+      }
+    } catch (error) {
+      console.log(error)
+    }
+
+
   }
 
   return (
@@ -134,7 +164,9 @@ const styles = StyleSheet.create({
       gap: 5,
       marginVertical: 5,
       borderRadius: 5,
-      backgroundColor: 'rgba(200, 200, 200, .2)'
+      borderColor: 'rgba(200, 200, 200, .6)',
+      borderBottomWidth: 1
+      // backgroundColor: 'rgba(200, 200, 200, .2)'
     },
     optionText: {
       fontSize: 15,

@@ -2,27 +2,31 @@ import { appConfig } from "../appConfig"
 
 export const createDay = async (
         authToken: string,
-        groupId: string, 
         date: string
     ) => {
+        console.log(date)
     const res = await fetch(`${appConfig.endpointsUrl}/day`, {
         headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${authToken}`,
           },
           method: "POST",   
-          body: JSON.stringify({ groupId, date })    
+          body: JSON.stringify({ date })    
     })
 
     return res
 }
 
-export const getDay = async (authToken: string, date: Date, groupId: string) => {
-    const res = await fetch(`${appConfig.endpointsUrl}/day`, {
+export const getDay = async (authToken: string, date: string) => {
+    const res = await fetch(`${appConfig.endpointsUrl}/day/getSpecyficDay`, {
         headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${authToken}`,
           },
-          method: "GET",    
-          body: JSON.stringify({ date, groupId })    
+          method: "POST",    
+          body: JSON.stringify({ date })    
     })
 
     return res

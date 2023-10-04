@@ -61,7 +61,10 @@ const DrawerContent = () => {
         <View style={styles.main}>
             <View style={{marginVertical: 20, gap: 5}}>
                 {isAdmin&&
-                    <TouchableOpacity style={[styles.item, globalStyles.boxShadow]}>
+                    <TouchableOpacity 
+                        onPress={() => router.push('/inviteWorkerModal')}
+                        style={[styles.item, globalStyles.boxShadow]}
+                    >
                         <AntDesign name="addusergroup" size={20} color={'white'}/>
                         <Text style={styles.itemText}>Zaproś pracowników</Text>
                     </TouchableOpacity>

@@ -137,7 +137,8 @@ const styles = StyleSheet.create({
     item: {
       flexDirection: 'column',
       alignItems: 'flex-start',
-      paddingHorizontal: 25,
+      paddingLeft: 20,
+      paddingRight: 20,
       paddingVertical: 10,
       borderRadius: 50,
       gap: -5

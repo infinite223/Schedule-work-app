@@ -51,6 +51,13 @@ export default function Layout() {
             presentation: 'transparentModal',
           }}
         />
+        <Stack.Screen
+          name="inviteWorkerModal" 
+          options={{
+            headerShown:false,
+            presentation: 'transparentModal',
+          }}
+        />
       </Stack>
     </Provider>
   );

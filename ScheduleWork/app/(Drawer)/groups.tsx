@@ -5,17 +5,32 @@ import { Link, useRouter } from "expo-router";
 import { useSelector } from "react-redux";
 import { selectGroups } from "../../slices/groupsSlice";
 import { Group } from "../../utils/types";
-import { Ionicons } from "@expo/vector-icons";
+import { Feather, FontAwesome5, Ionicons, MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
 import { colors } from "../../utils/globalStyles";
+import { selectWorkPlace } from "../../slices/workPlaceSlice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const widthScreen = Dimensions.get('screen').width
 
 export default function Page() {
-    const [selectedDate, setSelectedDate] = useState('');
     const insets = useSafeAreaInsets();
     const router = useRouter()
+    const [isAdmin, setIsAdmin] = useState(false)
+    const workPlace = useSelector(selectWorkPlace)
 
     const groups:Group[] = useSelector(selectGroups)
+
+    useEffect(() => {
+      const getData = async () => {
+          const jsonValue:any = await AsyncStorage.getItem('my-key');
+          const user = (jsonValue != null ? JSON.parse(jsonValue).user : null)
+
+          setIsAdmin(workPlace.adminId === user?.id.toString())
+      }
+
+      getData()
+      
+  }, [])
 
   return (
     <SafeAreaProvider style={[styles.container]}>
@@ -27,16 +42,44 @@ export default function Page() {
                 style={styles.groupContainer}
               >
                   <View style={styles.headerGroup}>
-                    <View style={styles.leftBox}>
-                      <Text style={styles.headerTitle}>{item.name}</Text>
-                      <Text style={[styles.description, {fontSize: 11}]}>
-                        {item.users?.length} osób/a w grupie
-                      </Text>
-
+                    <View style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
+                      <View style={styles.leftBox}>
+                        <MaterialCommunityIcons color={'white'} name='account-group-outline' size={25}/>
+                        <View>
+                          <Text style={styles.headerTitle}>{item.name}</Text>
+                          <Text style={[styles.countPersons, {fontSize: 11}]}>
+                            {item.users?.length} osób/a w grupie
+                          </Text>
+                        </View>
+                      </View>
                     </View>
-                    {item.description?.length>0&&<Text style={styles.description}>{item.description}</Text>}
+                    {isAdmin&&<View style={{flexDirection:'row', alignItems: 'flex-start', gap: 2}}>
+                      <Link
+                        asChild
+                        href={{pathname: '/editGroup', params: {groupId: item?.id}}}
+                      >
+                        <TouchableOpacity 
+                          style={{ padding: 7 }}
+                        >
+                          <Octicons name='person-add' size={28} color={'black'}/>
+                        </TouchableOpacity>
+                      </Link>
+
+                      <Link
+                        asChild
+                        href={{pathname: '/editGroup', params: {groupId: item?.id}}}
+                      >
+                        <TouchableOpacity 
+                          style={{ padding: 7 }}
+                        >
+                          <FontAwesome5 name='edit' size={24} color={'black'}/>
+                        </TouchableOpacity>
+                      </Link>
+                    </View>}
                   </View>
-                 
+
+                  {item.description?.length>0&&<Text style={styles.description}>{item.description}</Text>}
+
                   <FlatList
                     data={item.users}
                     renderItem={({ item }) => 
@@ -78,31 +121,40 @@ const styles = StyleSheet.create({
   },
   headerGroup: {
     flexDirection: 'row',
-    alignItems: 'center',
+    // alignItems: 'center',
+    justifyContent: 'space-between',
     gap: 20
   },
   leftBox: {
     backgroundColor: colors.baseColor,
     borderRadius: 50,
     paddingHorizontal: 20,
-    paddingVertical: 8,
-    width: 150,
-    marginBottom: 10
+    paddingVertical: 10,
+    width: 180,
+    marginBottom: 10,
+    flexDirection:'row',
+    alignItems: 'center',
+    gap: 15
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: '700',
     color: 'white',
   },
-  description: {
+  countPersons: {
     fontSize: 15,
     color: 'white'
+  },
+  description: {
+    fontSize: 14,
+    fontWeight: '300'
   },
   groupContainer: {
     width: widthScreen,
     paddingHorizontal: 15,
     borderColor: '#ddd',
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
+    
   },
   option: {
     borderRadius: 5,

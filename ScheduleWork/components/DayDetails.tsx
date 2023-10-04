@@ -1,26 +1,45 @@
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Dimensions } from 'react-native'
 import React, { FC, useState, useEffect } from 'react'
-import { colors } from '../utils/globalStyles'
+import { colors, globalStyles } from '../utils/globalStyles'
 import { Entypo } from '@expo/vector-icons'
 import Loading from './Loading'
 import { User } from '../utils/types'
 import {  router, useNavigation, usePathname } from 'expo-router'
+import { getDay } from '../services/day'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const widthScreen = Dimensions.get('screen').width
 
 const DayDetails:FC<{selectedDate: string}> = ({selectedDate}) => {
-    const [users, setUsers] = useState<User[] | null>(null)
+    const [users, setUsers] = useState<any[] | null>(null)
+    const [isMyDay, setIsMyDay] = useState(false)
+
     const pathname = usePathname()
     console.log(pathname)
     useEffect(() => {
-        const getUsersInDay = () => {
-            setUsers([{email: '',name: 'Mateusz', groupId: '', id: '', userName: 'Mati21', workPlaceId: ''}])
+
+        const getUsersInDay = async () => {
+            const jsonValue = await AsyncStorage.getItem('my-key');
+            if(jsonValue != null) {
+                const res = await getDay(JSON.parse(jsonValue).authToken, selectedDate)
+
+                if(res.status === 200) {
+                    const dayData = await res.json()
+                    setUsers(dayData?.usersInDay)
+                }
+
+                if(res.status === 401) {
+                    setUsers([])
+                }
+
+                setIsMyDay(users?.find((userInDay) => userInDay.user.id === JSON.parse(jsonValue).user.id))
+            }
         }
 
         getUsersInDay()
 
     }, [selectedDate])
-
+    console.log(users)
     if(!users) {
         return (
             <Loading/>
@@ -33,19 +52,33 @@ const DayDetails:FC<{selectedDate: string}> = ({selectedDate}) => {
             <FlatList
                 data={users}
                 renderItem={({ item }) => 
-                    <TouchableOpacity style={styles.userItem}>
+                    <TouchableOpacity style={[styles.userItem, globalStyles.boxShadow]}>
+                        <Text style={styles.namePerson}>
+                            {item.user.userName}
+                        </Text>
                         <Text>
-                            {item.userName}
+                            od: {item.from}
+                        </Text>
+                        <Text>
+                            do: {item.to}
+                        </Text>
+                        <Text style={styles.fullHoursText}>
+                             10h
                         </Text>
                     </TouchableOpacity>
                 }
             />
-            {pathname!=='/selectHoursModal'&&<TouchableOpacity 
-                style={styles.plusButton}
-                onPress={() => router.push({ pathname: "/selectHoursModal", params: { day: selectedDate } })}
-            >
-                <Entypo name="plus" size={25} color={'white'}/>
-            </TouchableOpacity>}
+            {pathname!=='/selectHoursModal'&&
+                <TouchableOpacity 
+                    style={[styles.plusButton, globalStyles.boxShadow]}
+                    onPress={() => router.push({ pathname: "/selectHoursModal", params: { day: selectedDate } })}
+                >
+                    {isMyDay?
+                        <Entypo name="plus" size={25} color={'white'}/>:
+                        <Entypo name="minus" size={25} color={'white'}/>
+                    }
+                </TouchableOpacity>
+            }
         </View>
     )
 }
@@ -73,12 +106,22 @@ const styles = StyleSheet.create({
       margin:20
     },
     userItem: {
+        backgroundColor:'white',
         flexDirection:'row',
         padding: 10,
         borderRadius: 5,
-        width: widthScreen - 40,
+        width: widthScreen - 20,
         flex:1,
-        marginVertical: 10    
+        marginVertical: 10,
+        alignItems: 'center',
+        justifyContent: 'space-between',  
+    },
+    namePerson: {
+        fontWeight: '700'
+    },
+    fullHoursText: {
+        fontWeight: '300',
+        fontSize: 11
     }
   })
 
