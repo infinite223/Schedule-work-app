@@ -1,9 +1,7 @@
-import { View, Text, Pressable, StyleSheet, Dimensions, FlatList, TouchableOpacity, TextInput } from 'react-native'
-import React, { useState } from 'react'
+import { Text, Pressable, StyleSheet, Dimensions, TouchableOpacity, TextInput } from 'react-native'
+import React from 'react'
 import { colors, globalStyles } from '../utils/globalStyles'
-import { router, useLocalSearchParams } from 'expo-router'
-import DatePicker from 'react-native-modern-datepicker';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { router } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons';
 const widthScreen = Dimensions.get('screen').width
 

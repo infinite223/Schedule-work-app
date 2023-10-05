@@ -15,6 +15,17 @@ export const globalStyles = StyleSheet.create({
         shadowRadius: 4.65,
 
         elevation: 8,
+    },
+    boxShadow_light: {
+        shadowColor: "#ccc",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.30,
+        shadowRadius: 0.65,
+
+        elevation: 8,
     }
 })
 

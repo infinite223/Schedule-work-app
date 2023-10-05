@@ -25,7 +25,7 @@ type Group = {
 
 type Day = {
     id: string,
-    date: Date,
+    date: String,
     groupId: string
 }
 
@@ -35,7 +35,9 @@ type UserInDay = {
     to: string,
 
     userId: string,
+    user?: User,
+    day?: Day,
     dayId: string
 }
 
-export { Group, User, WorkPlace }
+export { Group, User, WorkPlace, UserInDay, Day }

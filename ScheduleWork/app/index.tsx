@@ -11,7 +11,6 @@ SplashScreen.preventAutoHideAsync();
 
 const HomeScreen = () => {
     const router = useRouter()
-    // const pathname = usePathname()
 
     useEffect(() => {
         const getData = async () => {
@@ -31,7 +30,7 @@ const HomeScreen = () => {
                     }
                 }
             } catch (e) {
-                console.log(e)
+                alert('Coś poszło nie tak, spróbuj włączyć od nowa aplikacje') 
             }
         };
 

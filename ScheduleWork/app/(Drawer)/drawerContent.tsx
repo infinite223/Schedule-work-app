@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image, Pressable } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Image, Pressable, StatusBar } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import {
     SafeAreaProvider,
@@ -6,7 +6,7 @@ import {
   } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { User } from '../../utils/types';
-import { AntDesign, FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { AntDesign, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Link, router } from 'expo-router';
 import logo from './../../assets/images/logo.png'
 import { useSelector } from 'react-redux';
@@ -18,16 +18,9 @@ const DrawerContent = () => {
     const [user, setUser] = useState<User | null>(null)
     const [isAdmin, setIsAdmin] = useState(false)
     const workPlace = useSelector(selectWorkPlace)
-
-    // which options need admin in left side bar?
-    //  - 
-    // witch options need user 
-    // drow siple design on groups screen 
-    // implement that design
-    // implement functionals to remove user if u are logged as admin
-    // 
     
     useEffect(() => {
+        console.log('drower')
         const getData = async () => {
             const jsonValue:any = await AsyncStorage.getItem('my-key');
             setUser(jsonValue != null ? JSON.parse(jsonValue).user : null)
@@ -65,14 +58,19 @@ const DrawerContent = () => {
                         onPress={() => router.push('/inviteWorkerModal')}
                         style={[styles.item, globalStyles.boxShadow]}
                     >
-                        <AntDesign name="addusergroup" size={20} color={'white'}/>
+                        <AntDesign name="addusergroup" size={23} color={'white'}/>
                         <Text style={styles.itemText}>Zaproś pracowników</Text>
                     </TouchableOpacity>
                 }
 
                     <TouchableOpacity onPress={() => router.push('/(Drawer)/groups')} style={styles.optionButton}>
-                        <MaterialCommunityIcons name='account-group-outline' size={20}/>
+                        <MaterialCommunityIcons name='account-group-outline' size={23}/>
                         <Text style={styles.optionText}>Pokaż grupy</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => router.push('/(Drawer)/timelineWork')} style={styles.optionButton}>
+                        <MaterialCommunityIcons name='timeline-clock-outline' size={23}/>
+                        <Text style={styles.optionText}>Najbliższe dni pracy</Text>
                     </TouchableOpacity>
             </View>
 
@@ -125,12 +123,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         width: 240,
-        padding: 10,
+        padding: 8,
         paddingHorizontal: 15,
         gap: 10
     },
     optionText: {
-        fontSize: 14,
+        fontSize: 15,
         fontWeight: '500'
     },
     item: {
@@ -144,7 +142,7 @@ const styles = StyleSheet.create({
         borderRadius: 50
     },
     itemText: {
-        fontSize: 13,
+        fontSize: 14,
         color: 'white',
         fontWeight:'700'
     }

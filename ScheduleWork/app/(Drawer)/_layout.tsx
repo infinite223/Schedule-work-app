@@ -1,25 +1,20 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Stack, router } from 'expo-router';
+import { router } from 'expo-router';
 import { Drawer } from 'expo-router/drawer';
-import { useEffect, useState } from 'react';
-import { View } from 'react-native'
+import { useEffect } from 'react';
 import DrawerContent from './drawerContent';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectGroups, setGroups } from '../../slices/groupsSlice';
-import { Group } from '../../utils/types';
-import { useNavigation } from 'expo-router/src/useNavigation';
+import { useDispatch } from 'react-redux';
+import { setGroups } from '../../slices/groupsSlice';
 import { setWorkPlace } from '../../slices/workPlaceSlice';
 import { getGroupsInWorkPlace } from '../../services/group';
 import { getWorkPlace } from '../../services/workPlace';
 import { getUser } from '../../services/user';
+import { getAllUsersInDay } from '../../services/userInDay';
+import { colors } from '../../utils/globalStyles';
+import { MaterialIcons } from '@expo/vector-icons';
 
 export default function Layout() {
-  console.log('layout')
-
-  const groups = useSelector(selectGroups)
-  const [groupName, setGroupName] = useState('')
   const dispatch = useDispatch()
-  const navigation = useNavigation()
 
   useEffect(() => {
     const getData = async () => {
@@ -39,7 +34,6 @@ export default function Layout() {
             const workPlace = await getWorkPlace(JSON.parse(jsonValue).authToken, user.workPlaceId)
             console.log(workPlace.status)
             dispatch(setWorkPlace(await workPlace.json()))
-            // console.log(workPlace.status, 'status') 
 
             const groups = await getGroupsInWorkPlace(JSON.parse(jsonValue).authToken, user.workPlaceId)
             dispatch(setGroups(await groups.json()))
@@ -47,32 +41,12 @@ export default function Layout() {
         
         }                
       } catch (e) {
-        console.log(e)
-        alert('error') 
+        alert('Coś poszło nie tak, spróbuj włączyć od nowa aplikacje') 
       }
-      
     };
 
     getData()
   }, [])
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     try {
-  //       const jsonValue = await AsyncStorage.getItem('my-key');
-  //       if(jsonValue !== null && JSON.parse(jsonValue).user?.name === null){
-  //         router.push('/editUser')
-  //       }
-  //       else if(jsonValue !== null && JSON.parse(jsonValue).user?.name !== null){
-  //         console.log(groups, 'tuu')
-  //         setGroupName(groups.find((group: Group) => group.id === JSON.parse(jsonValue).user.groupId).name)
-  //       }
-  //     } catch (e) { 
-  //       // error reading value
-  //     }
-  //   };
-
-  //   getData()
-  // }, [groups])
 
   return (
     <Drawer       
@@ -83,7 +57,9 @@ export default function Layout() {
         options={{
           drawerLabel: "Home",
           title: `Harmonogram`,
-          headerTitleStyle: { fontSize: 18 },
+          headerTitleStyle: { fontSize: 18, color: 'white' },
+          headerStyle: {backgroundColor: colors.baseColor},
+          headerTintColor:'white',
         }}
       />
       <Drawer.Screen
@@ -96,6 +72,18 @@ export default function Layout() {
         name="groups" 
         options={{
           title: "Grupy",
+        }}
+      />
+      <Drawer.Screen
+        name="timelineWork" 
+        options={{
+          title: "Najbliższe dni pracy",
+        }}
+      />
+      <Drawer.Screen
+        name="settings" 
+        options={{
+          title: "Ustawienia",
         }}
       />
     </Drawer>

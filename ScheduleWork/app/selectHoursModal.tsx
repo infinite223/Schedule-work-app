@@ -2,11 +2,12 @@ import { View, Text, Pressable, StyleSheet, Dimensions, FlatList, TouchableOpaci
 import React, { useState } from 'react'
 import { colors, globalStyles } from '../utils/globalStyles'
 import { router, useLocalSearchParams } from 'expo-router'
-import DatePicker from 'react-native-modern-datepicker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { createDay, getDay } from '../services/day';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createUserInDay } from '../services/userInDay';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectInvokeFunction, setInvokeFunction } from '../slices/invokeFunction';
 const widthScreen = Dimensions.get('screen').width
 
 const getTimeFromTimestamp = (timestamp?: number) => {
@@ -25,6 +26,9 @@ const Page = () => {
   const [selectedTime, setSelectedTime] = useState<{from: string, to: string}>({from: '12:00', to: '22:00'})
   const [showTimePicker, setShowTimePicker] = useState<number>(0)
   const params: { day: string } = useLocalSearchParams();
+  const dispatch = useDispatch()
+  const invokeFunction = useSelector(selectInvokeFunction)
+
   const options = [
     {from: '12:00', to: '22:00'},
     {from: '14:00', to: '22:00'},
@@ -43,7 +47,7 @@ const Page = () => {
         if(res.status === 200) {
           const day = await res.json()
           const newUserInDay = await createUserInDay(JSON.parse(jsonValue).authToken,selectedTime.from, selectedTime.to, day.id)
-          
+          dispatch(setInvokeFunction(!invokeFunction))
           console.log(newUserInDay.status)
         }
         else {
@@ -52,16 +56,14 @@ const Page = () => {
           if(newDay.status === 200) {
             const day = await newDay.json()
             const newUserInDay = await createUserInDay(JSON.parse(jsonValue).authToken,selectedTime.from, selectedTime.to, day.id)
-            
             console.log(newUserInDay.status)
+            dispatch(setInvokeFunction(!invokeFunction))
           }
         }
       }
     } catch (error) {
-      console.log(error)
+      alert('Coś poszło nie tak, spróbuj włączyć od nowa aplikacje') 
     }
-
-
   }
 
   return (

@@ -6,7 +6,7 @@ import Loading from '../../components/Loading'
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router'
 import { getUser } from '../../services/user'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { colors, globalStyles } from '../../utils/globalStyles'
+import { colors } from '../../utils/globalStyles'
 import * as Linking from "expo-linking";
 
 const Page = () => {
@@ -15,19 +15,18 @@ const Page = () => {
   const navigation = useNavigation()
   const { userId }: { userId: string} = useLocalSearchParams()
   const isMyProfile = user?.id.toString() === userId
-  const phoneNumber = '692714148'
-  console.log(userId)
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: isMyProfile?"Twój profil":user?.name,
       headerRight: () => 
       <View>
         {!isMyProfile?<View style={styles.rightOptions}>
-          <TouchableOpacity style={{ padding: 7 }} onPress={() => Linking.openURL(`:${phoneNumber}`)}>
+          <TouchableOpacity style={{ padding: 7 }} onPress={() => Linking.openURL(`:${user?.phoneNumber}`)}>
             <AntDesign name='message1' size={22}/>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.phoneButton} onPress={() => Linking.openURL(`tel:${phoneNumber}`)}>
+          <TouchableOpacity style={styles.phoneButton} onPress={() => Linking.openURL(`tel:${user?.phoneNumber}`)}>
             <Entypo name='phone' color={'white'} size={18}/>
           </TouchableOpacity>
         </View>:
@@ -55,16 +54,13 @@ const Page = () => {
           setUser(await res.json())
         }
         else {
-          alert('Error, getUserData')
+          alert('Coś poszło nie tak, spróbuj włączyć od nowa aplikacje') 
         }
       }
     }
 
     getUserData()
   }, [])
-
-  console.log(user?.phoneNumber, 'd')
-
 
   if(!user) {
     return (
@@ -77,7 +73,7 @@ const Page = () => {
 
       <View style={styles.headerContainer}>
         <View style={[styles.item, {flexDirection:'row', alignItems: 'center', backgroundColor: colors.baseColor}]}>
-          <Ionicons name='person-sharp' size={20} style={{marginRight: 20}} color={'white'}/> 
+          <Ionicons name='person-sharp' size={20} style={{marginRight: 17}} color={'white'}/> 
 
           <View style={[styles.dataContainer]}>
             <Text style={{color: 'white', fontSize: 12}}>Imię:</Text>
@@ -122,8 +118,6 @@ const styles = StyleSheet.create({
     container: {
       backgroundColor: 'white',
       flex: 1, 
-      // alignItems: 'center',
-      // justifyContent: 'center',
       paddingHorizontal: 15,
       gap: 10,
     },
@@ -137,14 +131,14 @@ const styles = StyleSheet.create({
     item: {
       flexDirection: 'column',
       alignItems: 'flex-start',
-      paddingLeft: 20,
-      paddingRight: 20,
+      paddingLeft: 22,
+      paddingRight: 25,
       paddingVertical: 10,
       borderRadius: 50,
       gap: -5
     },
     name: {
-      fontSize: 20,
+      fontSize: 15,
       fontWeight: 'bold'
     },
     userName: {

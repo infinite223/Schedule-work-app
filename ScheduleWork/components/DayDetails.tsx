@@ -4,23 +4,43 @@ import { colors, globalStyles } from '../utils/globalStyles'
 import { Entypo } from '@expo/vector-icons'
 import Loading from './Loading'
 import { User } from '../utils/types'
-import {  router, useNavigation, usePathname } from 'expo-router'
+import {  Link, router, useNavigation, usePathname } from 'expo-router'
 import { getDay } from '../services/day'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { removeUserInDay } from '../services/userInDay'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectInvokeFunction, setInvokeFunction } from '../slices/invokeFunction'
 
 const widthScreen = Dimensions.get('screen').width
 
 const DayDetails:FC<{selectedDate: string}> = ({selectedDate}) => {
     const [users, setUsers] = useState<any[] | null>(null)
+    const [user, setUser] = useState<User | null>(null)
+    const invokeFunction = useSelector(selectInvokeFunction)
+
     const [isMyDay, setIsMyDay] = useState(false)
-
     const pathname = usePathname()
-    console.log(pathname)
-    useEffect(() => {
+    const dispatch = useDispatch()
 
+    const removeUser = async () => {
+        const jsonValue = await AsyncStorage.getItem('my-key');
+        
+            if(jsonValue != null && users) {
+                const findMe = users?.find((userInDay) => userInDay.user.id === JSON.parse(jsonValue).user.id)
+                console.log(findMe)
+                if(findMe){
+                    const res = await removeUserInDay(JSON.parse(jsonValue).authToken, findMe.id)
+
+                    dispatch(setInvokeFunction(!invokeFunction))
+                }
+            }
+    }
+
+    useEffect(() => {
         const getUsersInDay = async () => {
             const jsonValue = await AsyncStorage.getItem('my-key');
             if(jsonValue != null) {
+                setUser(JSON.parse(jsonValue).user)
                 const res = await getDay(JSON.parse(jsonValue).authToken, selectedDate)
 
                 if(res.status === 200) {
@@ -31,15 +51,32 @@ const DayDetails:FC<{selectedDate: string}> = ({selectedDate}) => {
                 if(res.status === 401) {
                     setUsers([])
                 }
-
-                setIsMyDay(users?.find((userInDay) => userInDay.user.id === JSON.parse(jsonValue).user.id))
             }
         }
 
         getUsersInDay()
 
-    }, [selectedDate])
-    console.log(users)
+    }, [selectedDate, invokeFunction])
+
+    useEffect(() => {
+        const getUser = async () => {
+            const jsonValue = await AsyncStorage.getItem('my-key');
+            if(jsonValue != null) {
+                const findMe = users?.find((userInDay) => userInDay.user.id === JSON.parse(jsonValue).user.id)
+            
+                if(findMe) {
+                    setIsMyDay(true)
+                }
+                else {
+                    setIsMyDay(false)
+                }
+            }
+        }
+
+        getUser()
+    }, [selectedDate, users])
+
+    
     if(!users) {
         return (
             <Loading/>
@@ -52,28 +89,45 @@ const DayDetails:FC<{selectedDate: string}> = ({selectedDate}) => {
             <FlatList
                 data={users}
                 renderItem={({ item }) => 
-                    <TouchableOpacity style={[styles.userItem, globalStyles.boxShadow]}>
-                        <Text style={styles.namePerson}>
-                            {item.user.userName}
-                        </Text>
-                        <Text>
-                            od: {item.from}
-                        </Text>
-                        <Text>
-                            do: {item.to}
-                        </Text>
-                        <Text style={styles.fullHoursText}>
-                             10h
-                        </Text>
-                    </TouchableOpacity>
+                    <Link
+                        href={{pathname: '/(Drawer)/profile', params: {userId: item?.user.id}}}
+                        asChild
+                        style={[
+                            styles.userItem, globalStyles.boxShadow_light, 
+                        ]}
+                    >
+                        <TouchableOpacity
+                        >
+                            <Text style={[styles.namePerson, {color: item.user.id===user?.id?colors.baseColor: 'black'}]}>
+                                {item.user.userName}
+                            </Text>
+                            <Text>
+                                od: {item.from}
+                            </Text>
+                            <Text>
+                                do: {item.to}
+                            </Text>
+                            <Text style={styles.fullHoursText}>
+                                10h
+                            </Text>
+                        </TouchableOpacity>
+                    </Link>
                 }
             />
+            
             {pathname!=='/selectHoursModal'&&
                 <TouchableOpacity 
                     style={[styles.plusButton, globalStyles.boxShadow]}
-                    onPress={() => router.push({ pathname: "/selectHoursModal", params: { day: selectedDate } })}
+                    onPress={() => { 
+                        if(!isMyDay){
+                            router.push({ pathname: "/selectHoursModal", params: { day: selectedDate } })
+                        }
+                        else {
+                            removeUser()
+                        }
+                    }}
                 >
-                    {isMyDay?
+                    {!isMyDay?
                         <Entypo name="plus" size={25} color={'white'}/>:
                         <Entypo name="minus" size={25} color={'white'}/>
                     }

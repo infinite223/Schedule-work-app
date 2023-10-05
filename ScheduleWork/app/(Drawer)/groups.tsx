@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, TouchableOpacity, StyleSheet, Dimensions, FlatList } from "react-native";
+import { Text, View, TouchableOpacity, StyleSheet, Dimensions, FlatList, TouchableOpacityBase } from "react-native";
 import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Link, useRouter } from "expo-router";
 import { useSelector } from "react-redux";
 import { selectGroups } from "../../slices/groupsSlice";
 import { Group } from "../../utils/types";
-import { Feather, FontAwesome5, Ionicons, MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
+import { FontAwesome5, Ionicons, MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
 import { colors } from "../../utils/globalStyles";
 import { selectWorkPlace } from "../../slices/workPlaceSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -13,14 +13,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const widthScreen = Dimensions.get('screen').width
 
 export default function Page() {
-    const insets = useSafeAreaInsets();
-    const router = useRouter()
     const [isAdmin, setIsAdmin] = useState(false)
     const workPlace = useSelector(selectWorkPlace)
 
     const groups:Group[] = useSelector(selectGroups)
 
     useEffect(() => {
+      console.log('groups')
+
       const getData = async () => {
           const jsonValue:any = await AsyncStorage.getItem('my-key');
           const user = (jsonValue != null ? JSON.parse(jsonValue).user : null)
@@ -44,7 +44,7 @@ export default function Page() {
                   <View style={styles.headerGroup}>
                     <View style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
                       <View style={styles.leftBox}>
-                        <MaterialCommunityIcons color={'white'} name='account-group-outline' size={25}/>
+                        <MaterialCommunityIcons color={'black'} name='account-group' size={27}/>
                         <View>
                           <Text style={styles.headerTitle}>{item.name}</Text>
                           <Text style={[styles.countPersons, {fontSize: 11}]}>
@@ -52,8 +52,13 @@ export default function Page() {
                           </Text>
                         </View>
                       </View>
+
+                      <TouchableOpacity activeOpacity={.6} style={styles.button}>
+                        <Text style={{fontSize: 12, color: 'white', fontWeight: '700'}}>Zobacz grafik</Text>
+                        <Ionicons name='search' size={17} color={'white'}/> 
+                      </TouchableOpacity>
                     </View>
-                    {isAdmin&&<View style={{flexDirection:'row', alignItems: 'flex-start', gap: 2}}>
+                    {isAdmin&&<View style={{flexDirection:'row', alignItems: 'center', gap: 2}}>
                       <Link
                         asChild
                         href={{pathname: '/editGroup', params: {groupId: item?.id}}}
@@ -61,7 +66,7 @@ export default function Page() {
                         <TouchableOpacity 
                           style={{ padding: 7 }}
                         >
-                          <Octicons name='person-add' size={28} color={'black'}/>
+                          <Octicons name='person-add' size={24} color={'black'}/>
                         </TouchableOpacity>
                       </Link>
 
@@ -72,7 +77,7 @@ export default function Page() {
                         <TouchableOpacity 
                           style={{ padding: 7 }}
                         >
-                          <FontAwesome5 name='edit' size={24} color={'black'}/>
+                          <FontAwesome5 name='edit' size={22} color={'black'}/>
                         </TouchableOpacity>
                       </Link>
                     </View>}
@@ -92,7 +97,7 @@ export default function Page() {
                       >
                         <TouchableOpacity style={styles.userItem}>
                           <View style={{flexDirection: 'row', alignItems: 'center', gap: 20}}>
-                            <Ionicons name='person-sharp' size={30}/> 
+                            {/* <Ionicons name='person-sharp' size={22}/>  */}
 
                             <View>
                               <Text style={styles.name}>{item.name}</Text>
@@ -100,7 +105,7 @@ export default function Page() {
                             </View>
                           </View>
 
-                          <Ionicons name='md-arrow-forward' size={25}/> 
+                          <Ionicons name='md-arrow-forward' size={22}/> 
                         </TouchableOpacity>
                       </Link>}
                   />
@@ -123,27 +128,40 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     // alignItems: 'center',
     justifyContent: 'space-between',
-    gap: 20
+    gap: 5
   },
-  leftBox: {
+  button: {
+    // backgroundColor: '#cfc',
     backgroundColor: colors.baseColor,
     borderRadius: 50,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    width: 180,
+    paddingHorizontal: 18,
+    paddingVertical: 8,
+    maxWidth: 100,
+    flexDirection:'row',
+    alignItems:'center',
+    gap: 5,
+    height: 50
+  },
+  leftBox: {
+    // backgroundColor: colors.baseColor,
+    borderRadius: 50,
+    paddingLeft: 8,
+    paddingVertical: 8,
+    width: 145,
     marginBottom: 10,
     flexDirection:'row',
     alignItems: 'center',
-    gap: 15
+    gap: 15,
+    height: 50
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '700',
-    color: 'white',
+    // color: 'white',
   },
   countPersons: {
     fontSize: 15,
-    color: 'white'
+    // color: 'white'
   },
   description: {
     fontSize: 14,
@@ -154,7 +172,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     borderColor: '#ddd',
     borderBottomWidth: 1,
-    
   },
   option: {
     borderRadius: 5,
@@ -164,7 +181,8 @@ const styles = StyleSheet.create({
     width: widthScreen - 30
   },
   userItem: {
-    padding: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
     borderRadius: 5,
     // backgroundColor: '#eee',
     marginVertical: 5,
@@ -173,11 +191,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   name: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '700'
   },
   userName: {
-
+    fontSize: 13
   },
   email: {
     fontSize: 12,

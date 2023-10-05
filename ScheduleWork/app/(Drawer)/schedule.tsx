@@ -1,35 +1,35 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { DatePickerModal } from 'react-native-paper-dates';
+import { View, Text, StyleSheet } from "react-native";
 import DatePicker from 'react-native-modern-datepicker';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getWorkPlace } from "../../services/workPlace";
-import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
-import { colors, globalStyles } from "../../utils/globalStyles";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { colors } from "../../utils/globalStyles";
 import { Group, User } from "../../utils/types";
 import Loading from "../../components/Loading";
-import { Entypo } from "@expo/vector-icons";
 import DayDetails from "../../components/DayDetails";
-import { getGroupsInWorkPlace } from "../../services/group";
-import { useDispatch, useSelector } from "react-redux";
-import { selectGroups, setGroups } from "../../slices/groupsSlice";
-import { setWorkPlace } from "../../slices/workPlaceSlice";
+import { useSelector } from "react-redux";
+import { selectGroups } from "../../slices/groupsSlice";
 import { getUser } from "../../services/user";
 import { router, useNavigation } from "expo-router";
 
 export default function Page() {
-  console.log('scheddue')
-
     const [selectedDate, setSelectedDate] = useState('');
     const [user, setUser] = useState<User | null>(null)
     const groups = useSelector(selectGroups)
     const navigation = useNavigation()
     
     const groupName = groups.find((group: Group) => group?.id === user?.groupId)?.name
-    
+    const currentDate = new Date();
+
+    const year = currentDate.getFullYear();
+    const month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // +1, bo miesiące są liczone od 0 do 11
+    const day = currentDate.getDate().toString().padStart(2, '0');
+
+    const formattedDate = `${year}/${month}/${day}`
+    console.log(formattedDate)
     useLayoutEffect(() => {
       navigation.setOptions({
-        headerTitle: `Harmonogram ${groupName}`
+        headerTitle: `Harmonogram ${groupName}`,
       })
     }, [groups])  
 
@@ -46,8 +46,7 @@ export default function Page() {
             setUser(await userFromDb.json())  
           }                
         } catch (e) {
-          console.log(e)
-          alert('error') 
+          alert('Coś poszło nie tak, spróbuj włączyć od nowa aplikacje') 
         }
       };
 
@@ -65,7 +64,7 @@ export default function Page() {
           <DatePicker
               onSelectedChange={date => setSelectedDate(date)}
               mode="calendar"
-              selected="2023/09/23"
+              selected={formattedDate}
               locale=""      
               options={{
                 textHeaderColor: 'black',
@@ -74,7 +73,7 @@ export default function Page() {
                 mainColor: colors.baseColor,
                 textSecondaryColor: 'black',
                 borderColor: 'rgba(122, 146, 165, 0.1)',
-                textFontSize: 13
+                textFontSize: 14
               }}
           />
 
@@ -97,7 +96,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flex: 1, 
     alignItems: 'center',
-    marginTop: -10 
+    // marginTop: -10
+    paddingTop: 10 
   },
   errorContainer: {
     flex: 1, 
