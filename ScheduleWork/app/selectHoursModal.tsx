@@ -35,10 +35,7 @@ const Page = () => {
     {from: '17:00', to: '22:00'},
   ]
 
-  const saveDay = async () => {
-    // find "userIdDay" in day?
-    // create new "userInDay":
-    // create "day" id DB -> create new "userInDay"
+  const saveDay = async (from: string, to: string) => {
     try {
       const jsonValue = await AsyncStorage.getItem('my-key');
       if(jsonValue != null) {
@@ -46,18 +43,22 @@ const Page = () => {
 
         if(res.status === 200) {
           const day = await res.json()
-          const newUserInDay = await createUserInDay(JSON.parse(jsonValue).authToken,selectedTime.from, selectedTime.to, day.id)
-          dispatch(setInvokeFunction(!invokeFunction))
-          console.log(newUserInDay.status)
+          const newUserInDay = await createUserInDay(JSON.parse(jsonValue).authToken, from, to, day.id)
+          if(newUserInDay.status === 200) {
+            dispatch(setInvokeFunction(!invokeFunction))
+            router.back()
+          }
         }
         else {
           const newDay = await createDay(JSON.parse(jsonValue).authToken, params.day)
           
           if(newDay.status === 200) {
             const day = await newDay.json()
-            const newUserInDay = await createUserInDay(JSON.parse(jsonValue).authToken,selectedTime.from, selectedTime.to, day.id)
-            console.log(newUserInDay.status)
-            dispatch(setInvokeFunction(!invokeFunction))
+            const newUserInDay = await createUserInDay(JSON.parse(jsonValue).authToken, from, to, day.id)
+            if(newUserInDay.status === 200) {
+              dispatch(setInvokeFunction(!invokeFunction))
+              router.back()
+            }
           }
         }
       }
@@ -79,7 +80,13 @@ const Page = () => {
         <FlatList
           data={options}
           renderItem={({ item }) => 
-            <TouchableOpacity style={styles.option}>
+            <TouchableOpacity 
+              onPress={() => {
+                // setSelectedTime({from: item.from, to: item.to})
+                saveDay(item.from, item.to)
+              }}
+              style={styles.option}
+            >
               <Text style={styles.optionText}>od {item.from}</Text> 
               <Text style={styles.optionText}>do {item.to}</Text>
             </TouchableOpacity>
@@ -120,7 +127,7 @@ const Page = () => {
 
         <TouchableOpacity
           style={styles.saveButton}
-          onPress={saveDay}
+          onPress={() => saveDay(selectedTime.from, selectedTime.to)}
         >
           <Text style={styles.buttonText}>Zapisz</Text>
         </TouchableOpacity>

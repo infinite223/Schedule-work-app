@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { selectGroups } from "../../slices/groupsSlice";
 import { Group } from "../../utils/types";
 import { FontAwesome5, Ionicons, MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
-import { colors } from "../../utils/globalStyles";
+import { colors, globalStyles } from "../../utils/globalStyles";
 import { selectWorkPlace } from "../../slices/workPlaceSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -39,7 +39,7 @@ export default function Page() {
           data={groups}
           renderItem={({ item }) => 
               <View
-                style={styles.groupContainer}
+                style={[styles.groupContainer, globalStyles.boxShadow]}
               >
                   <View style={styles.headerGroup}>
                     <View style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
@@ -52,11 +52,6 @@ export default function Page() {
                           </Text>
                         </View>
                       </View>
-
-                      <TouchableOpacity activeOpacity={.6} style={styles.button}>
-                        <Text style={{fontSize: 12, color: 'white', fontWeight: '700'}}>Zobacz grafik</Text>
-                        <Ionicons name='search' size={17} color={'white'}/> 
-                      </TouchableOpacity>
                     </View>
                     {isAdmin&&<View style={{flexDirection:'row', alignItems: 'center', gap: 2}}>
                       <Link
@@ -80,6 +75,10 @@ export default function Page() {
                           <FontAwesome5 name='edit' size={22} color={'black'}/>
                         </TouchableOpacity>
                       </Link>
+                      <TouchableOpacity activeOpacity={.6} style={styles.button}>
+                        <Text style={{fontSize: 12, color: 'white', fontWeight: '700'}}>Zobacz grafik</Text>
+                        <Ionicons name='search' size={17} color={'white'}/> 
+                      </TouchableOpacity>
                     </View>}
                   </View>
 
@@ -170,8 +169,9 @@ const styles = StyleSheet.create({
   groupContainer: {
     width: widthScreen,
     paddingHorizontal: 15,
-    borderColor: '#ddd',
-    borderBottomWidth: 1,
+    backgroundColor:'white'
+    // borderColor: '#ddd',
+    // borderBottomWidth: 1,
   },
   option: {
     borderRadius: 5,

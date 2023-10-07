@@ -142,14 +142,15 @@ const styles = StyleSheet.create({
       flex: 1,
       width: '100%',
       borderTopColor: '#ddd',
-      borderTopWidth:1,
+      borderTopWidth:0,
       padding: 10,
       alignItems:'center',
       justifyContent: 'space-between', 
     },
     dateText: {
       letterSpacing: 1,
-      fontWeight: '400'
+      fontWeight: '400',
+      fontSize: 12
     },
     plusButton: {
       borderRadius: 50,

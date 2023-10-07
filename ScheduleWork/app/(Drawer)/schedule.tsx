@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState, useMemo } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import DatePicker from 'react-native-modern-datepicker';
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -10,23 +10,23 @@ import DayDetails from "../../components/DayDetails";
 import { useSelector } from "react-redux";
 import { selectGroups } from "../../slices/groupsSlice";
 import { getUser } from "../../services/user";
-import { router, useNavigation } from "expo-router";
+import { router, useLocalSearchParams, useNavigation } from "expo-router";
+
+const currentDate = new Date();
+
+const year = currentDate.getFullYear();
+const month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // +1, bo miesiące są liczone od 0 do 11
+const day = currentDate.getDate().toString().padStart(2, '0');
+
+const formattedDate = `${year}/${month}/${day}`
 
 export default function Page() {
-    const [selectedDate, setSelectedDate] = useState('');
+    const [selectedDate, setSelectedDate] = useState(formattedDate);
     const [user, setUser] = useState<User | null>(null)
     const groups = useSelector(selectGroups)
     const navigation = useNavigation()
     
     const groupName = groups.find((group: Group) => group?.id === user?.groupId)?.name
-    const currentDate = new Date();
-
-    const year = currentDate.getFullYear();
-    const month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // +1, bo miesiące są liczone od 0 do 11
-    const day = currentDate.getDate().toString().padStart(2, '0');
-
-    const formattedDate = `${year}/${month}/${day}`
-    console.log(formattedDate)
     useLayoutEffect(() => {
       navigation.setOptions({
         headerTitle: `Harmonogram ${groupName}`,
@@ -61,10 +61,13 @@ export default function Page() {
     <SafeAreaProvider style={[styles.container]}>
       {(user && user.workPlaceId)?
         <>
-          <DatePicker
-              onSelectedChange={date => setSelectedDate(date)}
+          <DatePicker   
+              onSelectedChange={_date => setSelectedDate(_date)}
               mode="calendar"
-              selected={formattedDate}
+              selected={selectedDate}
+              current={selectedDate}
+              minimumDate={formattedDate}
+              isGregorian
               locale=""      
               options={{
                 textHeaderColor: 'black',
@@ -73,8 +76,10 @@ export default function Page() {
                 mainColor: colors.baseColor,
                 textSecondaryColor: 'black',
                 borderColor: 'rgba(122, 146, 165, 0.1)',
-                textFontSize: 14
+                textFontSize: 14,
+
               }}
+              style={{paddingLeft: 0, }}
           />
 
           <DayDetails selectedDate={selectedDate}/>
@@ -84,7 +89,6 @@ export default function Page() {
           <Text style={styles.textDescription}>Poproś pracodawce o dodanie 
             <Text style={{color: colors.baseColor, fontWeight:'bold'}}> {user.email} </Text>
           </Text>
-
         </View>
       }
     </SafeAreaProvider>
