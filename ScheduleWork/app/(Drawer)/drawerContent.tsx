@@ -68,6 +68,11 @@ const DrawerContent = () => {
                         <Text style={styles.optionText}>Pokaż grupy</Text>
                     </TouchableOpacity>
 
+                    <TouchableOpacity onPress={() => router.push('/createGroup')} style={styles.optionButton}>
+                        <MaterialCommunityIcons name='plus' size={23}/>
+                        <Text style={styles.optionText}>Utwórz grupe</Text>
+                    </TouchableOpacity>
+
                     <TouchableOpacity onPress={() => router.push('/(Drawer)/timelineWork')} style={styles.optionButton}>
                         <MaterialCommunityIcons name='timeline-clock-outline' size={23}/>
                         <Text style={styles.optionText}>Najbliższe dni pracy</Text>

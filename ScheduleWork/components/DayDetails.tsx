@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { removeUserInDay } from '../services/userInDay'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectInvokeFunction, setInvokeFunction } from '../slices/invokeFunction'
+import { timeCounter } from '../utils/timeCounter'
 
 const widthScreen = Dimensions.get('screen').width
 
@@ -108,7 +109,7 @@ const DayDetails:FC<{selectedDate: string}> = ({selectedDate}) => {
                                 do: {item.to}
                             </Text>
                             <Text style={styles.fullHoursText}>
-                                10h
+                                {timeCounter(item.from, item.to).godziny}h {timeCounter(item.from, item.to).minuty}m
                             </Text>
                         </TouchableOpacity>
                     </Link>
@@ -150,7 +151,7 @@ const styles = StyleSheet.create({
     dateText: {
       letterSpacing: 1,
       fontWeight: '400',
-      fontSize: 12
+      fontSize: 12  
     },
     plusButton: {
       borderRadius: 50,

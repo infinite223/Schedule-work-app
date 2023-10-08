@@ -67,8 +67,7 @@ export default function Page() {
               selected={selectedDate}
               current={selectedDate}
               minimumDate={formattedDate}
-              isGregorian
-              locale=""      
+              locale={''}     
               options={{
                 textHeaderColor: 'black',
                 textDefaultColor: 'black',

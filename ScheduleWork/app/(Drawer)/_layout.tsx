@@ -51,6 +51,9 @@ export default function Layout() {
   return (
     <Drawer       
       drawerContent={() => <DrawerContent/>}
+      screenOptions={{
+        headerTitleStyle: { fontSize: 18 }
+      }}
     >
       <Drawer.Screen
         name="schedule" 
@@ -71,7 +74,7 @@ export default function Layout() {
       <Drawer.Screen
         name="groups" 
         options={{
-          title: "Grupy",
+          title: "Dostępne grupy",
         }}
       />
       <Drawer.Screen

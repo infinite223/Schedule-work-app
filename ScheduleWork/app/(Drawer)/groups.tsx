@@ -35,7 +35,7 @@ export default function Page() {
   return (
     <SafeAreaProvider style={[styles.container]}>
         <FlatList
-          contentContainerStyle={{ flex: 1}}
+          contentContainerStyle={{ flex: 1, gap: 10}}
           data={groups}
           renderItem={({ item }) => 
               <View
@@ -61,7 +61,7 @@ export default function Page() {
                         <TouchableOpacity 
                           style={{ padding: 7 }}
                         >
-                          <Octicons name='person-add' size={24} color={'black'}/>
+                          <Octicons name='person-add' size={22} color={'black'}/>
                         </TouchableOpacity>
                       </Link>
 
@@ -72,7 +72,7 @@ export default function Page() {
                         <TouchableOpacity 
                           style={{ padding: 7 }}
                         >
-                          <FontAwesome5 name='edit' size={22} color={'black'}/>
+                          <FontAwesome5 name='edit' size={20} color={'black'}/>
                         </TouchableOpacity>
                       </Link>
                       <TouchableOpacity activeOpacity={.6} style={styles.button}>
@@ -82,7 +82,11 @@ export default function Page() {
                     </View>}
                   </View>
 
-                  {item.description?.length>0&&<Text style={styles.description}>{item.description}</Text>}
+                  {item.description?.length>0&&
+                    <Text style={styles.description}>
+                      <Text style={{fontWeight: '300'}}>Opis:</Text> {item.description}
+                    </Text>
+                  }
 
                   <FlatList
                     data={item.users}
@@ -108,6 +112,11 @@ export default function Page() {
                         </TouchableOpacity>
                       </Link>}
                   />
+                  {item.users?.length===0&&
+                    <View style={styles.nousersError}>
+                      <Text style={styles.text}>W tej grupie nie ma jeszcze osób...</Text>
+                    </View>
+                    } 
               </View>
           }
         />
@@ -141,6 +150,14 @@ const styles = StyleSheet.create({
     gap: 5,
     height: 50
   },
+  nousersError: {
+
+  },
+  text: {
+    paddingBottom: 5,
+    fontWeight: '300',
+    fontSize: 12
+  },
   leftBox: {
     // backgroundColor: colors.baseColor,
     borderRadius: 50,
@@ -164,12 +181,13 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 14,
-    fontWeight: '300'
+    fontWeight: '400'
   },
   groupContainer: {
     width: widthScreen,
     paddingHorizontal: 15,
-    backgroundColor:'white'
+    backgroundColor:'white',
+    paddingVertical: 5
     // borderColor: '#ddd',
     // borderBottomWidth: 1,
   },
@@ -181,7 +199,7 @@ const styles = StyleSheet.create({
     width: widthScreen - 30
   },
   userItem: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 5 ,
     paddingVertical: 7,
     borderRadius: 5,
     // backgroundColor: '#eee',

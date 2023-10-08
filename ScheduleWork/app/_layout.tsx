@@ -58,6 +58,13 @@ export default function Layout() {
             presentation: 'transparentModal',
           }}
         />
+        <Stack.Screen
+          name="createGroup" 
+          options={{
+            headerShown:false,
+            presentation: 'transparentModal',
+          }}
+        />
       </Stack>
     </Provider>
   );
