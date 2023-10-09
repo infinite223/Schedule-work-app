@@ -1,19 +1,22 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { AntDesign, Entypo, Feather, Ionicons } from '@expo/vector-icons'
-import { User } from '../../utils/types'
+import { Group, User } from '../../utils/types'
 import Loading from '../../components/Loading'
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router'
 import { getUser } from '../../services/user'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { colors } from '../../utils/globalStyles'
 import * as Linking from "expo-linking";
+import { useSelector } from 'react-redux'
+import { selectGroups } from '../../slices/groupsSlice'
 
 const Page = () => {
   const [user, setUser] = useState<User | null>(null)
   const router = useRouter()
   const navigation = useNavigation()
   const { userId }: { userId: string} = useLocalSearchParams()
+  const groups: Group[] = useSelector(selectGroups)
   const isMyProfile = user?.id.toString() === userId
 
   useLayoutEffect(() => {
@@ -88,11 +91,13 @@ const Page = () => {
       </View>
 
       <View>
-        <Text>Należysz do grupy: </Text>
+        <Text style={{fontSize: 14, fontWeight: '400'}}>Należysz do grupy:
+           <Text style={{fontSize: 15, fontWeight: '700'}}>  {groups.find((group) => group.id === user.id)?.name}</Text>
+        </Text>
       </View>
       
       <View>
-        <Text>Najbliższe dni pracy:</Text>
+        {/* <Text>Najbliższe dni pracy:</Text> */}
       </View>
     </View>
   )

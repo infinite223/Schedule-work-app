@@ -17,7 +17,7 @@ export default function Page() {
     const workPlace = useSelector(selectWorkPlace)
 
     const groups:Group[] = useSelector(selectGroups)
-
+    // selecting groups to global store
     useEffect(() => {
       console.log('groups')
 

@@ -20,7 +20,8 @@ export default function Page() {
    
   return (
     <SafeAreaProvider style={[styles.container]}>
-        <Image style={{width: 175, height: 40}} source={logo}/>
+        {/* <Image style={{width: 175, height: 40}} source={logo}/> */}
+        <View></View>
 
         <View style={styles.options}>
           <TouchableOpacity 
