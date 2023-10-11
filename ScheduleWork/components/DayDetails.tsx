@@ -11,10 +11,12 @@ import { removeUserInDay } from '../services/userInDay'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectInvokeFunction, setInvokeFunction } from '../slices/invokeFunction'
 import { timeCounter } from '../utils/timeCounter'
+import { formatDateToString } from './../utils/functions';
+import { shortDayNames } from '../utils/data'
 
 const widthScreen = Dimensions.get('screen').width
 
-const DayDetails:FC<{selectedDate: string}> = ({selectedDate}) => {
+const DayDetails:FC<{selectedDate: Date}> = ({selectedDate}) => {
     const [users, setUsers] = useState<any[] | null>(null)
     const [user, setUser] = useState<User | null>(null)
     const invokeFunction = useSelector(selectInvokeFunction)
@@ -42,7 +44,7 @@ const DayDetails:FC<{selectedDate: string}> = ({selectedDate}) => {
             const jsonValue = await AsyncStorage.getItem('my-key');
             if(jsonValue != null) {
                 setUser(JSON.parse(jsonValue).user)
-                const res = await getDay(JSON.parse(jsonValue).authToken, selectedDate)
+                const res = await getDay(JSON.parse(jsonValue).authToken, formatDateToString(selectedDate))
 
                 if(res.status === 200) {
                     const dayData = await res.json()
@@ -86,42 +88,56 @@ const DayDetails:FC<{selectedDate: string}> = ({selectedDate}) => {
 
     return (
         <View style={styles.dayContainer}>
-            <Text style={styles.dateText}>{selectedDate.toString()}</Text>
-            <FlatList
-                data={users}
-                renderItem={({ item }) => 
-                    <Link
-                        href={{pathname: '/(Drawer)/profile', params: {userId: item?.user.id}}}
-                        asChild
-                        style={[
-                            styles.userItem, globalStyles.boxShadow_light, 
-                        ]}
-                    >
-                        <TouchableOpacity
+            <View style={{flexDirection:'row', alignItems: 'flex-start'}}>
+                <View style={[styles.nav]}>
+                    <Text style={styles.dayNumber}>
+                        {/* {formatDateToString(selectedDate)} */}
+                        {selectedDate.getDate()}
+                    </Text>
+                    <Text style={styles.dayName}>
+                        {shortDayNames[selectedDate.getDay()]}
+                    </Text>
+                </View>
+
+                {users.length>0&&<FlatList
+                    data={users}
+                    renderItem={({ item }) => 
+                        <Link
+                            href={{pathname: '/(Drawer)/profile', params: {userId: item?.user.id}}}
+                            asChild
+                            style={[
+                                styles.userItem,  globalStyles.boxShadow_light
+                            ]}
                         >
-                            <Text style={[styles.namePerson, {color: item.user.id===user?.id?colors.baseColor: 'black'}]}>
-                                {item.user.userName}
-                            </Text>
-                            <Text>
-                                od: {item.from}
-                            </Text>
-                            <Text>
-                                do: {item.to}
-                            </Text>
-                            <Text style={styles.fullHoursText}>
-                                {timeCounter(item.from, item.to).godziny}h {timeCounter(item.from, item.to).minuty}m
-                            </Text>
-                        </TouchableOpacity>
-                    </Link>
+                            <TouchableOpacity>
+                                <Text style={[styles.namePerson, {color: item.user.id===user?.id?colors.baseColor: 'black'}]}>
+                                    {item.user.userName}
+                                </Text>
+                                <Text>
+                                    od: {item.from}
+                                </Text>
+                                <Text>
+                                    do: {item.to}
+                                </Text>
+                            
+                            </TouchableOpacity>
+                        </Link>
+                    }
+                />}
+
+                {users.length === 0 &&
+                    <View style={styles.noUsers}>
+                        <Text style={styles.noUsersText}>W tym dniu nie ma nikogo zapisanego</Text>
+                    </View>
                 }
-            />
-            
+            </View>
+           
             {pathname!=='/selectHoursModal'&&
                 <TouchableOpacity 
                     style={[styles.plusButton, globalStyles.boxShadow]}
                     onPress={() => { 
                         if(!isMyDay){
-                            router.push({ pathname: "/selectHoursModal", params: { day: selectedDate } })
+                            router.push({ pathname: "/selectHoursModal", params: { day: formatDateToString(selectedDate) } })
                         }
                         else {
                             removeUser()
@@ -145,13 +161,33 @@ const styles = StyleSheet.create({
       borderTopColor: '#ddd',
       borderTopWidth:0,
       padding: 10,
-      alignItems:'center',
+    //   alignItems:'center',
       justifyContent: 'space-between', 
     },
-    dateText: {
+    noUsers: {
+        padding: 10,
+        // width: '100%',
+        flex:1,
+    },
+    noUsersText: {
+        fontWeight: '300',
+        fontSize: 12
+    },
+    nav: {
+        padding: 10,
+        paddingHorizontal:15,
+        borderRightWidth:1,
+        borderColor: colors.baseColor,
+    },
+    dayNumber: {
       letterSpacing: 1,
-      fontWeight: '400',
-      fontSize: 12  
+      fontWeight: '700',
+      fontSize: 20 
+    },
+    dayName: {
+        letterSpacing: 1,
+        fontWeight: '400',
+        fontSize: 13 
     },
     plusButton: {
       borderRadius: 50,
@@ -159,16 +195,17 @@ const styles = StyleSheet.create({
       alignItems:'center',
       justifyContent: 'center',
       padding: 15,
-      margin:20
+      margin:20,
+      alignSelf:'center'
     },
     userItem: {
         backgroundColor:'white',
         flexDirection:'row',
         padding: 10,
         borderRadius: 5,
-        width: widthScreen - 20,
+        // width: widthScreen - 20,
         flex:1,
-        marginVertical: 10,
+        marginBottom: 10,
         alignItems: 'center',
         justifyContent: 'space-between',  
     },

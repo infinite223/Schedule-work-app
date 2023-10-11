@@ -31,7 +31,7 @@ const DrawerContent = () => {
         getData()
         
     }, [])
-
+    
   return (
     <SafeAreaProvider style={[styles.container, { paddingTop: insets.top }]}>
         <Pressable onPress={() => router.push('/(Drawer)/schedule')}>

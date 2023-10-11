@@ -1,3 +1,8 @@
+type DateWithUsers = {
+    date: Date, 
+    users: User[]
+}
+
 type User = {
     id: string,
     name: string, 
@@ -40,4 +45,4 @@ type UserInDay = {
     dayId: string
 }
 
-export { Group, User, WorkPlace, UserInDay, Day }
+export { Group, User, WorkPlace, UserInDay, Day, DateWithUsers }

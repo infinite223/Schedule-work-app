@@ -1,18 +1,34 @@
+import { formatDateToString, formatStringToDate } from "./functions";
+import { Day } from "./types";
+
 export function daysInMonth (selectDate:Date) {
-    const nowDate:Date = new Date();
     const nowYear = selectDate.getFullYear();
-    const nowMoth = selectDate.getMonth()+1;
+    const nowMoth = selectDate.getMonth() + 1;
 
     return new Date(nowYear, nowMoth, 0).getDate();
 }
 
-export const firstDayOfMonth = (selectDate:Date) => {
-    const nowMonth = selectDate.getMonth()
-    const nowYear = selectDate.getFullYear()
-    const arr:number[] = []
+export const firstDayOfMonth = (selectDate:Date, data: any) => {
+    // console.log(data[0].days, 'da')
+    const arr:{id: number, date: Date, users: [], noDay: boolean}[] = []
+    const newArr = []
+    const year = selectDate.getFullYear();
+    const month = selectDate.getMonth();  
 
-    for (let i = 0; i < (new Date(nowYear, nowMonth, 1)).getDay()-1; i++) {
-        arr.push(i)              
+    const firstDay = new Date(year, month, 0).getDay()
+
+    console.log(firstDay)
+
+    for(let i = 0; i < firstDay; i++) {
+        arr.push({id: 0, noDay: true, date: new Date(year, month, 0), users: []})   
+    }
+
+    for (let i = 1; i < daysInMonth(selectDate)+ 1; i++) {
+        const findDay = data[0].days.find((day:any) => formatStringToDate(day.date).getDate() === i)
+        let users = findDay?findDay.usersInDay:[]
+
+        arr.push({id: i, noDay: false, date: new Date(year, month, i), users})   
+        newArr.push(`${year}/${month}/${i}`)           
     }
 
     return arr

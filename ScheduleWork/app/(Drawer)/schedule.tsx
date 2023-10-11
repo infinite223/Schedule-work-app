@@ -4,24 +4,20 @@ import DatePicker from 'react-native-modern-datepicker';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { colors } from "../../utils/globalStyles";
-import { Group, User } from "../../utils/types";
+import { DateWithUsers, Group, User } from "../../utils/types";
 import Loading from "../../components/Loading";
 import DayDetails from "../../components/DayDetails";
 import { useSelector } from "react-redux";
 import { selectGroups } from "../../slices/groupsSlice";
 import { getUser } from "../../services/user";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
+import CustomCalendar from "../../components/CustomCalendar";
 
 const currentDate = new Date();
 
-const year = currentDate.getFullYear();
-const month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // +1, bo miesiące są liczone od 0 do 11
-const day = currentDate.getDate().toString().padStart(2, '0');
-
-const formattedDate = `${year}/${month}/${day}`
 
 export default function Page() {
-    const [selectedDate, setSelectedDate] = useState(formattedDate);
+    const [selectedDate, setSelectedDate] = useState<DateWithUsers>({date: currentDate, users: []});
     const [user, setUser] = useState<User | null>(null)
     const groups = useSelector(selectGroups)
     const navigation = useNavigation()
@@ -43,7 +39,14 @@ export default function Page() {
             }
 
             const userFromDb =  await getUser(JSON.parse(jsonValue).authToken, JSON.parse(jsonValue).user?.id)
-            setUser(await userFromDb.json())  
+            if(userFromDb.status === 200){
+              setUser(await userFromDb.json())  
+            }
+            else {
+              await AsyncStorage.removeItem('my-key');
+    
+              router.push('/')
+            }
           }                
         } catch (e) {
           alert('Coś poszło nie tak, spróbuj włączyć od nowa aplikacje') 
@@ -59,9 +62,9 @@ export default function Page() {
 
   return (
     <SafeAreaProvider style={[styles.container]}>
-      {(user && user.workPlaceId)?
+      {(user && user?.workPlaceId)?
         <>
-          <DatePicker   
+          {/* <DatePicker   
               onSelectedChange={_date => setSelectedDate(_date)}
               mode="calendar"
               selected={selectedDate}
@@ -79,14 +82,16 @@ export default function Page() {
 
               }}
               style={{paddingLeft: 0, }}
-          />
+          /> */}
 
-          <DayDetails selectedDate={selectedDate}/>
+          <CustomCalendar selectedDate={selectedDate} setSelectedDate={setSelectedDate}/>
+
+          <DayDetails selectedDate={selectedDate.date}/>
         </>:
         <View style={styles.errorContainer}>
           <Text style={styles.textHeader}>Aktualnie nie należysz do żadnego miejsca pracy</Text>
           <Text style={styles.textDescription}>Poproś pracodawce o dodanie 
-            <Text style={{color: colors.baseColor, fontWeight:'bold'}}> {user.email} </Text>
+            <Text style={{color: colors.baseColor, fontWeight:'bold'}}> {user?.email} </Text>
           </Text>
         </View>
       }

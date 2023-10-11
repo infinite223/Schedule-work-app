@@ -8,6 +8,8 @@ import { colors, globalStyles } from '../../utils/globalStyles'
 import { Ionicons } from '@expo/vector-icons'
 import { usePathname } from 'expo-router/src/hooks'
 import { Link, router } from 'expo-router'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectInvokeFunction, setInvokeFunction } from '../../slices/invokeFunction'
 const widthScreen = Dimensions.get('screen').width
 
 const userInDays: UserInDay[] = [
@@ -28,6 +30,8 @@ const userInDays: UserInDay[] = [
 const Page = () => {
     const [userInDays, setUserInDays] = useState<UserInDay[]>([])
     const pathname = usePathname()
+    const dispatch = useDispatch()
+    const invokeFunction = useSelector(selectInvokeFunction)
 
     useEffect(() => {
         const getData = async () => {
@@ -55,6 +59,7 @@ const Page = () => {
                     const res = await removeUserInDay(JSON.parse(jsonValue).authToken, id)
                     if(res.status) {
                         setUserInDays(userInDays.filter((userIdDay) => userIdDay.id !== id))
+                        dispatch(setInvokeFunction(!invokeFunction))
                     }
                 }
             }
