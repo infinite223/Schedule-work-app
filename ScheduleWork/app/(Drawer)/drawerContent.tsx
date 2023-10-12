@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image, Pressable, StatusBar } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Image, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import {
     SafeAreaProvider,

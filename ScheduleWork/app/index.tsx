@@ -1,7 +1,7 @@
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native'
-import React, { useCallback, useEffect, useState } from 'react'
+import { View, Text, StyleSheet, Image } from 'react-native'
+import React, { useEffect } from 'react'
 import { colors, globalStyles } from '../utils/globalStyles'
-import { Link, useRouter, usePathname } from 'expo-router'
+import { Link, useRouter } from 'expo-router'
 import calendar from './../assets/images/calendar.png'
 import logo from './../assets/images/logo.png'
 import * as SplashScreen from 'expo-splash-screen';
@@ -24,9 +24,7 @@ const HomeScreen = () => {
                         router.push('/editUser')
                     }
                     else {
-                        // if(pathname==='/'){
-                            router.push('/(Drawer)/schedule')
-                        // }
+                        router.push('/(Drawer)/schedule')
                     }
                 }
             } catch (e) {

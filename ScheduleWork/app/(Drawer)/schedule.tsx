@@ -1,6 +1,5 @@
-import React, { useEffect, useLayoutEffect, useState, useMemo } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import DatePicker from 'react-native-modern-datepicker';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { colors } from "../../utils/globalStyles";
@@ -10,11 +9,10 @@ import DayDetails from "../../components/DayDetails";
 import { useSelector } from "react-redux";
 import { selectGroups } from "../../slices/groupsSlice";
 import { getUser } from "../../services/user";
-import { router, useLocalSearchParams, useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import CustomCalendar from "../../components/CustomCalendar";
 
 const currentDate = new Date();
-
 
 export default function Page() {
     const [selectedDate, setSelectedDate] = useState<DateWithUsers>({date: currentDate, users: []});
@@ -23,6 +21,7 @@ export default function Page() {
     const navigation = useNavigation()
     
     const groupName = groups.find((group: Group) => group?.id === user?.groupId)?.name
+    
     useLayoutEffect(() => {
       navigation.setOptions({
         headerTitle: `Harmonogram ${groupName}`,
@@ -42,10 +41,13 @@ export default function Page() {
             if(userFromDb.status === 200){
               setUser(await userFromDb.json())  
             }
-            else {
+            else if(userFromDb.status === 401){
               await AsyncStorage.removeItem('my-key');
     
               router.push('/')
+              
+              router.push('/messageModal')
+              router.setParams({ message: "Zostałeś automatycznie wylogowany", type: 'ERROR' })
             }
           }                
         } catch (e) {
@@ -64,26 +66,6 @@ export default function Page() {
     <SafeAreaProvider style={[styles.container]}>
       {(user && user?.workPlaceId)?
         <>
-          {/* <DatePicker   
-              onSelectedChange={_date => setSelectedDate(_date)}
-              mode="calendar"
-              selected={selectedDate}
-              current={selectedDate}
-              minimumDate={formattedDate}
-              locale={''}     
-              options={{
-                textHeaderColor: 'black',
-                textDefaultColor: 'black',
-                selectedTextColor: '#fff',
-                mainColor: colors.baseColor,
-                textSecondaryColor: 'black',
-                borderColor: 'rgba(122, 146, 165, 0.1)',
-                textFontSize: 14,
-
-              }}
-              style={{paddingLeft: 0, }}
-          /> */}
-
           <CustomCalendar selectedDate={selectedDate} setSelectedDate={setSelectedDate}/>
 
           <DayDetails selectedDate={selectedDate.date}/>

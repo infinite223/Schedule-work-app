@@ -4,17 +4,14 @@ import { colors, globalStyles } from '../utils/globalStyles'
 import { Entypo } from '@expo/vector-icons'
 import Loading from './Loading'
 import { User } from '../utils/types'
-import {  Link, router, useNavigation, usePathname } from 'expo-router'
+import {  Link, router, usePathname } from 'expo-router'
 import { getDay } from '../services/day'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { removeUserInDay } from '../services/userInDay'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectInvokeFunction, setInvokeFunction } from '../slices/invokeFunction'
-import { timeCounter } from '../utils/timeCounter'
 import { formatDateToString } from './../utils/functions';
 import { shortDayNames } from '../utils/data'
-
-const widthScreen = Dimensions.get('screen').width
 
 const DayDetails:FC<{selectedDate: Date}> = ({selectedDate}) => {
     const [users, setUsers] = useState<any[] | null>(null)
@@ -91,7 +88,6 @@ const DayDetails:FC<{selectedDate: Date}> = ({selectedDate}) => {
             <View style={{flexDirection:'row', alignItems: 'flex-start'}}>
                 <View style={[styles.nav]}>
                     <Text style={styles.dayNumber}>
-                        {/* {formatDateToString(selectedDate)} */}
                         {selectedDate.getDate()}
                     </Text>
                     <Text style={styles.dayName}>
@@ -161,12 +157,10 @@ const styles = StyleSheet.create({
       borderTopColor: '#ddd',
       borderTopWidth:0,
       padding: 10,
-    //   alignItems:'center',
       justifyContent: 'space-between', 
     },
     noUsers: {
         padding: 10,
-        // width: '100%',
         flex:1,
     },
     noUsersText: {

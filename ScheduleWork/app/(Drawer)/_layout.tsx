@@ -9,9 +9,7 @@ import { setWorkPlace } from '../../slices/workPlaceSlice';
 import { getGroupsInWorkPlace } from '../../services/group';
 import { getWorkPlace } from '../../services/workPlace';
 import { getUser } from '../../services/user';
-import { getAllUsersInDay } from '../../services/userInDay';
 import { colors } from '../../utils/globalStyles';
-import { MaterialIcons } from '@expo/vector-icons';
 
 export default function Layout() {
   const dispatch = useDispatch()
@@ -26,6 +24,16 @@ export default function Layout() {
           }
 
           const userFromDb =  await getUser(JSON.parse(jsonValue).authToken, JSON.parse(jsonValue).user?.id)
+          
+          if(userFromDb.status === 401) {
+            await AsyncStorage.removeItem('my-key');
+    
+            router.push('/')
+            
+            router.push('/messageModal')
+            router.setParams({ message: "Zostałeś automatycznie wylogowany", type: 'ERROR' })
+          }
+
           const user = await userFromDb.json()
 
           if(user && user.workPlaceId) {

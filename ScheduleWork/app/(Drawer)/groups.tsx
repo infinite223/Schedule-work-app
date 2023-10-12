@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, TouchableOpacity, StyleSheet, Dimensions, FlatList, TouchableOpacityBase } from "react-native";
-import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
-import { Link, useRouter } from "expo-router";
+import { Text, View, TouchableOpacity, StyleSheet, Dimensions, FlatList } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Link  } from "expo-router";
 import { useSelector } from "react-redux";
 import { selectGroups } from "../../slices/groupsSlice";
 import { Group } from "../../utils/types";
@@ -17,7 +17,7 @@ export default function Page() {
     const workPlace = useSelector(selectWorkPlace)
 
     const groups:Group[] = useSelector(selectGroups)
-    // selecting groups to global store
+
     useEffect(() => {
       console.log('groups')
 
@@ -100,8 +100,6 @@ export default function Page() {
                       >
                         <TouchableOpacity style={styles.userItem}>
                           <View style={{flexDirection: 'row', alignItems: 'center', gap: 20}}>
-                            {/* <Ionicons name='person-sharp' size={22}/>  */}
-
                             <View>
                               <Text style={styles.name}>{item.name}</Text>
                               <Text style={styles.userName}>{item.userName}</Text>
@@ -134,12 +132,10 @@ const styles = StyleSheet.create({
   },
   headerGroup: {
     flexDirection: 'row',
-    // alignItems: 'center',
     justifyContent: 'space-between',
     gap: 5
   },
   button: {
-    // backgroundColor: '#cfc',
     backgroundColor: colors.baseColor,
     borderRadius: 50,
     paddingHorizontal: 18,
@@ -159,7 +155,6 @@ const styles = StyleSheet.create({
     fontSize: 12
   },
   leftBox: {
-    // backgroundColor: colors.baseColor,
     borderRadius: 50,
     paddingLeft: 8,
     paddingVertical: 8,
@@ -173,11 +168,9 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 16,
     fontWeight: '700',
-    // color: 'white',
   },
   countPersons: {
     fontSize: 15,
-    // color: 'white'
   },
   description: {
     fontSize: 14,
@@ -188,8 +181,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     backgroundColor:'white',
     paddingVertical: 5
-    // borderColor: '#ddd',
-    // borderBottomWidth: 1,
   },
   option: {
     borderRadius: 5,
@@ -202,7 +193,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5 ,
     paddingVertical: 7,
     borderRadius: 5,
-    // backgroundColor: '#eee',
     marginVertical: 5,
     flexDirection: 'row',
     alignItems:'center',

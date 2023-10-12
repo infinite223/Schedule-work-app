@@ -1,5 +1,4 @@
-import { formatDateToString, formatStringToDate } from "./functions";
-import { Day } from "./types";
+import { formatStringToDate } from "./functions";
 
 export function daysInMonth (selectDate:Date) {
     const nowYear = selectDate.getFullYear();
@@ -9,7 +8,6 @@ export function daysInMonth (selectDate:Date) {
 }
 
 export const firstDayOfMonth = (selectDate:Date, data: any) => {
-    // console.log(data[0].days, 'da')
     const arr:{id: number, date: Date, users: [], noDay: boolean}[] = []
     const newArr = []
     const year = selectDate.getFullYear();
