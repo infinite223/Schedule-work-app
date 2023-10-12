@@ -65,6 +65,20 @@ export default function Layout() {
             presentation: 'transparentModal',
           }}
         />
+        <Stack.Screen
+          name="editGroup" 
+          options={{
+            headerShown:false,
+            presentation: 'transparentModal',
+          }}
+        />
+        <Stack.Screen
+          name="addUserToGroup" 
+          options={{
+            headerShown:false,
+            presentation: 'transparentModal',
+          }}
+        />
       </Stack>
     </Provider>
   );

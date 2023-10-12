@@ -11,7 +11,7 @@ import { monthNames, shortDayNames } from '../../utils/data'
 import { colors } from '../../utils/globalStyles'
 import { addMonthsToDate, formatDateToString } from '../../utils/functions'
 import { useSelector } from 'react-redux'
-import { selectInvokeFunction } from '../../slices/invokeFunction'
+import { selectInvokeFunction, selectSelectedGroupId } from '../../slices/invokeFunction'
 
 const widthScreen = Dimensions.get('window').width
 const widthDay = (widthScreen - 20) /7
@@ -29,11 +29,12 @@ const CustomCalendar:FC<CustomCalendarProps> = ({ selectedDate, setSelectedDate 
     const [days, setDays] = useState<{id: number, date: Date, users: [], noDay: boolean}[]>([])
     const invokeFunction = useSelector(selectInvokeFunction)
     const [selectedMonth, setSelectedMonth] = useState(new Date(nowYear, nowMonth, 1))
+    const selectedGroupId = useSelector(selectSelectedGroupId)
 
     useEffect(() => {
         const tryGetScheduleForMonth = async () => {
             const jsonValue = await AsyncStorage.getItem('my-key');
-            const groupId = '1'
+            // const groupId = '1'
 
             const year = selectedMonth.getFullYear()
             const month = selectedMonth.getMonth()
@@ -45,7 +46,7 @@ const CustomCalendar:FC<CustomCalendarProps> = ({ selectedDate, setSelectedDate 
                     JSON.parse(jsonValue).authToken,
                     formatDateToString(startDate),
                     formatDateToString(endDate),
-                    groupId)
+                    selectedGroupId)
         
                 if(res.status === 200) {
                     const groupData = await res.json()
@@ -61,7 +62,7 @@ const CustomCalendar:FC<CustomCalendarProps> = ({ selectedDate, setSelectedDate 
         
         tryGetScheduleForMonth()
 
-    }, [invokeFunction, selectedMonth]) 
+    }, [invokeFunction, selectedMonth, selectedGroupId]) 
 
   return (
     <View style={styles.conatiner}> 

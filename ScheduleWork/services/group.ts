@@ -41,3 +41,38 @@ export const getGroupsInWorkPlace = async (authToken: string, workPlaceId: strin
 
     return res
 }
+
+export const updateGroup = async (
+    authToken:  string,
+    name: string, 
+    description: string,
+    id: string
+) => {
+    
+    const res = await fetch(`${appConfig.endpointsUrl}/group/${id}`, {
+        headers: {
+            'Content-Type':'application/json',
+            Authorization: `Bearer ${authToken}`,
+        },
+        method: "PUT",  
+        body: JSON.stringify({ name, description})  
+    })
+
+    return res
+}
+
+export const removeGroup = async (
+    authToken: string,
+    id: string
+) => {
+    const res = await fetch(`${appConfig.endpointsUrl}/group/${id}`, {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${authToken}`,
+        },
+        method: "DELETE",   
+    })
+
+    return res
+}

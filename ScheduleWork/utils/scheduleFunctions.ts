@@ -22,7 +22,7 @@ export const firstDayOfMonth = (selectDate:Date, data: any) => {
     }
 
     for (let i = 1; i < daysInMonth(selectDate)+ 1; i++) {
-        const findDay = data[0].days.find((day:any) => formatStringToDate(day.date).getDate() === i)
+        const findDay = data[0]?.days?.find((day:any) => formatStringToDate(day.date).getDate() === i)
         let users = findDay?findDay.usersInDay:[]
 
         arr.push({id: i, noDay: false, date: new Date(year, month, i), users})   

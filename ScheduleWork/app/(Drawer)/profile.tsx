@@ -47,7 +47,6 @@ const Page = () => {
   }, [user])
 
   useEffect(() => {
-    console.log(userId, 'dada')
     const getUserData = async () => {
       const jsonValue = await AsyncStorage.getItem('my-key');
       if(jsonValue) {

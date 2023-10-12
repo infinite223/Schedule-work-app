@@ -40,11 +40,12 @@ export default function Layout() {
             await AsyncStorage.setItem('my-key', JSON.stringify({authToken: JSON.parse(jsonValue).authToken, user}))
 
             const workPlace = await getWorkPlace(JSON.parse(jsonValue).authToken, user.workPlaceId)
-            console.log(workPlace.status)
-            dispatch(setWorkPlace(await workPlace.json()))
-
-            const groups = await getGroupsInWorkPlace(JSON.parse(jsonValue).authToken, user.workPlaceId)
-            dispatch(setGroups(await groups.json()))
+            if(workPlace.status === 200) {
+              dispatch(setWorkPlace(await workPlace.json()))
+            }
+            else {
+              alert('Coś poszło nie tak, spróbuj włączyć od nowa aplikacje') 
+            }
           }
         
         }                
@@ -54,6 +55,23 @@ export default function Layout() {
     };
 
     getData()
+  }, [])
+
+  useEffect(() => {
+    const tryGetGroupsData = async () => {
+      const jsonValue = await AsyncStorage.getItem('my-key');
+      if(jsonValue != null) {
+        const groups = await getGroupsInWorkPlace(
+          JSON.parse(jsonValue).authToken, JSON.parse(jsonValue)?.user.workPlaceId)
+        
+        if(groups.status === 200) {
+          dispatch(setGroups(await groups.json()))
+        }
+      }
+    }
+
+    tryGetGroupsData()
+
   }, [])
 
   return (

@@ -1,26 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { Text, View, TouchableOpacity, StyleSheet, Dimensions, FlatList } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { Link  } from "expo-router";
-import { useSelector } from "react-redux";
-import { selectGroups } from "../../slices/groupsSlice";
-import { Group } from "../../utils/types";
+import { Link, router  } from "expo-router";
+import { useDispatch, useSelector } from "react-redux";
+import { selectGroups, setGroups } from "../../slices/groupsSlice";
+import { Group, User } from "../../utils/types";
 import { FontAwesome5, Ionicons, MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
 import { colors, globalStyles } from "../../utils/globalStyles";
 import { selectWorkPlace } from "../../slices/workPlaceSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { removeUserFromGroup, updateUser } from "../../services/user";
+import { getGroupsInWorkPlace } from "../../services/group";
+import { setSelectedGroupId } from "../../slices/invokeFunction";
 
 const widthScreen = Dimensions.get('screen').width
 
 export default function Page() {
     const [isAdmin, setIsAdmin] = useState(false)
     const workPlace = useSelector(selectWorkPlace)
-
+    const dispatch = useDispatch()
     const groups:Group[] = useSelector(selectGroups)
 
     useEffect(() => {
-      console.log('groups')
-
       const getData = async () => {
           const jsonValue:any = await AsyncStorage.getItem('my-key');
           const user = (jsonValue != null ? JSON.parse(jsonValue).user : null)
@@ -32,11 +33,38 @@ export default function Page() {
       
   }, [])
 
+  const tryRemoveUserFromGroup = async (user: User) => {
+    const jsonValue = await AsyncStorage.getItem('my-key');
+
+    if(jsonValue != null) {
+        const res = await removeUserFromGroup(
+            JSON.parse(jsonValue).authToken,
+            user.id,
+            user.groupId
+        )
+        console.log(res.status)
+
+        if(res.status === 200) {
+            const groups = await getGroupsInWorkPlace(
+                    JSON.parse(jsonValue).authToken, 
+                    JSON.parse(jsonValue)?.user.workPlaceId
+                )
+              
+            if(groups.status === 200) {
+                dispatch(setGroups(await groups.json()))
+                router.back()
+            }
+        }
+    }
+  }
+
   return (
-    <SafeAreaProvider style={[styles.container]}>
+    <View style={[styles.container]}>
         <FlatList
-          contentContainerStyle={{ flex: 1, gap: 10}}
+          style={{flex:1}}
+          contentContainerStyle={{ gap: 10}}
           data={groups}
+          overScrollMode="never"
           renderItem={({ item }) => 
               <View
                 style={[styles.groupContainer, globalStyles.boxShadow]}
@@ -56,7 +84,11 @@ export default function Page() {
                     {isAdmin&&<View style={{flexDirection:'row', alignItems: 'center', gap: 2}}>
                       <Link
                         asChild
-                        href={{pathname: '/editGroup', params: {groupId: item?.id}}}
+                        href={{pathname: '/addUserToGroup', 
+                        params: {
+                          groupId: item?.id,
+                          groupName: item.name,
+                        }}}
                       >
                         <TouchableOpacity 
                           style={{ padding: 7 }}
@@ -67,7 +99,11 @@ export default function Page() {
 
                       <Link
                         asChild
-                        href={{pathname: '/editGroup', params: {groupId: item?.id}}}
+                        href={{pathname: '/editGroup', params: {
+                          groupId: item?.id,
+                          groupName: item.name,
+                          groupDescription: item.description?item.description: ''
+                        }}}
                       >
                         <TouchableOpacity 
                           style={{ padding: 7 }}
@@ -75,7 +111,14 @@ export default function Page() {
                           <FontAwesome5 name='edit' size={20} color={'black'}/>
                         </TouchableOpacity>
                       </Link>
-                      <TouchableOpacity activeOpacity={.6} style={styles.button}>
+                      <TouchableOpacity
+                        onPress={() => {
+                          dispatch(setSelectedGroupId(item.id))
+                          router.push('/(Drawer)/schedule')
+                        }} 
+                        activeOpacity={.6} 
+                        style={styles.button}
+                      >
                         <Text style={{fontSize: 12, color: 'white', fontWeight: '700'}}>Zobacz grafik</Text>
                         <Ionicons name='search' size={17} color={'white'}/> 
                       </TouchableOpacity>
@@ -106,11 +149,18 @@ export default function Page() {
                             </View>
                           </View>
 
-                          <Ionicons name='md-arrow-forward' size={22}/> 
+                          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                            {isAdmin&&<TouchableOpacity onPress={() => tryRemoveUserFromGroup(item)} style={{paddingHorizontal: 10}}>
+                              <Ionicons name='ios-trash-outline' size={24}/>
+                            </TouchableOpacity>}
+
+                            <Ionicons name='md-arrow-forward' size={22}/> 
+                          </View>
+                         
                         </TouchableOpacity>
                       </Link>}
                   />
-                  {item.users?.length===0&&
+                  {(!item.users || item.users?.length===0)&&
                     <View style={styles.nousersError}>
                       <Text style={styles.text}>W tej grupie nie ma jeszcze osób...</Text>
                     </View>
@@ -118,7 +168,7 @@ export default function Page() {
               </View>
           }
         />
-    </SafeAreaProvider>
+    </View>
   )
 }
 
@@ -128,7 +178,7 @@ const styles = StyleSheet.create({
     flex: 1, 
     alignItems: 'center',
     gap: 10,
-    paddingVertical: 10 
+    paddingVertical: 10, 
   },
   headerGroup: {
     flexDirection: 'row',
@@ -180,7 +230,7 @@ const styles = StyleSheet.create({
     width: widthScreen,
     paddingHorizontal: 15,
     backgroundColor:'white',
-    paddingVertical: 5
+    paddingVertical: 5,
   },
   option: {
     borderRadius: 5,

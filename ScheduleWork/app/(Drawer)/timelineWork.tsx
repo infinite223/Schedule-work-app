@@ -38,13 +38,12 @@ const Page = () => {
             const jsonValue = await AsyncStorage.getItem('my-key');
             if(jsonValue != null) {          
                 const allUsersInDay = await getAllUsersInDay(JSON.parse(jsonValue).authToken)
-                console.log(allUsersInDay.status, 'allusersInDay')
                 if(allUsersInDay.status === 200) {
                     setUserInDays(await allUsersInDay.json())
                 }
             }
         }
-        console.log(pathname)
+        
         if(pathname === '/timelineWork'){
             getData()
         }

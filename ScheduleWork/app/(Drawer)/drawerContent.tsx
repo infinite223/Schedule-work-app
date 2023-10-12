@@ -20,7 +20,6 @@ const DrawerContent = () => {
     const workPlace = useSelector(selectWorkPlace)
     
     useEffect(() => {
-        console.log('drower')
         const getData = async () => {
             const jsonValue:any = await AsyncStorage.getItem('my-key');
             setUser(jsonValue != null ? JSON.parse(jsonValue).user : null)

@@ -5,12 +5,16 @@ import { router } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons';
 import { createGroup } from '../services/group';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { selectGroups, setGroups } from '../slices/groupsSlice';
+import { useDispatch, useSelector } from 'react-redux';
 const widthScreen = Dimensions.get('screen').width
 
 
 const createGroupModal = () => {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
+  const dispatch = useDispatch()
+  const groups = useSelector(selectGroups)
 
   const tryCreateGroup = async () => {
     if(name.length>3) {
@@ -19,6 +23,15 @@ const createGroupModal = () => {
         const res = await createGroup(JSON.parse(jsonValue).authToken, name, description)
   
         if(res.status === 200) {
+          // console.log(newGroups, 'groups')
+
+          const newGroup = await res.json()
+
+          if(newGroup) {         
+            dispatch(setGroups([...groups, newGroup]))
+          }
+
+          router.back()
           router.push('/messageModal')
           router.setParams({ message: "Utworzono nową grupe", type: 'SUCCESS' })
         }
