@@ -116,6 +116,7 @@ export default function Page() {
                           dispatch(setSelectedGroupId(item.id))
                           router.push('/(Drawer)/schedule')
                         }} 
+                        
                         activeOpacity={.6} 
                         style={styles.button}
                       >
