@@ -145,6 +145,7 @@ const Page = () => {
                                 onChangeText={setInputValue}
                                 textContentType={index?'oneTimeCode':'emailAddress'}
                                 keyboardType={index?'numeric':'default'}
+                                placeholderTextColor={'rgba(23, 23, 23, .4)'}
                             />
             
                             <TouchableOpacity 

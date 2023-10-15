@@ -59,6 +59,7 @@ const createGroupModal = () => {
           style={[styles.input, globalStyles.boxShadow]}
           value={name}
           onChangeText={setName}
+          placeholderTextColor={'rgba(23, 23, 23, .4)'}
       />
 
         <TextInput
@@ -66,6 +67,7 @@ const createGroupModal = () => {
             style={[styles.input, globalStyles.boxShadow]}
             value={description}
             onChangeText={setDescription}
+            placeholderTextColor={'rgba(23, 23, 23, .4)'}
         />
 
         <TouchableOpacity 

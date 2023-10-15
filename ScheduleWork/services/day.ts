@@ -18,7 +18,7 @@ export const createDay = async (
     return res
 }
 
-export const getDay = async (authToken: string, date: string) => {
+export const getDay = async (authToken: string, date: string, groupId: string) => {
     const res = await fetch(`${appConfig.endpointsUrl}/day/getSpecyficDay`, {
         headers: {
             'Accept': 'application/json',
@@ -26,7 +26,7 @@ export const getDay = async (authToken: string, date: string) => {
             Authorization: `Bearer ${authToken}`,
           },
           method: "POST",    
-          body: JSON.stringify({ date })    
+          body: JSON.stringify({ date, groupId })    
     })
 
     return res

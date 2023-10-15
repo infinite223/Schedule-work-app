@@ -9,7 +9,7 @@ import { getDay } from '../services/day'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { removeUserInDay } from '../services/userInDay'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectInvokeFunction, setInvokeFunction } from '../slices/invokeFunction'
+import { selectInvokeFunction, selectSelectedGroupId, setInvokeFunction } from '../slices/invokeFunction'
 import { formatDateToString } from './../utils/functions';
 import { shortDayNames } from '../utils/data'
 
@@ -17,10 +17,12 @@ const DayDetails:FC<{selectedDate: Date}> = ({selectedDate}) => {
     const [users, setUsers] = useState<any[] | null>(null)
     const [user, setUser] = useState<User | null>(null)
     const invokeFunction = useSelector(selectInvokeFunction)
+    const [loading, setLoading] = useState(false)
 
     const [isMyDay, setIsMyDay] = useState(false)
     const pathname = usePathname()
     const dispatch = useDispatch()
+    const selectedGroup = useSelector(selectSelectedGroupId)
 
     const removeUser = async () => {
         const jsonValue = await AsyncStorage.getItem('my-key');
@@ -38,10 +40,16 @@ const DayDetails:FC<{selectedDate: Date}> = ({selectedDate}) => {
 
     useEffect(() => {
         const getUsersInDay = async () => {
+            setLoading(true)
+
             const jsonValue = await AsyncStorage.getItem('my-key');
             if(jsonValue != null) {
                 setUser(JSON.parse(jsonValue).user)
-                const res = await getDay(JSON.parse(jsonValue).authToken, formatDateToString(selectedDate))
+                const res = await getDay(
+                    JSON.parse(jsonValue).authToken, 
+                    formatDateToString(selectedDate),
+                    selectedGroup
+                )
 
                 if(res.status === 200) {
                     const dayData = await res.json()
@@ -51,7 +59,9 @@ const DayDetails:FC<{selectedDate: Date}> = ({selectedDate}) => {
                 if(res.status === 401) {
                     setUsers([])
                 }
-            }
+            } 
+            
+            setLoading(false)
         }
 
         getUsersInDay()
@@ -121,11 +131,17 @@ const DayDetails:FC<{selectedDate: Date}> = ({selectedDate}) => {
                     }
                 />}
 
-                {users.length === 0 &&
+                {(users.length === 0 && !loading) &&
                     <View style={styles.noUsers}>
                         <Text style={styles.noUsersText}>W tym dniu nie ma nikogo zapisanego</Text>
                     </View>
                 }
+
+                {loading &&
+                    <View style={styles.noUsers}>
+                        <Text style={styles.noUsersText}>ładowanie...</Text>
+                    </View>
+                }   
             </View>
            
             {pathname!=='/selectHoursModal'&&

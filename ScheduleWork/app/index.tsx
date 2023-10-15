@@ -6,6 +6,7 @@ import calendar from './../assets/images/calendar.png'
 import logo from './../assets/images/logo.png'
 import * as SplashScreen from 'expo-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 SplashScreen.preventAutoHideAsync();
 
@@ -52,11 +53,14 @@ const HomeScreen = () => {
         </Text>
 
         <Link href={'/login'}
+            asChild
             style={[styles.loginButton, globalStyles.boxShadow]}
         >
-            <Text style={{color: 'white', fontWeight: '700'}}>
-                Zaloguj się 
-            </Text>
+            <TouchableOpacity>
+                <Text style={{color: 'white', fontWeight: '700'}}>
+                    Zaloguj się 
+                </Text>
+            </TouchableOpacity>
         </Link>
     </View>
   )

@@ -89,6 +89,7 @@ const Page = () => {
           style={[styles.input, globalStyles.boxShadow]}
           value={name}
           onChangeText={setName}
+          placeholderTextColor={'rgba(23, 23, 23, .4)'}
       />
 
       <TextInput
@@ -96,6 +97,7 @@ const Page = () => {
           style={[styles.input, globalStyles.boxShadow]}
           value={userName}
           onChangeText={setUserName}
+          placeholderTextColor={'rgba(23, 23, 23, .4)'}
       />
 
       <TextInput
@@ -106,6 +108,7 @@ const Page = () => {
           keyboardType='phone-pad'
           maxLength={9}
           onChangeText={setPhoneNumber}
+          placeholderTextColor={'rgba(23, 23, 23, .4)'}
       />
 
       <View style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>

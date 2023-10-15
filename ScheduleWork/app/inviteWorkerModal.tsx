@@ -34,6 +34,7 @@ const Page = () => {
         <TextInput 
             style={[styles.input, globalStyles.boxShadow]}
             placeholder='Email pracownika'
+            placeholderTextColor={'rgba(23, 23, 23, .4)'}
         />
 
         <TouchableOpacity 
