@@ -90,7 +90,7 @@ const Page = () => {
       </View>
 
       <View>
-        <Text style={{fontSize: 14, fontWeight: '400'}}>Należysz do grupy:
+        <Text style={{fontSize: 14, fontWeight: '400'}}>{isMyProfile?'Należysz':'Należy'} do grupy:
            <Text style={{fontSize: 15, fontWeight: '700'}}>  {groups.find((group) => group.id === user.id)?.name}</Text>
         </Text>
       </View>
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     dataContainer: {
       flexDirection: 'column',
       alignItems: 'flex-start',
-      gap: -5
+      gap: -1
     },
     phoneButton: {
       backgroundColor: '#19f',
@@ -128,7 +128,6 @@ const styles = StyleSheet.create({
     headerContainer: {
       flexDirection: 'row', 
       alignItems: 'center', 
-      // justifyContent: 'space-between', 
       width: '100%',
       marginVertical: 10 
     },

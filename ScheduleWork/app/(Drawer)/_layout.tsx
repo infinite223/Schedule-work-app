@@ -95,24 +95,28 @@ export default function Layout() {
         name="profile" 
         options={{
           title: "Twój profil",
+          headerTintColor:'black',
         }}
       />
       <Drawer.Screen
         name="groups" 
         options={{
           title: "Dostępne grupy",
+          headerTintColor:'black',
         }}
       />
       <Drawer.Screen
         name="timelineWork" 
         options={{
           title: "Najbliższe dni pracy",
+          headerTintColor:'black',
         }}
       />
       <Drawer.Screen
         name="settings" 
         options={{
           title: "Ustawienia",
+          headerTintColor:'black',
         }}
       />
     </Drawer>

@@ -9,9 +9,10 @@ import DayDetails from "../../components/DayDetails";
 import { useSelector } from "react-redux";
 import { selectGroups } from "../../slices/groupsSlice";
 import { getUser } from "../../services/user";
-import { router, useNavigation } from "expo-router";
+import { router, useNavigation, usePathname } from "expo-router";
 import CustomCalendar from "../../components/CustomCalendar";
 import { selectSelectedGroupId } from "../../slices/invokeFunction";
+import { StatusBar } from "expo-status-bar";
 
 const currentDate = new Date();
 
@@ -22,6 +23,9 @@ export default function Page() {
     const groups = useSelector(selectGroups)
     const navigation = useNavigation()
     const selectedGroupId = useSelector(selectSelectedGroupId)
+    const pathname = usePathname()
+    const [hidden, setHidden] = useState(false);
+
     
     useLayoutEffect(() => {
       navigation.setOptions({
@@ -81,6 +85,7 @@ export default function Page() {
 
   return (
     <SafeAreaProvider style={[styles.container]}>
+      <StatusBar style='dark'/>
       {(user && user?.workPlaceId)?
         <>
           <CustomCalendar selectedDate={selectedDate} setSelectedDate={setSelectedDate}/>

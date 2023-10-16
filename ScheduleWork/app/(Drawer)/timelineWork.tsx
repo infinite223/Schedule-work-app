@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Platform } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { UserInDay } from '../../utils/types'
 import { getAllUsersInDay, removeUserInDay } from '../../services/userInDay'
@@ -10,6 +10,9 @@ import { usePathname } from 'expo-router/src/hooks'
 import { Link, router } from 'expo-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectInvokeFunction, setInvokeFunction } from '../../slices/invokeFunction'
+import { StatusBar } from 'expo-status-bar'
+import { formatStringToDate } from '../../utils/functions'
+import { monthNames, shortDayNames } from '../../utils/data'
 const widthScreen = Dimensions.get('screen').width
 
 const userInDays: UserInDay[] = [
@@ -66,6 +69,7 @@ const Page = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar style='dark' />
       <FlatList
         data={userInDays}
         style={{flex: 1}}
@@ -75,7 +79,21 @@ const Page = () => {
                 style={[styles.userInDay, globalStyles.boxShadow_light]}
             >
                 <View style={{flexDirection:'row', alignItems: 'center', gap: 20}}>
-                    <Text style={{fontWeight: '600'}}>{item.day?.date}</Text>
+                    {item.day&&
+                        <View style={styles.dateContainer}>
+                            <View style={styles.mainDate}>
+                                <Text style={styles.numberDay}>
+                                    {formatStringToDate(item.day?.date.toString()).getDate()+' '}
+                                </Text>
+                                <Text>
+                                    {shortDayNames[formatStringToDate(item.day?.date.toString()).getDay() - 1]}
+                                </Text>
+                            </View>
+                            <Text style={styles.monthName}>
+                                {monthNames[formatStringToDate(item.day?.date.toString()).getMonth()]}
+                            </Text>
+                        </View>
+                    }
                     <View style={{flexDirection: 'row', alignItems:'center', gap: 5 }}>
                         <Text style={styles.text}>od {item.from} </Text>
                         <Text style={styles.text}>- </Text>
@@ -119,6 +137,25 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
         gap: 15
     },
+    dateContainer: {
+        
+    },
+    mainDate: {
+        flexDirection:'row',
+        alignItems:'center'
+    },
+    numberDay: {
+        fontSize: 18,
+        fontWeight: '900'
+    },
+    nameDay: {
+        fontSize: 15,
+
+    },
+    monthName: {
+        fontWeight: '400',
+        fontSize: 10
+    },
     text: {
         fontSize: 13
     },
@@ -129,6 +166,7 @@ const styles = StyleSheet.create({
         height: 45,
         marginHorizontal: 10,
         marginVertical: 15,
+        marginBottom: Platform.OS ==='ios'?25: 15,
         borderRadius: 50,
         alignItems: 'center',
         justifyContent: 'center',

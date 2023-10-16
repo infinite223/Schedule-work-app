@@ -12,6 +12,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { removeUserFromGroup, updateUser } from "../../services/user";
 import { getGroupsInWorkPlace } from "../../services/group";
 import { setSelectedGroupId } from "../../slices/invokeFunction";
+import { StatusBar } from "expo-status-bar";
+// import { StatusBar } from "expo-status-bar";
 
 const widthScreen = Dimensions.get('screen').width
 
@@ -60,6 +62,7 @@ export default function Page() {
 
   return (
     <View style={[styles.container]}>
+        <StatusBar style='dark' />
         <FlatList
           style={{flex:1}}
           contentContainerStyle={{ gap: 10}}

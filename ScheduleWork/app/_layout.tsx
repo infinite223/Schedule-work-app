@@ -16,7 +16,6 @@ export default function Layout() {
           name="(Drawer)"
           options={{
             headerShown: false,
-
           }}
         />
         <Stack.Screen
@@ -36,6 +35,7 @@ export default function Layout() {
           options={{
             presentation: 'modal',
             headerShown: false,
+            animation: 'fade'
           }}
         />
         <Stack.Screen
@@ -50,6 +50,7 @@ export default function Layout() {
           options={{
             headerShown:false,
             presentation: 'transparentModal',
+            animation: 'fade'
           }}
         />
         <Stack.Screen
@@ -57,6 +58,7 @@ export default function Layout() {
           options={{
             headerShown:false,
             presentation: 'transparentModal',
+            animation: 'fade'
           }}
         />
         <Stack.Screen
@@ -64,6 +66,7 @@ export default function Layout() {
           options={{
             headerShown:false,
             presentation: 'transparentModal',
+            animation: 'fade'
           }}
         />
         <Stack.Screen
@@ -71,6 +74,7 @@ export default function Layout() {
           options={{
             headerShown:false,
             presentation: 'transparentModal',
+            animation: 'fade'
           }}
         />
         <Stack.Screen
@@ -78,6 +82,7 @@ export default function Layout() {
           options={{
             headerShown:false,
             presentation: 'transparentModal',
+            animation: 'fade'
           }}
         />
       </Stack>

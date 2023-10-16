@@ -30,7 +30,7 @@ const HomeScreen = () => {
                         router.push('/editUser')
                     }
                     else {
-                        router.push('/(Drawer)/schedule')
+                        router.replace('/(Drawer)/schedule')
                     }
                 }
             } catch (e) {

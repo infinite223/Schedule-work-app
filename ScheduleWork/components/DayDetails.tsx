@@ -23,6 +23,7 @@ const DayDetails:FC<{selectedDate: Date}> = ({selectedDate}) => {
     const pathname = usePathname()
     const dispatch = useDispatch()
     const selectedGroup = useSelector(selectSelectedGroupId)
+    const isMyGroup = selectedGroup === user?.groupId
 
     const removeUser = async () => {
         const jsonValue = await AsyncStorage.getItem('my-key');
@@ -101,7 +102,7 @@ const DayDetails:FC<{selectedDate: Date}> = ({selectedDate}) => {
                         {selectedDate.getDate()}
                     </Text>
                     <Text style={styles.dayName}>
-                        {shortDayNames[selectedDate.getDay()]}
+                        {shortDayNames[selectedDate.getDay() - 1]}
                     </Text>
                 </View>
 
@@ -144,7 +145,7 @@ const DayDetails:FC<{selectedDate: Date}> = ({selectedDate}) => {
                 }   
             </View>
            
-            {pathname!=='/selectHoursModal'&&
+            {(pathname!=='/selectHoursModal' && isMyGroup)&&
                 <TouchableOpacity 
                     style={[styles.plusButton, globalStyles.boxShadow]}
                     onPress={() => { 

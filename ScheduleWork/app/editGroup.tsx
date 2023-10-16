@@ -88,12 +88,14 @@ const Page = () => {
           style={[styles.input, globalStyles.boxShadow]}
           value={name}
           onChangeText={setName}
+          placeholderTextColor={'rgba(23, 23, 23, .4)'}
         />
         <TextInput
           placeholder='Opis grupy'
           style={[styles.input, globalStyles.boxShadow]}
           value={description}
           onChangeText={setDescription}
+          placeholderTextColor={'rgba(23, 23, 23, .4)'}
         />
 
         <View style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
@@ -165,7 +167,7 @@ const styles = StyleSheet.create({
     },
     removeButton: {
       borderRadius: 50, 
-      borderColor: colors.errorColor, 
+      borderColor: 'lightgray', 
       backgroundColor: 'white',
       borderWidth:1,
       paddingHorizontal:20, 
