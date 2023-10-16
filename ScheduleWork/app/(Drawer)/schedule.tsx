@@ -11,22 +11,39 @@ import { selectGroups } from "../../slices/groupsSlice";
 import { getUser } from "../../services/user";
 import { router, useNavigation } from "expo-router";
 import CustomCalendar from "../../components/CustomCalendar";
+import { selectSelectedGroupId } from "../../slices/invokeFunction";
 
 const currentDate = new Date();
 
 export default function Page() {
     const [selectedDate, setSelectedDate] = useState<DateWithUsers>({date: currentDate, users: []});
     const [user, setUser] = useState<User | null>(null)
+    const [groupName, setGroupName] = useState('')
     const groups = useSelector(selectGroups)
     const navigation = useNavigation()
-    
-    const groupName = groups.find((group: Group) => group?.id === user?.groupId)?.name
+    const selectedGroupId = useSelector(selectSelectedGroupId)
     
     useLayoutEffect(() => {
       navigation.setOptions({
         headerTitle: `Harmonogram ${groupName}`,
       })
-    }, [groups])  
+    }, [groups, groupName])  
+
+    useEffect(() => {
+      console.log(selectedGroupId, groups)
+      setGroupName(groups.find((group: Group) => group?.id.toString() === selectedGroupId.toString())?.name)
+      setSelectedDate({date: currentDate, users: []})
+      
+    }, [selectedGroupId, groups])
+
+    useEffect(() => { 
+      navigation.addListener('beforeRemove', (e) => {
+          e.preventDefault();
+          console.log('onback');
+          // Do your stuff here
+          // navigation.dispatch(e.data.action);
+      });
+  }, []);
 
     useEffect(() => {
       const getData = async () => {

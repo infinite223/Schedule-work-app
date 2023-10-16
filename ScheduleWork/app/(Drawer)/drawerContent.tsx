@@ -20,14 +20,14 @@ const DrawerContent = () => {
     const workPlace = useSelector(selectWorkPlace)
     
     useEffect(() => {
-        const getData = async () => {
+        const getUserFromStorage = async () => {
             const jsonValue:any = await AsyncStorage.getItem('my-key');
             setUser(jsonValue != null ? JSON.parse(jsonValue).user : null)
 
             setIsAdmin(workPlace.adminId === user?.id.toString())
         }
 
-        getData()
+        getUserFromStorage()
         
     }, [])
     

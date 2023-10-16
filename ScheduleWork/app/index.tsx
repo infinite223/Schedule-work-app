@@ -34,7 +34,7 @@ const HomeScreen = () => {
                     }
                 }
             } catch (e) {
-                alert('Coś poszło nie tak, spróbuj włączyć od nowa aplikacje') 
+                console.log(e)
             }
         };
 

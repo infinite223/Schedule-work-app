@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 50,
         paddingHorizontal: 20,
-        paddingVertical: 10,
+        paddingVertical: 12,
         width: widthScreen - 50,
         maxWidth: 400
     }
