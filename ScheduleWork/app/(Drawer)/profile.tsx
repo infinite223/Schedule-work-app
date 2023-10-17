@@ -54,7 +54,7 @@ const Page = () => {
 
         if(res.status === 200){
           setUser(await res.json())
-          
+
           if(JSON.parse(jsonValue).user.id.toString() === userId) {
             setIsMyProfile(true)
           } else {
@@ -99,7 +99,6 @@ const Page = () => {
         <Text style={{fontSize: 14, fontWeight: '400'}}>{isMyProfile?'Należysz':'Należy'} do grupy:
            <Text style={{fontSize: 15, fontWeight: '700'}}>  {groups.find((group) => group.id === user.id)?.name}</Text>
         </Text>
-        <Text>{isMyProfile?'tak':"nie"}</Text>
       </View>
       
       <View>
