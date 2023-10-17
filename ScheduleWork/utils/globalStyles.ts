@@ -32,5 +32,7 @@ export const globalStyles = StyleSheet.create({
 export const colors = {
     baseColor: '#12cf21',
     errorColor: '#cc2244',
-    successColor: '#44aa44'
+    successColor: '#44aa44',
+    fullDayHours: '#f21',
+    halfDayHours: '#55f'
 }

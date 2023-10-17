@@ -3,6 +3,7 @@ import React, { FC } from 'react'
 import { colors, globalStyles } from '../../utils/globalStyles'
 import { UserInDay } from '../../utils/types'
 import { timeCounter } from '../../utils/timeCounter'
+import { getColorDot } from '../../utils/functions'
 
 const widthScreen = Dimensions.get('window').width
 
@@ -14,14 +15,6 @@ interface DayProps {
     users: UserInDay[]
 }
 
-const getColorDot = (userInDay: UserInDay) => {
-  const time = timeCounter(userInDay.from, userInDay.to)
-
-  if(time.godziny>7)
-    return '#f21'
-  if(time.godziny<=7)
-    return '#55f'
-}
 
 const Day:FC<DayProps> = ({ id, isSelected, users }) => {
   const findUser = users.find((userInDay) => userInDay.user?.id.toString() === '1')

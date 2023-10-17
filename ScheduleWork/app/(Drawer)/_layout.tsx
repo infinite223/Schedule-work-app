@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { Drawer } from 'expo-router/drawer';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import DrawerContent from './drawerContent';
 import { useDispatch } from 'react-redux';
 import { setGroups } from '../../slices/groupsSlice';
@@ -10,6 +10,20 @@ import { getGroupsInWorkPlace } from '../../services/group';
 import { getWorkPlace } from '../../services/workPlace';
 import { getUser } from '../../services/user';
 import { colors } from '../../utils/globalStyles';
+import { Platform } from 'react-native'
+
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
+import { setSelectedGroupId } from '../../slices/invokeFunction';
+import { Group } from '../../utils/types';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 export default function Layout() {
   const dispatch = useDispatch()
@@ -43,6 +57,10 @@ export default function Layout() {
             if(workPlace.status === 200) {
               dispatch(setWorkPlace(await workPlace.json()))
             }
+            else if(workPlace.status === 401){
+              router.push('/messageModal')
+              router.setParams({ message: "Nie jesteś przydzielony do żadnego miejsca pracy", type: 'ERROR' })
+            }
             else {
               alert('Coś poszło nie tak, spróbuj włączyć od nowa aplikacje') 
             }
@@ -60,12 +78,18 @@ export default function Layout() {
   useEffect(() => {
     const tryGetGroupsData = async () => {
       const jsonValue = await AsyncStorage.getItem('my-key');
-      if(jsonValue != null) {
+
+      if(jsonValue != null && JSON.parse(jsonValue)?.user?.workPlaceId) {
         const groups = await getGroupsInWorkPlace(
-          JSON.parse(jsonValue).authToken, JSON.parse(jsonValue)?.user.workPlaceId)
+          JSON.parse(jsonValue).authToken, JSON.parse(jsonValue)?.user?.workPlaceId)
         
         if(groups.status === 200) {
-          dispatch(setGroups(await groups.json()))
+          const groupsData = await groups.json()
+          dispatch(setGroups(groupsData))
+          const findMyGroup = groupsData.find((group: Group) => group.id === JSON.parse(jsonValue)?.user?.groupId)
+          if(findMyGroup) {
+            dispatch(setSelectedGroupId(findMyGroup.id))
+          }
         }
       }
     }
@@ -73,6 +97,8 @@ export default function Layout() {
     tryGetGroupsData()
 
   }, [])
+
+ 
 
   return (
     <Drawer       
@@ -121,4 +147,49 @@ export default function Layout() {
       />
     </Drawer>
   );
+}
+
+async function schedulePushNotification() {
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: "You've got mail! 📬",
+      body: 'Here is the notification body',
+      data: { data: 'goes here' },
+    },
+    trigger: { seconds: 2 },
+  });
+}
+
+async function registerForPushNotificationsAsync() {
+  let token;
+
+  if (Platform.OS === 'android') {
+    await Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C',
+    });
+  }
+
+  if (Device.isDevice) {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      alert('Failed to get push token for push notification!');
+      return;
+    }
+    // Learn more about projectId:
+    // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid
+    token = (await Notifications.getExpoPushTokenAsync({ projectId: 'your-project-id' })).data;
+    console.log(token);
+  } else {
+    alert('Must use physical device for Push Notifications');
+  }
+
+  return token;
 }

@@ -5,7 +5,7 @@ export const updateUser = async (
         userName: string,
         phoneNumber: string | null,
         name: string,
-        groupId: string | null,
+
         id: string
     ) => {
         console.log(phoneNumber, 'user ')
@@ -15,7 +15,7 @@ export const updateUser = async (
             Authorization: `Bearer ${authToken}`,
           },
           method: "PUT",  
-          body: JSON.stringify({userName, name, phoneNumber, groupId})  
+          body: JSON.stringify({userName, name, phoneNumber})  
     })
 
     return res

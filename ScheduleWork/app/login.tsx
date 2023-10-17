@@ -116,11 +116,11 @@ const Page = () => {
         <View style={{alignItems:'center', gap: 20}}>
             <View style={styles.header}>
                 <MaterialCommunityIcons 
-                    name="account-plus-outline" 
+                    name="account-clock-outline" 
                     size={35} 
                     color="#2b3" 
                 />
-                <Text style={styles.headerText}>Tworzenie konta</Text>
+                <Text style={styles.headerText}>logowanie</Text>
             </View>
             <Image style={{width: 255, height: 70}} source={logo}/>
 

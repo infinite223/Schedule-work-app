@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { colors, globalStyles } from '../utils/globalStyles'
 import { router, useLocalSearchParams } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons';
-import { getGroupsInWorkPlace, removeGroup, updateGroup } from '../services/group';
+import { addUserToGroup, getGroupsInWorkPlace, removeGroup, updateGroup } from '../services/group';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectInvokeGetGroupsFunction, setInvokeGetGroupsFunction } from '../slices/invokeFunction';
@@ -44,17 +44,14 @@ const Page = () => {
 
   }, [])
 
-  const addUserToGroup = async (user: User) => {
+  const tryAddUserToGroup = async (user: User) => {
     const jsonValue = await AsyncStorage.getItem('my-key');
 
         if(jsonValue != null) {
-            const res = await updateUser(
-                JSON.parse(jsonValue).authToken,
-                user.userName,
-                user.phoneNumber?user.phoneNumber?.toString():null,
-                user.name,
+            const res = await addUserToGroup(
+                JSON.parse(jsonValue).authToken,     
+                user.id,      
                 groupId,
-                user.id
             )
             
             if(res.status === 200) {
@@ -84,7 +81,7 @@ const Page = () => {
             data={users}
             renderItem={({item}) => 
               <TouchableOpacity 
-                onPress={() => addUserToGroup(item)}
+                onPress={() => tryAddUserToGroup(item)}
                 style={[styles.userItem, globalStyles.boxShadow]}
               >
                 <View style={{flexDirection: 'row', alignItems: 'center', gap: 20}}>

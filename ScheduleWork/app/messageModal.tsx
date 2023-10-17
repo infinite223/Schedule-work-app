@@ -13,7 +13,6 @@ export default function MessageModal() {
     const { type, message } = useLocalSearchParams()
 
     useEffect(() => {
-        
         setTimeout(() => {
             router.back();
         }, 3500)

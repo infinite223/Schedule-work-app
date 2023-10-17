@@ -1,3 +1,7 @@
+import { colors } from "./globalStyles";
+import { timeCounter } from "./timeCounter";
+import { UserInDay } from "./types";
+
 export const formatDateToString = (date: Date) => {
     const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, '0'); 
@@ -31,4 +35,13 @@ export const formatDateToString = (date: Date) => {
     }
 
     return newDate;
+}
+
+export const getColorDot = (userInDay: UserInDay) => {
+  const time = timeCounter(userInDay.from, userInDay.to)
+
+  if(time.godziny>7)
+    return colors.fullDayHours
+  if(time.godziny<=7)
+    return colors.halfDayHours
 }

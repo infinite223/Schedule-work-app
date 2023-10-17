@@ -61,6 +61,24 @@ export const updateGroup = async (
     return res
 }
 
+export const addUserToGroup = async (
+    authToken:  string,
+    userId: string,
+    groupId: string
+) => {
+    
+    const res = await fetch(`${appConfig.endpointsUrl}/group/addUserToGroup`, {
+        headers: {
+            'Content-Type':'application/json',
+            Authorization: `Bearer ${authToken}`,
+        },
+        method: "POST",  
+        body: JSON.stringify({ groupId, userId })  
+    })
+
+    return res
+}
+
 export const removeGroup = async (
     authToken: string,
     id: string

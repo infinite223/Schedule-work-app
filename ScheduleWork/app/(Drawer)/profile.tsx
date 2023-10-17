@@ -13,11 +13,11 @@ import { selectGroups } from '../../slices/groupsSlice'
 
 const Page = () => {
   const [user, setUser] = useState<User | null>(null)
+  const [isMyProfile, setIsMyProfile] = useState(false)
   const router = useRouter()
   const navigation = useNavigation()
   const { userId }: { userId: string} = useLocalSearchParams()
   const groups: Group[] = useSelector(selectGroups)
-  const isMyProfile = user?.id.toString() === userId
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -44,7 +44,7 @@ const Page = () => {
       }
     </View>
     })
-  }, [user])
+  }, [user, isMyProfile])
 
   useEffect(() => {
     const getUserData = async () => {
@@ -54,6 +54,12 @@ const Page = () => {
 
         if(res.status === 200){
           setUser(await res.json())
+          
+          if(JSON.parse(jsonValue).user.id.toString() === userId) {
+            setIsMyProfile(true)
+          } else {
+            setIsMyProfile(false)
+          }
         }
         else {
           alert('Coś poszło nie tak, spróbuj włączyć od nowa aplikacje') 
@@ -62,7 +68,7 @@ const Page = () => {
     }
 
     getUserData()
-  }, [])
+  }, [userId])
 
   if(!user) {
     return (
@@ -93,6 +99,7 @@ const Page = () => {
         <Text style={{fontSize: 14, fontWeight: '400'}}>{isMyProfile?'Należysz':'Należy'} do grupy:
            <Text style={{fontSize: 15, fontWeight: '700'}}>  {groups.find((group) => group.id === user.id)?.name}</Text>
         </Text>
+        <Text>{isMyProfile?'tak':"nie"}</Text>
       </View>
       
       <View>

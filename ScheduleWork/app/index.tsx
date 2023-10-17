@@ -10,11 +10,6 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 
 SplashScreen.preventAutoHideAsync();
 
-
-// todo 
-//  - add adding functionality to groups screen to add person to group
-//  - add global selecting group to show current schedule
-//  - add some securee if user dont have group 
 const HomeScreen = () => {
     const router = useRouter()
 

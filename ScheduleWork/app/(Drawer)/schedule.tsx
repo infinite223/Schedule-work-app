@@ -23,9 +23,6 @@ export default function Page() {
     const groups = useSelector(selectGroups)
     const navigation = useNavigation()
     const selectedGroupId = useSelector(selectSelectedGroupId)
-    const pathname = usePathname()
-    const [hidden, setHidden] = useState(false);
-
     
     useLayoutEffect(() => {
       navigation.setOptions({
@@ -35,19 +32,11 @@ export default function Page() {
 
     useEffect(() => {
       console.log(selectedGroupId, groups)
-      setGroupName(groups.find((group: Group) => group?.id.toString() === selectedGroupId.toString())?.name)
+      const findGroupName = groups.find((group: Group) => group?.id.toString() === selectedGroupId.toString())?.name
+      setGroupName(findGroupName?findGroupName:'')
       setSelectedDate({date: currentDate, users: []})
       
     }, [selectedGroupId, groups])
-
-    useEffect(() => { 
-      navigation.addListener('beforeRemove', (e) => {
-          e.preventDefault();
-          console.log('onback');
-          // Do your stuff here
-          // navigation.dispatch(e.data.action);
-      });
-  }, []);
 
     useEffect(() => {
       const getData = async () => {

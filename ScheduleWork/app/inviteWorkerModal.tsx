@@ -1,26 +1,36 @@
 import { Text, Pressable, StyleSheet, Dimensions, TouchableOpacity, TextInput } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { colors, globalStyles } from '../utils/globalStyles'
 import { router } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons';
+import { addUserToWorkPlace } from '../services/workPlace';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const widthScreen = Dimensions.get('screen').width
 
-const getTimeFromTimestamp = (timestamp?: number) => {
-  const newDate = new Date(Number(timestamp))
-  const hours = newDate.getHours();
-  const minutes = newDate.getMinutes();
-
-  const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-
-  const timeString = `${hours}:${formattedMinutes}`;
-
-  return timeString
-}
-
 const Page = () => {
+  const [email, setEmail] = useState('')
 
-  const inviteWorker = () => {
+  const inviteWorker = async () => {
+    const jsonValue = await AsyncStorage.getItem('my-key');
+    if(jsonValue != null) {
+      const res = await addUserToWorkPlace(JSON.parse(jsonValue).authToken, JSON.parse(jsonValue).user.id, email)
 
+      if(res.status === 200) {
+        router.back()
+
+        router.push('/messageModal')
+        router.setParams({ message: `Użytkownik został dodany do miejsca pracy`, type: 'SUCCESS' })
+        setEmail('')
+      }
+      if(res.status === 401) {
+        router.push('/messageModal')
+        router.setParams({ message: `Użytkownik nie istnieje w aplikacji`, type: 'ERROR' })
+      }
+      else {
+        router.push('/messageModal')
+        router.setParams({ message: `Coś poszło nie tak`, type: 'ERROR' })
+      }
+    }
   }
 
   return (
@@ -35,6 +45,8 @@ const Page = () => {
             style={[styles.input, globalStyles.boxShadow]}
             placeholder='Email pracownika'
             placeholderTextColor={'rgba(23, 23, 23, .4)'}
+            value={email}
+            onChangeText={setEmail}
         />
 
         <TouchableOpacity 
@@ -45,7 +57,6 @@ const Page = () => {
                 Zaproś
             </Text>
             <Ionicons name="arrow-forward-outline" size={20} color="white" />
-
         </TouchableOpacity>
       </Pressable>
     </Pressable>

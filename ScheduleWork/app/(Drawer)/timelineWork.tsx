@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     },
     monthName: {
         fontWeight: '400',
-        fontSize: 10
+        fontSize: 10    
     },
     text: {
         fontSize: 13

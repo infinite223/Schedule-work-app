@@ -84,36 +84,40 @@ export default function Page() {
                         </View>
                       </View>
                     </View>
-                    {isAdmin&&<View style={{flexDirection:'row', alignItems: 'center', gap: 2}}>
-                      <Link
-                        asChild
-                        href={{pathname: '/addUserToGroup', 
-                        params: {
-                          groupId: item?.id,
-                          groupName: item.name,
-                        }}}
-                      >
-                        <TouchableOpacity 
-                          style={{ padding: 7 }}
-                        >
-                          <Octicons name='person-add' size={22} color={'black'}/>
-                        </TouchableOpacity>
-                      </Link>
+                   <View style={{flexDirection:'row', alignItems: 'center', gap: 2}}>
+                       {isAdmin&&
+                        <>
+                          <Link
+                            asChild
+                            href={{pathname: '/addUserToGroup', 
+                            params: {
+                              groupId: item?.id,
+                              groupName: item.name,
+                            }}}
+                          >
+                            <TouchableOpacity 
+                              style={{ padding: 7 }}
+                            >
+                              <Octicons name='person-add' size={22} color={'black'}/>
+                            </TouchableOpacity>
+                          </Link>
 
-                      <Link
-                        asChild
-                        href={{pathname: '/editGroup', params: {
-                          groupId: item?.id,
-                          groupName: item.name,
-                          groupDescription: item.description?item.description: ''
-                        }}}
-                      >
-                        <TouchableOpacity 
-                          style={{ padding: 7 }}
-                        >
-                          <FontAwesome5 name='edit' size={20} color={'black'}/>
-                        </TouchableOpacity>
-                      </Link>
+                          <Link
+                            asChild
+                            href={{pathname: '/editGroup', params: {
+                              groupId: item?.id,
+                              groupName: item.name,
+                              groupDescription: item.description?item.description: ''
+                            }}}
+                          >
+                            <TouchableOpacity 
+                              style={{ padding: 7 }}
+                            >
+                              <FontAwesome5 name='edit' size={20} color={'black'}/>
+                            </TouchableOpacity>
+                          </Link>
+                        </>
+                      }
                       <TouchableOpacity
                         onPress={() => {
                           dispatch(setSelectedGroupId(item.id))
@@ -126,7 +130,7 @@ export default function Page() {
                         <Text style={{fontSize: 12, color: 'white', fontWeight: '700'}}>Zobacz grafik</Text>
                         <Ionicons name='search' size={17} color={'white'}/> 
                       </TouchableOpacity>
-                    </View>}
+                    </View>
                   </View>
 
                   {item.description?.length>0&&
