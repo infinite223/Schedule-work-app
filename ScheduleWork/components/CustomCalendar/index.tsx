@@ -27,6 +27,7 @@ const nowMonth = nowDate.getMonth()
 const CustomCalendar:FC<CustomCalendarProps> = ({ selectedDate, setSelectedDate }) => {
 
     const [days, setDays] = useState<{id: number, date: Date, users: [], noDay: boolean}[]>([])
+    const [myId, setMyId] = useState('')
     const invokeFunction = useSelector(selectInvokeFunction)
     const [selectedMonth, setSelectedMonth] = useState(new Date(nowYear, nowMonth, 1))
     const selectedGroupId = useSelector(selectSelectedGroupId)
@@ -34,7 +35,6 @@ const CustomCalendar:FC<CustomCalendarProps> = ({ selectedDate, setSelectedDate 
     useEffect(() => {
         const tryGetScheduleForMonth = async () => {
             const jsonValue = await AsyncStorage.getItem('my-key');
-            // const groupId = '1'
 
             const year = selectedMonth.getFullYear()
             const month = selectedMonth.getMonth()
@@ -42,6 +42,7 @@ const CustomCalendar:FC<CustomCalendarProps> = ({ selectedDate, setSelectedDate 
             const endDate = new Date(year, month+1, 1)
     
             if(jsonValue != null){
+                setMyId(JSON.parse(jsonValue).user.id)
                 const res = await getScheduleForMonth(
                     JSON.parse(jsonValue).authToken,
                     formatDateToString(startDate),
@@ -50,7 +51,8 @@ const CustomCalendar:FC<CustomCalendarProps> = ({ selectedDate, setSelectedDate 
         
                 if(res.status === 200) {
                     const groupData = await res.json()
-                    setDays(firstDayOfMonth(selectedMonth, groupData))
+                    console.log(groupData, 'data', selectedGroupId)
+                    setDays(firstDayOfMonth(selectedMonth, groupData, selectedGroupId))
                 }
 
                 else {
@@ -120,6 +122,7 @@ const CustomCalendar:FC<CustomCalendarProps> = ({ selectedDate, setSelectedDate 
                                     id={item.id} 
                                     isSelected={isSelected}
                                     users={item.users}
+                                    myId={myId}
                                 />
                             </TouchableOpacity>
                         )

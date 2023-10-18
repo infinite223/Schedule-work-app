@@ -1,4 +1,5 @@
 import { formatStringToDate } from "./functions";
+import { Group } from "./types";
 
 export function daysInMonth (selectDate:Date) {
     const nowYear = selectDate.getFullYear();
@@ -7,7 +8,7 @@ export function daysInMonth (selectDate:Date) {
     return new Date(nowYear, nowMoth, 0).getDate();
 }
 
-export const firstDayOfMonth = (selectDate:Date, data: any) => {
+export const firstDayOfMonth = (selectDate:Date, groups: any, selectedGroupId: string) => {
     const arr:{id: number, date: Date, users: [], noDay: boolean}[] = []
     const newArr = []
     const year = selectDate.getFullYear();
@@ -22,7 +23,8 @@ export const firstDayOfMonth = (selectDate:Date, data: any) => {
     }
 
     for (let i = 1; i < daysInMonth(selectDate)+ 1; i++) {
-        const findDay = data[0]?.days?.find((day:any) => formatStringToDate(day.date).getDate() === i)
+        const findGroup = groups.find((group: Group) => group.id.toString() === selectedGroupId.toString())
+        const findDay = findGroup?.days?.find((day:any) => formatStringToDate(day.date).getDate() === i)
         let users = findDay?findDay.usersInDay:[]
 
         arr.push({id: i, noDay: false, date: new Date(year, month, i), users})   

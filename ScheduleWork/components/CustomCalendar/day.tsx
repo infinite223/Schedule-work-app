@@ -12,12 +12,13 @@ const widthDay = (widthScreen - 20) /7
 interface DayProps {
     id: number,
     isSelected: boolean,
-    users: UserInDay[]
+    users: UserInDay[],
+    myId: string
 }
 
 
-const Day:FC<DayProps> = ({ id, isSelected, users }) => {
-  const findUser = users.find((userInDay) => userInDay.user?.id.toString() === '1')
+const Day:FC<DayProps> = ({ id, isSelected, users, myId }) => {
+  const findUser = users.find((userInDay) => userInDay.user?.id === myId)
 
   return (
     <View

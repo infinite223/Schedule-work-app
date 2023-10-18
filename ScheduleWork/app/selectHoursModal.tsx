@@ -39,7 +39,7 @@ const Page = () => {
     try {
       const jsonValue = await AsyncStorage.getItem('my-key');
       if(jsonValue != null) {
-        const res = await getDay(JSON.parse(jsonValue).authToken, params.day)
+        const res = await getDay(JSON.parse(jsonValue).authToken, params.day, JSON.parse(jsonValue).user.groupId)
 
         if(res.status === 200) {
           const day = await res.json()
@@ -50,6 +50,7 @@ const Page = () => {
           }
         }
         else {
+          console.log(params.day, 'tuatjjjj')
           const newDay = await createDay(JSON.parse(jsonValue).authToken, params.day)
           
           if(newDay.status === 200) {
