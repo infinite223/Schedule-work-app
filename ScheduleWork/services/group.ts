@@ -17,9 +17,9 @@ export const createGroup = async (
     return res
 }
 
-export const getScheduleForMonth = async (authToken: string, startDate: string, endDate: string, id: string) => {
-    console.log(authToken,"xd ", id, startDate)
-    const res = await fetch(`${appConfig.endpointsUrl}/group/getGroupWithDays/${id}`, {
+export const getScheduleForMonth = async (authToken: string, startDate: string, endDate: string) => {
+    console.log(authToken,"xd ", startDate)
+    const res = await fetch(`${appConfig.endpointsUrl}/group/getGroupWithDays`, {
         headers: {
             'Content-Type':'application/json',
             Authorization: `Bearer ${authToken}`,

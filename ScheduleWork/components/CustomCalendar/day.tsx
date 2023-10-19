@@ -1,8 +1,7 @@
 import { View, Text, StyleSheet, Dimensions } from 'react-native'
 import React, { FC } from 'react'
-import { colors, globalStyles } from '../../utils/globalStyles'
+import { colors } from '../../utils/globalStyles'
 import { UserInDay } from '../../utils/types'
-import { timeCounter } from '../../utils/timeCounter'
 import { getColorDot } from '../../utils/functions'
 
 const widthScreen = Dimensions.get('window').width
@@ -31,7 +30,7 @@ const Day:FC<DayProps> = ({ id, isSelected, users, myId }) => {
         {id !== 0&&id}
       </Text>
       
-      <View>
+      <View style={{flexDirection:'row', alignItems: 'center', gap: 5}}>
         {users.map((userInDay, id)=> 
           <View key={id} style={[styles.dot, {backgroundColor: getColorDot(userInDay)}]}/>
         )}

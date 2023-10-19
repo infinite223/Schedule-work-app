@@ -44,7 +44,6 @@ export default function Page() {
             user.id,
             user.groupId
         )
-        console.log(res.status)
 
         if(res.status === 200) {
             const groups = await getGroupsInWorkPlace(

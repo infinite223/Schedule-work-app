@@ -70,6 +70,14 @@ export default function Layout() {
           }}
         />
         <Stack.Screen
+          name="informationModal" 
+          options={{
+            headerShown:false,
+            presentation: 'transparentModal',
+            animation: 'fade_from_bottom'
+          }}
+        />
+        <Stack.Screen
           name="editGroup" 
           options={{
             headerShown:false,

@@ -20,6 +20,12 @@ type WorkPlace = {
     adminId: String
 }
 
+type Log = {
+    file: string,
+    error: string,
+    date: Date 
+}
+
 type Group = {
     id: string, 
     name: string,
@@ -45,4 +51,4 @@ type UserInDay = {
     dayId: string
 }
 
-export { Group, User, WorkPlace, UserInDay, Day, DateWithUsers }
+export { Group, User, WorkPlace, UserInDay, Day, DateWithUsers, Log }

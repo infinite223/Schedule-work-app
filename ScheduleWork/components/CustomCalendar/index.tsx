@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Dimensions } from 'react-native'
 import React, { FC, useEffect, useState } from 'react'
-import { DateWithUsers, User } from '../../utils/types'
+import { DateWithUsers } from '../../utils/types'
 import { firstDayOfMonth } from '../../utils/scheduleFunctions'
 import Day from './day'
 import { Ionicons } from '@expo/vector-icons'
@@ -46,12 +46,10 @@ const CustomCalendar:FC<CustomCalendarProps> = ({ selectedDate, setSelectedDate 
                 const res = await getScheduleForMonth(
                     JSON.parse(jsonValue).authToken,
                     formatDateToString(startDate),
-                    formatDateToString(endDate),
-                    selectedGroupId)
+                    formatDateToString(endDate))
         
                 if(res.status === 200) {
                     const groupData = await res.json()
-                    console.log(groupData, 'data', selectedGroupId)
                     setDays(firstDayOfMonth(selectedMonth, groupData, selectedGroupId))
                 }
 
@@ -65,6 +63,10 @@ const CustomCalendar:FC<CustomCalendarProps> = ({ selectedDate, setSelectedDate 
         tryGetScheduleForMonth()
 
     }, [invokeFunction, selectedMonth, selectedGroupId]) 
+
+    useEffect(() => {
+        setSelectedDate({date: selectedMonth, users: []})
+    }, [selectedMonth])
 
   return (
     <View style={styles.conatiner}> 

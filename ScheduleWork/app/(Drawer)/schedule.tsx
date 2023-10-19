@@ -13,6 +13,7 @@ import { router, useNavigation, usePathname } from "expo-router";
 import CustomCalendar from "../../components/CustomCalendar";
 import { selectSelectedGroupId } from "../../slices/invokeFunction";
 import { StatusBar } from "expo-status-bar";
+import { setLogsInStorage } from "../../utils/functions";
 
 const currentDate = new Date();
 
@@ -31,7 +32,6 @@ export default function Page() {
     }, [groups, groupName])  
 
     useEffect(() => {
-      console.log(selectedGroupId, groups)
       const findGroupName = groups.find((group: Group) => group?.id.toString() === selectedGroupId.toString())?.name
       setGroupName(findGroupName?findGroupName:'')
       setSelectedDate({date: currentDate, users: []})
@@ -62,6 +62,7 @@ export default function Page() {
           }                
         } catch (e) {
           alert('Coś poszło nie tak, spróbuj włączyć od nowa aplikacje') 
+          setLogsInStorage({file: '/drawer/schedule', error: 'trycatch', date: new Date()})
         }
       };
 

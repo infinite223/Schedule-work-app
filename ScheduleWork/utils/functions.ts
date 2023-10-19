@@ -1,6 +1,7 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { colors } from "./globalStyles";
 import { timeCounter } from "./timeCounter";
-import { UserInDay } from "./types";
+import { Log, UserInDay } from "./types";
 
 export const formatDateToString = (date: Date) => {
     const year = date.getFullYear();
@@ -45,3 +46,16 @@ export const getColorDot = (userInDay: UserInDay) => {
   if(time.godziny<=7)
     return colors.halfDayHours
 }
+
+export const setLogsInStorage = async (newLog: Log) => {
+  const logsValue = await AsyncStorage.getItem('logs');
+
+  if(logsValue != null) {
+    let newLogs = JSON.parse(logsValue)
+    newLogs.push(newLog)
+    await AsyncStorage.setItem('logs',  JSON.stringify(newLogs));
+  }
+  else {
+    await AsyncStorage.setItem('logs',  JSON.stringify([newLog]));
+  }
+} 

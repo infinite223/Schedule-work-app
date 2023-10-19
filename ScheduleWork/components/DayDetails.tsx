@@ -1,9 +1,9 @@
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, Dimensions } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native'
 import React, { FC, useState, useEffect } from 'react'
 import { colors, globalStyles } from '../utils/globalStyles'
 import { Entypo } from '@expo/vector-icons'
 import Loading from './Loading'
-import { User } from '../utils/types'
+import { User, UserInDay } from '../utils/types'
 import {  Link, router, usePathname } from 'expo-router'
 import { getDay } from '../services/day'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { selectInvokeFunction, selectSelectedGroupId, setInvokeFunction } from '../slices/invokeFunction'
 import { formatDateToString } from './../utils/functions';
 import { shortDayNames } from '../utils/data'
+import { selectWorkPlace } from '../slices/workPlaceSlice'
 
 const DayDetails:FC<{selectedDate: Date}> = ({selectedDate}) => {
     const [users, setUsers] = useState<any[] | null>(null)
@@ -23,20 +24,34 @@ const DayDetails:FC<{selectedDate: Date}> = ({selectedDate}) => {
     const pathname = usePathname()
     const dispatch = useDispatch()
     const selectedGroup = useSelector(selectSelectedGroupId)
+    const workplace = useSelector(selectWorkPlace)
     const isMyGroup = selectedGroup === user?.groupId
+    const isAdmin = workplace.adminId?.toString() === user?.id?.toString()
 
     const removeUser = async () => {
         const jsonValue = await AsyncStorage.getItem('my-key');
         
             if(jsonValue != null && users) {
                 const findMe = users?.find((userInDay) => userInDay.user.id === JSON.parse(jsonValue).user.id)
-                console.log(findMe)
                 if(findMe){
                     const res = await removeUserInDay(JSON.parse(jsonValue).authToken, findMe.id)
 
                     dispatch(setInvokeFunction(!invokeFunction))
                 }
             }
+    }
+
+    const removeUserByAdmin = async (userInDay: UserInDay) => {
+        if(isAdmin) {
+            const jsonValue = await AsyncStorage.getItem('my-key');
+        
+            if(jsonValue != null && users) {
+                const res = await removeUserInDay(JSON.parse(jsonValue).authToken, userInDay.id)
+                if(res.status === 200) {
+                    dispatch(setInvokeFunction(!invokeFunction))
+                }
+            }
+        }
     }
 
     useEffect(() => {
@@ -108,6 +123,11 @@ const DayDetails:FC<{selectedDate: Date}> = ({selectedDate}) => {
 
                 {users.length>0&&<FlatList
                     data={users}
+                    ListFooterComponent={() => <View style={{display: isAdmin?'flex':'none'}}>
+                        <Text style={{fontSize: 12, fontWeight: '300', paddingHorizontal: 10}}>
+                            Przytrzymując wpis osoby możesz go usunąć z dnia
+                        </Text>
+                    </View>}
                     renderItem={({ item }) => 
                         <Link
                             href={{pathname: '/(Drawer)/profile', params: {userId: item?.user.id}}}
@@ -115,6 +135,7 @@ const DayDetails:FC<{selectedDate: Date}> = ({selectedDate}) => {
                             style={[
                                 styles.userItem,  globalStyles.boxShadow_light
                             ]}
+                            onLongPress={() => removeUserByAdmin(item)}
                         >
                             <TouchableOpacity>
                                 <Text style={[styles.namePerson, {color: item.user.id===user?.id?colors.baseColor: 'black'}]}>
@@ -145,7 +166,7 @@ const DayDetails:FC<{selectedDate: Date}> = ({selectedDate}) => {
                 }   
             </View>
            
-            {(pathname!=='/selectHoursModal' && isMyGroup)&&
+            {(pathname!=='/selectHoursModal' && isMyGroup && !isAdmin)&&
                 <TouchableOpacity 
                     style={[styles.plusButton, globalStyles.boxShadow]}
                     onPress={() => { 

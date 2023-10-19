@@ -16,6 +16,7 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { setSelectedGroupId } from '../../slices/invokeFunction';
 import { Group } from '../../utils/types';
+import { setLogsInStorage } from '../../utils/functions';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -69,6 +70,7 @@ export default function Layout() {
         }                
       } catch (e) {
         alert('Coś poszło nie tak, spróbuj włączyć od nowa aplikacje') 
+        setLogsInStorage({file: '/drawer/layout', error: 'trycatch', date: new Date()})
       }
     };
 
@@ -90,6 +92,8 @@ export default function Layout() {
           if(findMyGroup) {
             dispatch(setSelectedGroupId(findMyGroup.id))
           }
+        } else {
+          setLogsInStorage({file: '/drawer/layout', error: 'error tryGetGroupsData', date: new Date()})
         }
       }
     }
@@ -186,7 +190,6 @@ async function registerForPushNotificationsAsync() {
     // Learn more about projectId:
     // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid
     token = (await Notifications.getExpoPushTokenAsync({ projectId: 'your-project-id' })).data;
-    console.log(token);
   } else {
     alert('Must use physical device for Push Notifications');
   }

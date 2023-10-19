@@ -25,7 +25,7 @@ export default function Page() {
 
         <View style={styles.options}>
           <TouchableOpacity 
-              onPress={() => {}}
+              onPress={() => router.push('/informationModal')}
               style={[styles.option]}
           >
               <Ionicons name="md-information-circle-outline" size={27}/>
@@ -34,9 +34,10 @@ export default function Page() {
           <TouchableOpacity 
               onPress={() => {}}
               style={[styles.option]}
+              disabled
           >
-              <Ionicons name="notifications-outline" size={25}/>
-              <Text style={styles.optionText}>Powiadomienia</Text>
+              <Ionicons name="notifications-outline" size={25} color={'lightgray'}/>
+              <Text style={[styles.optionText, {color: 'lightgray'}]}>Powiadomienia</Text>
           </TouchableOpacity>
 
           <TouchableOpacity 

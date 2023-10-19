@@ -10,6 +10,7 @@ import { colors } from '../../utils/globalStyles'
 import * as Linking from "expo-linking";
 import { useSelector } from 'react-redux'
 import { selectGroups } from '../../slices/groupsSlice'
+import { selectWorkPlace } from '../../slices/workPlaceSlice'
 
 const Page = () => {
   const [user, setUser] = useState<User | null>(null)
@@ -18,6 +19,7 @@ const Page = () => {
   const navigation = useNavigation()
   const { userId }: { userId: string} = useLocalSearchParams()
   const groups: Group[] = useSelector(selectGroups)
+  const workplace = useSelector(selectWorkPlace)
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -96,9 +98,17 @@ const Page = () => {
       </View>
 
       <View>
-        <Text style={{fontSize: 14, fontWeight: '400'}}>{isMyProfile?'Należysz':'Należy'} do grupy:
-           <Text style={{fontSize: 15, fontWeight: '700'}}>  {groups.find((group) => group.id === user.id)?.name}</Text>
-        </Text>
+        {workplace.adminId.toString() === user.id.toString()?
+        <Text style={{fontSize: 14, fontWeight: '400'}}>{isMyProfile?'Jesteś ':'Jest to '}
+            <Text style={{fontSize: 15, fontWeight: '600'}}> 
+              administrator miejsca pracy/szef
+            </Text>
+        </Text>:
+         <Text style={{fontSize: 14, fontWeight: '400'}}>{isMyProfile?'Należysz':'Należy'} do grupy:
+         <Text style={{fontSize: 15, fontWeight: '700'}}> 
+           {groups.find((group) => group.id === user.id)?.name}
+         </Text>
+      </Text>}
       </View>
       
       <View>

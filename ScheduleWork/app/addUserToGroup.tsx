@@ -10,6 +10,7 @@ import { selectInvokeGetGroupsFunction, setInvokeGetGroupsFunction } from '../sl
 import { selectGroups, setGroups } from '../slices/groupsSlice';
 import { Group, User } from '../utils/types';
 import { getUsersWithOutGroup, updateUser } from '../services/user';
+import { setLogsInStorage } from '../utils/functions';
 
 const widthScreen = Dimensions.get('screen').width
 
@@ -36,6 +37,9 @@ const Page = () => {
             
             if(res.status === 200) {
                 setUsers(await res.json())
+            }
+            else {
+              setLogsInStorage({file: '/addUserToGroup', error: 'getUsersData', date: new Date()})
             }
         }
     } 
@@ -65,6 +69,9 @@ const Page = () => {
                     dispatch(setGroups(await groups.json()))
                     router.back()
                 }
+            }
+            else {
+              setLogsInStorage({file: '/addUserToGroup', error: 'tryAddUserToGroup', date: new Date()})
             }
         }
   }

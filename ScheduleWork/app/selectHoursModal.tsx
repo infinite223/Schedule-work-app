@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createUserInDay } from '../services/userInDay';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectInvokeFunction, setInvokeFunction } from '../slices/invokeFunction';
+import { setLogsInStorage } from '../utils/functions';
 const widthScreen = Dimensions.get('screen').width
 
 const getTimeFromTimestamp = (timestamp?: number) => {
@@ -65,6 +66,7 @@ const Page = () => {
       }
     } catch (error) {
       alert('Coś poszło nie tak, spróbuj włączyć od nowa aplikacje') 
+      setLogsInStorage({file: '/selectHoursModal', error: 'trycatch', date: new Date()})
     }
   }
 

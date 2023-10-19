@@ -7,6 +7,7 @@ import logo from './../assets/images/logo.png'
 import * as SplashScreen from 'expo-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import { setLogsInStorage } from '../utils/functions'
 
 SplashScreen.preventAutoHideAsync();
 
@@ -20,7 +21,6 @@ const HomeScreen = () => {
 
                 if(jsonValue != null){
                     const data = JSON.parse(jsonValue)
-                    console.log(data, 'd')
                     if(!data.user.userName || !data.user.name) {
                         router.push('/editUser')
                     }
@@ -29,7 +29,7 @@ const HomeScreen = () => {
                     }
                 }
             } catch (e) {
-                console.log(e)
+                setLogsInStorage({file: '/index', error: 'trycatch', date: new Date()})
             }
         };
 
