@@ -93,6 +93,14 @@ export default function Layout() {
             animation: 'fade'
           }}
         />
+        <Stack.Screen
+          name="logsListModal" 
+          options={{
+            headerShown:false,
+            presentation: 'transparentModal',
+            animation: 'fade_from_bottom'
+          }}
+        />
       </Stack>
     </Provider>
   );

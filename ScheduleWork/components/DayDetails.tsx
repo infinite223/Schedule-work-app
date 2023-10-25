@@ -56,6 +56,7 @@ const DayDetails:FC<{selectedDate: Date}> = ({selectedDate}) => {
 
     useEffect(() => {
         const getUsersInDay = async () => {
+            setUsers([])
             setLoading(true)
 
             const jsonValue = await AsyncStorage.getItem('my-key');
@@ -160,8 +161,8 @@ const DayDetails:FC<{selectedDate: Date}> = ({selectedDate}) => {
                 }
 
                 {loading &&
-                    <View style={styles.noUsers}>
-                        <Text style={styles.noUsersText}>ładowanie...</Text>
+                    <View style={[styles.noUsers, {width: 50}]}>
+                        <Loading/>
                     </View>
                 }   
             </View>

@@ -11,6 +11,7 @@ import { selectGroups, setGroups } from '../slices/groupsSlice';
 import { Group, User } from '../utils/types';
 import { getUsersWithOutGroup, updateUser } from '../services/user';
 import { setLogsInStorage } from '../utils/functions';
+import Loading from '../components/Loading';
 
 const widthScreen = Dimensions.get('screen').width
 
@@ -24,9 +25,11 @@ const Page = () => {
   const { groupName , groupId }: ParamsTypes = useLocalSearchParams()
   const [users, setUsers] = useState<User[]>([])
   const dispatch = useDispatch()
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const getUsersData = async () => {
+        setLoading(true)
         const jsonValue = await AsyncStorage.getItem('my-key');
 
         if(jsonValue != null) {
@@ -42,6 +45,8 @@ const Page = () => {
               setLogsInStorage({file: '/addUserToGroup', error: 'getUsersData', date: new Date()})
             }
         }
+
+        await setLoading(false)
     } 
 
     getUsersData()
@@ -84,7 +89,7 @@ const Page = () => {
             Dostępne osoby:
         </Text>
 
-        <FlatList
+        {!loading?<FlatList
             data={users}
             renderItem={({item}) => 
               <TouchableOpacity 
@@ -101,9 +106,13 @@ const Page = () => {
                 <Ionicons name='add-outline' size={22}/> 
               </TouchableOpacity>
             }
-        />
+        />:
+        <View style={{height: 40}}>
+          <Loading/>
+        </View>
+       }
 
-        {users.length===0&&
+        {(users.length===0 && !loading)&&
             <View style={styles.noUsers}>
                 <Text style={{fontWeight: '400'}}>Brak pracowników do dodania do grupy</Text>
             </View>

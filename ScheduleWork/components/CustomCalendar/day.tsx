@@ -6,7 +6,7 @@ import { getColorDot } from '../../utils/functions'
 
 const widthScreen = Dimensions.get('window').width
 
-const widthDay = (widthScreen - 20) /7
+const widthDay = (widthScreen - 20)/7
 
 interface DayProps {
     id: number,

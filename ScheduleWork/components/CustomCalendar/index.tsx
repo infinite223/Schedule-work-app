@@ -12,6 +12,7 @@ import { colors } from '../../utils/globalStyles'
 import { addMonthsToDate, formatDateToString } from '../../utils/functions'
 import { useSelector } from 'react-redux'
 import { selectInvokeFunction, selectSelectedGroupId } from '../../slices/invokeFunction'
+import Loading from '../Loading'
 
 const widthScreen = Dimensions.get('window').width
 const widthDay = (widthScreen - 20) /7
@@ -28,12 +29,15 @@ const CustomCalendar:FC<CustomCalendarProps> = ({ selectedDate, setSelectedDate 
 
     const [days, setDays] = useState<{id: number, date: Date, users: [], noDay: boolean}[]>([])
     const [myId, setMyId] = useState('')
+    const [loading, setLoading] = useState(false)
     const invokeFunction = useSelector(selectInvokeFunction)
     const [selectedMonth, setSelectedMonth] = useState(new Date(nowYear, nowMonth, 1))
     const selectedGroupId = useSelector(selectSelectedGroupId)
+    const [refresh, setRefresh] = useState(false)
 
     useEffect(() => {
         const tryGetScheduleForMonth = async () => {
+            setLoading(true)
             const jsonValue = await AsyncStorage.getItem('my-key');
 
             const year = selectedMonth.getFullYear()
@@ -47,7 +51,7 @@ const CustomCalendar:FC<CustomCalendarProps> = ({ selectedDate, setSelectedDate 
                     JSON.parse(jsonValue).authToken,
                     formatDateToString(startDate),
                     formatDateToString(endDate))
-        
+                console.log(res.status, "getScheduleForMonth")
                 if(res.status === 200) {
                     const groupData = await res.json()
                     setDays(firstDayOfMonth(selectedMonth, groupData, selectedGroupId))
@@ -58,15 +62,22 @@ const CustomCalendar:FC<CustomCalendarProps> = ({ selectedDate, setSelectedDate 
                     router.setParams({ message: "Nie udało się pobrać grafiku", type: 'ERROR' })
                 }
             }
+
+            await setLoading(false)
+            await setRefresh(false)
         }
         
         tryGetScheduleForMonth()
 
-    }, [invokeFunction, selectedMonth, selectedGroupId]) 
+    }, [invokeFunction, selectedMonth, selectedGroupId, refresh]) 
 
     useEffect(() => {
         setSelectedDate({date: selectedMonth, users: []})
     }, [selectedMonth])
+
+    if(loading) {
+        <Loading/>
+    }
 
   return (
     <View style={styles.conatiner}> 
@@ -100,7 +111,6 @@ const CustomCalendar:FC<CustomCalendarProps> = ({ selectedDate, setSelectedDate 
             contentContainerStyle={{ 
                 width: widthScreen - 20, 
                 justifyContent: 'space-between',
-                // backgroundColor: 'red'
             }}
             renderItem={({item, index}) => 
                 <Text key={index} style={{width: widthDay, fontSize: 12, fontWeight: '300', alignItems: 'center', justifyContent:'center', textAlign: 'center'}}>
@@ -113,11 +123,16 @@ const CustomCalendar:FC<CustomCalendarProps> = ({ selectedDate, setSelectedDate 
             <FlatList
                 data={days}
                 numColumns={7}
+                refreshing={refresh}
+                onRefresh={() => setRefresh(true)}
                 renderItem={({ item, index }) => {
                     const isSelected = item.date === selectedDate.date;
-    
+                    const disableDay = item.noDay || loading
                         return (
-                            <TouchableOpacity disabled={item.noDay} key={index} onPress={() => { 
+                            <TouchableOpacity 
+                                disabled={disableDay} 
+                                key={index} 
+                                onPress={() => { 
                                     setSelectedDate({date: item.date, users: item.users})
                                 }}>
                                 <Day 

@@ -1,26 +1,21 @@
-import React, { useState } from "react";
-import { Text, View, TouchableOpacity, StyleSheet, Dimensions, Image } from "react-native";
+import React from "react";
+import { Text, View, TouchableOpacity, StyleSheet, Dimensions } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { router } from "expo-router";
-import logo from './../../assets/images/logo.png'
 import { Ionicons } from "@expo/vector-icons";
 
 const widthScreen = Dimensions.get('screen').width
 
 export default function Page() {
-    const [selectedDate, setSelectedDate] = useState('');
-    const insets = useSafeAreaInsets();
-
     const logout = async () => {
         await AsyncStorage.removeItem('my-key');
     
         router.push('/')
-      }
+    }
    
   return (
     <SafeAreaProvider style={[styles.container]}>
-        {/* <Image style={{width: 175, height: 40}} source={logo}/> */}
         <View></View>
 
         <View style={styles.options}>
@@ -32,6 +27,13 @@ export default function Page() {
               <Text style={styles.optionText}>Informacje o aplikacji</Text>
           </TouchableOpacity>
           <TouchableOpacity 
+              onPress={() => router.push('/logsListModal')}
+              style={[styles.option]}
+          >
+              <Ionicons name="md-alert-outline" size={27}/>
+              <Text style={styles.optionText}>Zapisane logi w apliacji</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
               onPress={() => {}}
               style={[styles.option]}
               disabled
@@ -39,7 +41,6 @@ export default function Page() {
               <Ionicons name="notifications-outline" size={25} color={'lightgray'}/>
               <Text style={[styles.optionText, {color: 'lightgray'}]}>Powiadomienia</Text>
           </TouchableOpacity>
-
           <TouchableOpacity 
               onPress={logout}
               style={[styles.option, {backgroundColor: '#eee', marginTop: 10}]}

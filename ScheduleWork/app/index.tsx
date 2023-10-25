@@ -6,8 +6,8 @@ import calendar from './../assets/images/calendar.png'
 import logo from './../assets/images/logo.png'
 import * as SplashScreen from 'expo-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import { setLogsInStorage } from '../utils/functions'
+import { TouchableOpacity } from 'react-native';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -46,6 +46,10 @@ const HomeScreen = () => {
         <Text style={styles.descriptionText}>
             Zaloguj się do włąsnego miejsca pracy aby ułatwić sobie zarządzanie pracą.
         </Text>
+
+        <TouchableOpacity 
+            onLongPress={() => router.push('/logsListModal')}
+            style={styles.hideButton}/>
 
         <Link href={'/login'}
             asChild
@@ -92,6 +96,14 @@ const styles = StyleSheet.create({
         backgroundColor: colors.baseColor, 
         paddingHorizontal:20, 
         paddingVertical: 10
+    },
+    hideButton: {
+        width: 50,
+        height: 50,
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+        position: 'absolute',
+        top: 20,
+        right: 20
     }
 })
 

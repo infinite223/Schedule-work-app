@@ -15,9 +15,11 @@ const createGroupModal = () => {
   const [description, setDescription] = useState('')
   const dispatch = useDispatch()
   const groups = useSelector(selectGroups)
+  const [lockbutton, setLockbutton] = useState(false)
 
   const tryCreateGroup = async () => {
     if(name.length>3) {
+      setLockbutton(true)
       const jsonValue = await AsyncStorage.getItem('my-key');
       if(jsonValue) {
         const res = await createGroup(JSON.parse(jsonValue).authToken, name, description)
@@ -40,6 +42,7 @@ const createGroupModal = () => {
           router.setParams({ message: "Nie prawidłowy kod", type: 'ERROR' })
         }
       }
+      setLockbutton(false)
     }
     else {
       router.push('/messageModal')
@@ -72,7 +75,8 @@ const createGroupModal = () => {
 
         <TouchableOpacity 
             onPress={tryCreateGroup}
-            style={[styles.inviteButton, globalStyles.boxShadow]}
+            disabled={lockbutton}
+            style={[styles.inviteButton, globalStyles.boxShadow, {opacity: lockbutton?0.2:1}]}
         >
             <Text style={{color: 'white', fontWeight: '700'}}>
                 Utwórz

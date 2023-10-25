@@ -22,6 +22,7 @@ export default function Page() {
     const workPlace = useSelector(selectWorkPlace)
     const dispatch = useDispatch()
     const groups:Group[] = useSelector(selectGroups)
+    const [refresh, setRefresh] = useState(false)
 
     useEffect(() => {
       const getData = async () => {
@@ -46,18 +47,27 @@ export default function Page() {
         )
 
         if(res.status === 200) {
-            const groups = await getGroupsInWorkPlace(
-                    JSON.parse(jsonValue).authToken, 
-                    JSON.parse(jsonValue)?.user.workPlaceId
-                )
-              
-            if(groups.status === 200) {
-                dispatch(setGroups(await groups.json()))
-                router.back()
-            }
+          updateGroupsData()
         }
     }
   }
+
+  const updateGroupsData = async () => {
+    setRefresh(true)
+    const jsonValue = await AsyncStorage.getItem('my-key');
+
+    if(jsonValue != null) {
+      const groups = await getGroupsInWorkPlace(
+        JSON.parse(jsonValue).authToken, 
+        JSON.parse(jsonValue)?.user.workPlaceId
+      )
+
+      if(groups.status === 200) {
+        dispatch(setGroups(await groups.json()))
+      }
+    }
+    await setRefresh(false)
+  } 
 
   return (
     <View style={[styles.container]}>
@@ -67,6 +77,8 @@ export default function Page() {
           contentContainerStyle={{ gap: 10}}
           data={groups}
           overScrollMode="never"
+          refreshing={refresh}
+          onRefresh={() => updateGroupsData()}
           renderItem={({ item }) => 
               <View
                 style={[styles.groupContainer, globalStyles.boxShadow]}

@@ -9,7 +9,7 @@ export const sendEmail = async (email: string) => {
           method: "POST",
           body: JSON.stringify({email})
     })
-
+    console.log(res, 'tutaj')
     if(res.status === 200){
         return 'SUCCESS'
     }

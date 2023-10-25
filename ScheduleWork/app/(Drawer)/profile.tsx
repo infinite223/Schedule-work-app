@@ -20,12 +20,13 @@ const Page = () => {
   const { userId }: { userId: string} = useLocalSearchParams()
   const groups: Group[] = useSelector(selectGroups)
   const workplace = useSelector(selectWorkPlace)
+  const [loading, setLoading] = useState(false)
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: isMyProfile?"Twój profil":user?.name,
       headerRight: () => 
-      <View>
+      {!loading&&<View>
         {!isMyProfile?<View style={styles.rightOptions}>
           <TouchableOpacity style={{ padding: 7 }} onPress={() => Linking.openURL(`:${user?.phoneNumber}`)}>
             <AntDesign name='message1' size={22}/>
@@ -44,12 +45,13 @@ const Page = () => {
           </TouchableOpacity>
         </View>
       }
-    </View>
+    </View>}
     })
   }, [user, isMyProfile])
 
   useEffect(() => {
     const getUserData = async () => {
+      setLoading(true)
       const jsonValue = await AsyncStorage.getItem('my-key');
       if(jsonValue) {
         const res = await getUser(JSON.parse(jsonValue).authToken, userId)
@@ -57,7 +59,7 @@ const Page = () => {
         if(res.status === 200){
           setUser(await res.json())
 
-          if(JSON.parse(jsonValue).user.id.toString() === userId) {
+          if(JSON.parse(jsonValue).user?.id?.toString() === userId) {
             setIsMyProfile(true)
           } else {
             setIsMyProfile(false)
@@ -67,6 +69,7 @@ const Page = () => {
           alert('Coś poszło nie tak, spróbuj włączyć od nowa aplikacje') 
         }
       }
+      setLoading(false)
     }
 
     getUserData()
@@ -80,8 +83,9 @@ const Page = () => {
 
   return (
     <View style={styles.container}>
+      {loading&&<Loading/>}
 
-      <View style={styles.headerContainer}>
+      {!loading&&<View style={styles.headerContainer}>
         <View style={[styles.item, {flexDirection:'row', alignItems: 'center', backgroundColor: colors.baseColor}]}>
           <Ionicons name='person-sharp' size={20} style={{marginRight: 17}} color={'white'}/> 
 
@@ -95,10 +99,10 @@ const Page = () => {
           <Text style={{fontSize: 12}}>Nick:</Text>
           <Text style={styles.userName}>{user.userName}</Text>
         </View>
-      </View>
+      </View>}
 
-      <View>
-        {workplace.adminId.toString() === user.id.toString()?
+      {!loading&&<View>
+        {workplace.adminId?.toString() === user?.id?.toString()?
         <Text style={{fontSize: 14, fontWeight: '400'}}>{isMyProfile?'Jesteś ':'Jest to '}
             <Text style={{fontSize: 15, fontWeight: '600'}}> 
               administrator miejsca pracy/szef
@@ -109,7 +113,7 @@ const Page = () => {
            {groups.find((group) => group.id === user.id)?.name}
          </Text>
       </Text>}
-      </View>
+      </View>}
       
       <View>
         {/* <Text>Najbliższe dni pracy:</Text> */}

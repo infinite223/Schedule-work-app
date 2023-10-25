@@ -1,10 +1,10 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native'
 import React from 'react'
 
 const Loading = () => {
   return (
     <View style={styles.container}>
-      <Text>Loading...</Text>
+      <ActivityIndicator size="small" color="gray" />
     </View>
   )
 }
@@ -14,8 +14,9 @@ const styles = StyleSheet.create({
       backgroundColor: 'white',
       flex: 1, 
       alignItems: 'center',
-      justifyContent: 'center' 
-    }
+      justifyContent: 'center',
+      flexDirection:'row' 
+    },
   })
 
 export default Loading
