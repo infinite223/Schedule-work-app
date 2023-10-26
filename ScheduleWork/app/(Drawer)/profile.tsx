@@ -110,7 +110,7 @@ const Page = () => {
         </Text>:
          <Text style={{fontSize: 14, fontWeight: '400'}}>{isMyProfile?'Należysz':'Należy'} do grupy:
          <Text style={{fontSize: 15, fontWeight: '700'}}> 
-           {groups.find((group) => group.id === user.id)?.name}
+           {groups.find((group) => group.id === user.groupId)?.name}
          </Text>
       </Text>}
       </View>}
