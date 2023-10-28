@@ -108,7 +108,7 @@ const Page = () => {
               administrator miejsca pracy/szef
             </Text>
         </Text>:
-         <Text style={{fontSize: 14, fontWeight: '400'}}>{isMyProfile?'Należysz':'Należy'} do grupy:
+         <Text style={{fontSize: 14, fontWeight: '400'}}>{isMyProfile?'Należysz':'Należy'} do grupy: {' '}
          <Text style={{fontSize: 15, fontWeight: '700'}}> 
            {groups.find((group) => group.id === user.groupId)?.name}
          </Text>

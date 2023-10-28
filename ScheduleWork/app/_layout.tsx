@@ -101,6 +101,14 @@ export default function Layout() {
             animation: 'fade_from_bottom'
           }}
         />
+        <Stack.Screen
+          name="countHoursModal" 
+          options={{
+            headerShown:false,
+            presentation: 'transparentModal',
+            animation: 'fade_from_bottom'
+          }}
+        />
       </Stack>
     </Provider>
   );

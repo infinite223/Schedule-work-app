@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { Drawer } from 'expo-router/drawer';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect } from 'react';
 import DrawerContent from './drawerContent';
 import { useDispatch } from 'react-redux';
 import { setGroups } from '../../slices/groupsSlice';
@@ -11,7 +11,6 @@ import { getWorkPlace } from '../../services/workPlace';
 import { getUser } from '../../services/user';
 import { colors } from '../../utils/globalStyles';
 import { Platform } from 'react-native'
-
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { setSelectedGroupId } from '../../slices/invokeFunction';
@@ -102,10 +101,9 @@ export default function Layout() {
 
   }, [])
 
- 
-
   return (
-    <Drawer       
+    <Drawer
+      
       drawerContent={() => <DrawerContent/>}
       screenOptions={{
         headerTitleStyle: { fontSize: 18 }

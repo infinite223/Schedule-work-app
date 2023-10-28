@@ -15,21 +15,6 @@ import { formatStringToDate } from '../../utils/functions'
 import { monthNames, shortDayNames } from '../../utils/data'
 const widthScreen = Dimensions.get('screen').width
 
-const userInDays: UserInDay[] = [
-    {
-        dayId: '', from: '', to: '', id: '', userId: '1', user: {
-            id: '',
-            name: 'string', 
-            userName: 'string',
-            email: 'string',
-            phoneNumber: 1,
-            workPlaceId:'',
-            groupId:  ''
-        },
-    }
-]
-
-
 const Page = () => {
     const [userInDays, setUserInDays] = useState<UserInDay[]>([])
     const pathname = usePathname()
@@ -110,7 +95,11 @@ const Page = () => {
         }
       />
 
-        <TouchableOpacity activeOpacity={.7} style={styles.footer}>
+        <TouchableOpacity 
+            activeOpacity={.7} 
+            style={styles.footer}
+            onPress={() => router.push('/countHoursModal')}
+        >
             <Text style={styles.footerText}>
                 Przewidywanie miesiąca 
             </Text>
@@ -160,9 +149,7 @@ const styles = StyleSheet.create({
         fontSize: 13
     },
     footer: {
-        // backgroundColor: colors.baseColor,
         backgroundColor: '#ddd',
-        // width: '100%',
         height: 45,
         marginHorizontal: 10,
         marginVertical: 15,

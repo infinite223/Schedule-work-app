@@ -1,6 +1,6 @@
-import { Text, View, Pressable, StyleSheet, Dimensions, Image, FlatList } from 'react-native'
+import { Text, View, Pressable, StyleSheet, Dimensions, Image, FlatList, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { globalStyles } from '../utils/globalStyles'
+import { colors, globalStyles } from '../utils/globalStyles'
 import { router } from 'expo-router'
 import { Log } from '../utils/types'
 import { formatDateToString } from '../utils/functions'
@@ -17,7 +17,7 @@ const Page = () => {
 
             if(logsValue != null) {
               setLogs(JSON.parse(logsValue))
-            }else {
+            } else {
                 setLogs([{date: new Date(), error: 'brak błędów', file: '/logsListModal'}])
             }
         } 
@@ -25,8 +25,19 @@ const Page = () => {
         getLogsFromStorage()
     }, [])
 
-    const _logs = logs?new Date(logs[0]?.date):''
-  console.log(_logs.toLocaleString())
+    const clearLogs = async () => {
+      try {
+        const logsValue = await AsyncStorage.removeItem('logs');
+        setLogs([])
+        console.log(logsValue)
+        router.push('/messageModal')
+        router.setParams({ message: "Udało się usunąć logi", type: 'SUCCESS' })
+      } catch (error) {
+        router.push('/messageModal')
+        router.setParams({ message: "Coś poszło nie tak", type: 'ERROR' })
+      }
+    } 
+
   return (
     <Pressable style={[styles.container]} onPress={() => router.back()}>
       <Pressable onPress={() => {}} style={[styles.content, globalStyles.boxShadow_light]}>
@@ -52,6 +63,13 @@ const Page = () => {
                 </View>
             }
         />
+
+        {logs && logs?.length>1&&<TouchableOpacity 
+          style={[styles.button, globalStyles.boxShadow]}
+          onPress={clearLogs}
+        >
+          <Text style={styles.buttonText}>Wyczyść logi</Text>
+        </TouchableOpacity>}
       </Pressable>
     </Pressable>
   )
@@ -90,6 +108,19 @@ const styles = StyleSheet.create({
     },
     fileText: {
 
+    },
+    button: {
+      backgroundColor: colors.errorColor,
+      borderRadius: 50,
+      width: '100%',
+      paddingVertical: 10,
+      marginBottom: 5,
+      alignItems:'center',
+      justifyContent:'center'
+    },
+    buttonText: {
+      color: 'white',
+      fontWeight: '700'
     },
     content: {
       width: widthScreen - 20,
