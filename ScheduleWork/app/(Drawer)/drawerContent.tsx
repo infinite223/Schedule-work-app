@@ -32,7 +32,7 @@ const DrawerContent = () => {
     }, [workPlace])
     
   return (
-    <SafeAreaProvider style={[styles.container, { paddingTop: insets.top }]}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
         <Pressable onPress={() => router.push('/(Drawer)/schedule')}>
             <Image style={{width: 185, height: 50, marginBottom: 20}} source={logo}/>
         </Pressable>
@@ -61,21 +61,20 @@ const DrawerContent = () => {
                         <Text style={styles.itemText}>Zaproś pracowników</Text>
                     </TouchableOpacity>
                 }
+                <TouchableOpacity onPress={() => router.push('/(Drawer)/groups')} style={styles.optionButton}>
+                    <MaterialCommunityIcons name='account-group-outline' size={23}/>
+                    <Text style={styles.optionText}>Pokaż grupy</Text>
+                </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => router.push('/(Drawer)/groups')} style={styles.optionButton}>
-                        <MaterialCommunityIcons name='account-group-outline' size={23}/>
-                        <Text style={styles.optionText}>Pokaż grupy</Text>
-                    </TouchableOpacity>
+                {isAdmin&&<TouchableOpacity onPress={() => router.push('/createGroup')} style={styles.optionButton}>
+                    <MaterialCommunityIcons name='plus' size={23}/>
+                    <Text style={styles.optionText}>Utwórz grupe</Text>
+                </TouchableOpacity>}
 
-                    <TouchableOpacity onPress={() => router.push('/createGroup')} style={styles.optionButton}>
-                        <MaterialCommunityIcons name='plus' size={23}/>
-                        <Text style={styles.optionText}>Utwórz grupe</Text>
-                    </TouchableOpacity>
-
-                    {!isAdmin&&<TouchableOpacity onPress={() => router.push('/(Drawer)/timelineWork')} style={styles.optionButton}>
-                        <MaterialCommunityIcons name='timeline-clock-outline' size={23}/>
-                        <Text style={styles.optionText}>Najbliższe dni pracy</Text>
-                    </TouchableOpacity>}
+                {!isAdmin&&<TouchableOpacity onPress={() => router.push('/(Drawer)/timelineWork')} style={styles.optionButton}>
+                    <MaterialCommunityIcons name='timeline-clock-outline' size={23}/>
+                    <Text style={styles.optionText}>Najbliższe dni pracy</Text>
+                </TouchableOpacity>}
             </View>
 
             <TouchableOpacity
@@ -86,7 +85,7 @@ const DrawerContent = () => {
                 <Text style={styles.optionText}>Ustawienia</Text>
             </TouchableOpacity>
         </View>
-    </SafeAreaProvider>
+    </View>
   )
 }
 

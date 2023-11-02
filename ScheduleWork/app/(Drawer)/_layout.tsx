@@ -16,6 +16,7 @@ import * as Notifications from 'expo-notifications';
 import { setSelectedGroupId } from '../../slices/invokeFunction';
 import { Group } from '../../utils/types';
 import { setLogsInStorage } from '../../utils/functions';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -102,52 +103,58 @@ export default function Layout() {
   }, [])
 
   return (
-    <Drawer
-      
-      drawerContent={() => <DrawerContent/>}
-      screenOptions={{
-        headerTitleStyle: { fontSize: 18 }
-      }}
-    >
-      <Drawer.Screen
-        name="schedule" 
-        options={{
-          drawerLabel: "Home",
-          title: `Harmonogram`,
-          headerTitleStyle: { fontSize: 18, color: 'white' },
-          headerStyle: {backgroundColor: colors.baseColor},
-          headerTintColor:'white',
+    <GestureHandlerRootView style={{flex: 1}} >
+      <Drawer
+        drawerContent={() => <DrawerContent/>}
+        defaultStatus='closed'
+        detachInactiveScreens
+        backBehavior='none'
+        screenOptions={{
+          lazy:true,
+          drawerType:'back',
+          headerTitleStyle: { fontSize: 18 }
         }}
-      />
-      <Drawer.Screen
-        name="profile" 
-        options={{
-          title: "Twój profil",
-          headerTintColor:'black',
-        }}
-      />
-      <Drawer.Screen
-        name="groups" 
-        options={{
-          title: "Dostępne grupy",
-          headerTintColor:'black',
-        }}
-      />
-      <Drawer.Screen
-        name="timelineWork" 
-        options={{
-          title: "Najbliższe dni pracy",
-          headerTintColor:'black',
-        }}
-      />
-      <Drawer.Screen
-        name="settings" 
-        options={{
-          title: "Ustawienia",
-          headerTintColor:'black',
-        }}
-      />
-    </Drawer>
+      >
+        <Drawer.Screen
+          name="schedule" 
+          options={{
+            drawerLabel: "Home",
+            title: `Harmonogram`,
+            headerTitleStyle: { fontSize: 18, color: 'white' },
+            headerStyle: {backgroundColor: colors.baseColor},
+            headerTintColor:'white',
+          }}
+        />
+        <Drawer.Screen
+          name="profile" 
+          options={{
+            title: "Twój profil",
+            headerTintColor:'black',
+          }}
+        />
+        <Drawer.Screen
+          name="groups" 
+          options={{
+            title: "Dostępne grupy",
+            headerTintColor:'black',
+          }}
+        />
+        <Drawer.Screen
+          name="timelineWork" 
+          options={{
+            title: "Najbliższe dni pracy",
+            headerTintColor:'black',
+          }}
+        />
+        <Drawer.Screen
+          name="settings" 
+          options={{
+            title: "Ustawienia",
+            headerTintColor:'black',
+          }}
+        />
+      </Drawer>
+    </GestureHandlerRootView>
   );
 }
 

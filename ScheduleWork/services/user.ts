@@ -43,6 +43,17 @@ export const getUsersWithOutGroup = async (authToken: string, workPlaceId: strin
     return res
 }
 
+export const getHoursPrediction = async  (authToken: string) => {
+    const res = await fetch(`${appConfig.endpointsUrl}/user/getHoursPrediction/currentMonth`, {
+        headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+          method: "GET",    
+    })
+
+    return res
+}
+
 export const removeUserFromGroup = async (authToken: string, userId: string, groupId: string) => {
     const res = await fetch(`${appConfig.endpointsUrl}/user/removeUserFromGroup`, {
         headers: {

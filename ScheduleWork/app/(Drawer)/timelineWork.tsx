@@ -4,25 +4,27 @@ import { UserInDay } from '../../utils/types'
 import { getAllUsersInDay, removeUserInDay } from '../../services/userInDay'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { FlatList } from 'react-native-gesture-handler'
-import { colors, globalStyles } from '../../utils/globalStyles'
+import {  globalStyles } from '../../utils/globalStyles'
 import { Ionicons } from '@expo/vector-icons'
 import { usePathname } from 'expo-router/src/hooks'
-import { Link, router } from 'expo-router'
+import { router } from 'expo-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectInvokeFunction, setInvokeFunction } from '../../slices/invokeFunction'
 import { StatusBar } from 'expo-status-bar'
 import { formatStringToDate } from '../../utils/functions'
 import { monthNames, shortDayNames } from '../../utils/data'
-const widthScreen = Dimensions.get('screen').width
+import Loading from '../../components/Loading'
 
 const Page = () => {
     const [userInDays, setUserInDays] = useState<UserInDay[]>([])
     const pathname = usePathname()
     const dispatch = useDispatch()
     const invokeFunction = useSelector(selectInvokeFunction)
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         const getData = async () => {
+            setLoading(true)
             const jsonValue = await AsyncStorage.getItem('my-key');
             if(jsonValue != null) {          
                 const allUsersInDay = await getAllUsersInDay(JSON.parse(jsonValue).authToken)
@@ -30,6 +32,7 @@ const Page = () => {
                     setUserInDays(await allUsersInDay.json())
                 }
             }
+            setLoading(false)
         }
         
         if(pathname === '/timelineWork'){
@@ -51,6 +54,10 @@ const Page = () => {
                 }
             }
     }
+
+  if(loading) {
+    return <Loading/>
+  }
 
   return (
     <View style={styles.container}>
@@ -104,7 +111,7 @@ const Page = () => {
                 Przewidywanie miesiąca 
             </Text>
             
-            <Ionicons name="md-arrow-forward-circle-outline" size={20} color='#555' />
+            <Ionicons name="md-arrow-up-circle-outline" size={20} color='black' />
         </TouchableOpacity>
     </View>
   )
@@ -158,12 +165,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection:'row',
-        gap: 20
+        gap: 10
     },
     footerText: {
         // color: 'white',
-        color: '#555',
-        fontWeight: '600',
+        color: 'black',
+        fontWeight: '700',
         fontSize: 13
     }
 })

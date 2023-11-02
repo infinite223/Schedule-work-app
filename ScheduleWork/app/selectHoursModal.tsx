@@ -9,6 +9,7 @@ import { createUserInDay } from '../services/userInDay';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectInvokeFunction, setInvokeFunction } from '../slices/invokeFunction';
 import { setLogsInStorage } from '../utils/functions';
+import Loading from '../components/Loading';
 const widthScreen = Dimensions.get('screen').width
 
 const getTimeFromTimestamp = (timestamp?: number) => {
@@ -29,7 +30,8 @@ const Page = () => {
   const params: { day: string } = useLocalSearchParams();
   const dispatch = useDispatch()
   const invokeFunction = useSelector(selectInvokeFunction)
-
+  const [loading, setLoading] = useState(false)
+  
   const options = [
     {from: '12:00', to: '22:00'},
     {from: '14:00', to: '22:00'},
@@ -38,6 +40,7 @@ const Page = () => {
 
   const saveDay = async (from: string, to: string) => {
     try {
+      setLoading(true)
       const jsonValue = await AsyncStorage.getItem('my-key');
       if(jsonValue != null) {
         const res = await getDay(JSON.parse(jsonValue).authToken, params.day, JSON.parse(jsonValue).user.groupId)
@@ -64,7 +67,9 @@ const Page = () => {
           }
         }
       }
+      setLoading(false)
     } catch (error) {
+      setLoading(false)
       alert('Coś poszło nie tak, spróbuj włączyć od nowa aplikacje') 
       setLogsInStorage({file: '/selectHoursModal', error: 'trycatch', date: new Date()})
     }
@@ -80,7 +85,7 @@ const Page = () => {
           Najczęściej wybierane:
         </Text>
 
-        <FlatList
+        {!loading?<FlatList
           data={options}
           renderItem={({ item }) => 
             <TouchableOpacity 
@@ -94,7 +99,7 @@ const Page = () => {
               <Text style={styles.optionText}>do {item.to}</Text>
             </TouchableOpacity>
           }
-        />
+        />:<Loading/>}
 
         <Text style={{marginTop: 10, fontWeight: '300', fontSize: 12}}>
           Ustaw samemu
@@ -129,7 +134,8 @@ const Page = () => {
         />}
 
         <TouchableOpacity
-          style={styles.saveButton}
+          disabled={loading}
+          style={[styles.saveButton, {opacity: loading?.4:1}]}
           onPress={() => saveDay(selectedTime.from, selectedTime.to)}
         >
           <Text style={styles.buttonText}>Zapisz</Text>

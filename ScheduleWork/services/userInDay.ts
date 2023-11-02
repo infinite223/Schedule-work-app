@@ -42,6 +42,17 @@ export const getAllUsersInDay = async (authToken: string) => {
     return res
 }
 
+export const getCurrentMonthUserInDays = async (authToken: string) => {
+    const res = await fetch(`${appConfig.endpointsUrl}/userInDay/getCurrentMonthUserInDays`, {
+        headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+          method: "GET",    
+    })
+
+    return res
+}
+
 export const removeUserInDay = async (
     authToken: string,
     id: string

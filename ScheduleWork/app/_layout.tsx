@@ -16,6 +16,7 @@ export default function Layout() {
           name="(Drawer)"
           options={{
             headerShown: false,
+            animation: 'none'
           }}
         />
         <Stack.Screen

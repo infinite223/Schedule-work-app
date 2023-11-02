@@ -36,7 +36,7 @@ type Group = {
 
 type Day = {
     id: string,
-    date: String,
+    date: string,
     groupId: string
 }
 
@@ -47,7 +47,7 @@ type UserInDay = {
 
     userId: string,
     user?: User,
-    day?: Day,
+    day: Day,
     dayId: string
 }
 

@@ -3,76 +3,89 @@ import React, { useEffect, useState } from 'react'
 import { colors, globalStyles } from '../utils/globalStyles'
 import { router } from 'expo-router'
 import { monthNames } from '../utils/data'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { getHoursPrediction } from '../services/user'
+import Loading from '../components/Loading'
+import { getCurrentMonthUserInDays } from '../services/userInDay'
+import { countAllHoursInMonth } from '../utils/functions'
 
 const widthScreen = Dimensions.get('screen').width
 type MonthPrediction = {
     year: number,
     month: number,
-    numberHoursFull: number,
-    numberHoursNow: number,
+    numberHoursFull: {hours: number, minutes: number},
+    numberHoursNow:  {hours: number, minutes: number},
 } 
 
 const currentMonth = new Date().getMonth() + 1
 
 const Page = () => {    
-    const [monthPrediction, setMonthPrediction] = useState<MonthPrediction[] | null>([])
+    const [monthPrediction, setMonthPrediction] = useState<MonthPrediction | null>(null)
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
-        setMonthPrediction([
-            {
-                year: 2023,
-                month: 11,
-                numberHoursFull: 63.4,
-                numberHoursNow: 56
-            },
-            {
-                year: 2023,
-                month: 10,
-                numberHoursFull: 123,
-                numberHoursNow: 66
-            }
-        ])
-    }, [])
+      const tryGetHoursPrediction = async () => {
+        setLoading(true)
+        const jsonValue = await AsyncStorage.getItem('my-key');
+        if(jsonValue != null) {          
+            // const res = await getHoursPrediction(JSON.parse(jsonValue).authToken)
+            const res = await getCurrentMonthUserInDays(JSON.parse(jsonValue).authToken)
+            console.log(res.status)
+            if(res.status === 200) {
+              const data = await res.json()
+              const predictionHours = countAllHoursInMonth(data)
 
+              setMonthPrediction(predictionHours[0])
+            }
+          }
+          setLoading(false)
+      }
+
+      tryGetHoursPrediction()
+      
+    }, [])
+console.log(monthPrediction)
   return (
     <Pressable style={[styles.container]} onPress={() => router.back()}>
       <Pressable onPress={() => {}} style={[styles.content, globalStyles.boxShadow_light]}>
-        <Text style={{textAlign: 'center', fontWeight: '600', fontSize: 15, marginBottom: 10}}>Przewidywanie miesiąca</Text>
+        <Text style={{textAlign: 'center', fontWeight: '600', fontSize: 15, marginBottom: 10}}>
+          Przewidywanie aktualnego miesiąca
+        </Text>
 
-        <FlatList
-            data={monthPrediction}
-            renderItem={({item}) =>  
-                <View style={[styles.monthItem, globalStyles.boxShadow]}>
-                    <View style={styles.name}>
-                      <Text style={styles.monthText}>  
-                        {monthNames[item.month-1]}                     
+        {(monthPrediction && !loading)?<View style={[styles.monthItem, globalStyles.boxShadow]}>
+              <View style={styles.name}>
+                <Text style={styles.monthText}>  
+                  {monthNames[monthPrediction.month]}                     
+                </Text>
+                <Text style={styles.text}>                       
+                  {monthPrediction.year} 
+                </Text>
+              </View>
+              <View style={{gap: 2}}>
+                  <View style={styles.valueContainer}>
+                      <Text style={styles.nameText}>
+                      {currentMonth !== monthPrediction.month?'ilość godzin do teraz:':'ilość godzin:'}
                       </Text>
-                      <Text style={styles.text}>                       
-                        {item.year} 
+                      <Text style={styles.numberHoursNowText}>
+                          {monthPrediction.numberHoursNow.hours}h {''}
+                          {monthPrediction.numberHoursNow.minutes}m
                       </Text>
-                    </View>
-                    <View style={{gap: 2}}>
-                        <View style={styles.valueContainer}>
-                            <Text style={styles.nameText}>
-                            {currentMonth !== item.month?'ilość godzin do teraz:':'ilość godzin:'}
-                            </Text>
-                            <Text style={styles.numberHoursNowText}>
-                               {item.numberHoursNow}h
-                            </Text>
-                        </View>
+                  </View>
 
-                        {currentMonth !== item.month&&<View style={styles.valueContainer}>
-                            <Text style={styles.nameText}>
-                                ilość godzin do końca miesiąca:
-                            </Text>
-                            <Text style={styles.numberHoursFullText}>
-                                {item.numberHoursFull}h
-                            </Text>
-                        </View>}
-                    </View>
-                </View>
-            }
-        />
+                  {currentMonth !== monthPrediction.month&&<View style={styles.valueContainer}>
+                      <Text style={styles.nameText}>
+                          ilość godzin do końca miesiąca:
+                      </Text>
+                      <Text style={styles.numberHoursFullText}>
+                          {monthPrediction.numberHoursFull.hours}h {''}
+                          {monthPrediction.numberHoursFull.minutes}m
+                      </Text>
+                  </View>}
+              </View>
+          </View>:
+          <Loading/>
+          }
+ 
       </Pressable>
     </Pressable>
   )
