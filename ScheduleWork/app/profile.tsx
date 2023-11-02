@@ -1,16 +1,16 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { AntDesign, Entypo, Feather, Ionicons } from '@expo/vector-icons'
-import { Group, User } from '../../utils/types'
-import Loading from '../../components/Loading'
+import { Group, User } from '../utils/types'
+import Loading from '../components/Loading'
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router'
-import { getUser } from '../../services/user'
+import { getUser } from '../services/user'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { colors } from '../../utils/globalStyles'
+import { colors } from '../utils/globalStyles'
 import * as Linking from "expo-linking";
 import { useSelector } from 'react-redux'
-import { selectGroups } from '../../slices/groupsSlice'
-import { selectWorkPlace } from '../../slices/workPlaceSlice'
+import { selectGroups } from '../slices/groupsSlice'
+import { selectWorkPlace } from '../slices/workPlaceSlice'
 
 const Page = () => {
   const [user, setUser] = useState<User | null>(null)
@@ -149,7 +149,8 @@ const styles = StyleSheet.create({
       flexDirection: 'row', 
       alignItems: 'center', 
       width: '100%',
-      marginVertical: 10 
+      marginVertical: 10,
+      marginTop: 20
     },
     item: {
       flexDirection: 'column',

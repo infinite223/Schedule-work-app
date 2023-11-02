@@ -6,14 +6,17 @@ import { colors } from "../../utils/globalStyles";
 import { DateWithUsers, Group, User } from "../../utils/types";
 import Loading from "../../components/Loading";
 import DayDetails from "../../components/DayDetails";
-import { useSelector } from "react-redux";
-import { selectGroups } from "../../slices/groupsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { selectGroups, setGroups } from "../../slices/groupsSlice";
 import { getUser } from "../../services/user";
 import { router, useNavigation, usePathname } from "expo-router";
 import CustomCalendar from "../../components/CustomCalendar";
-import { selectSelectedGroupId } from "../../slices/invokeFunction";
+import { selectSelectedGroupId, setSelectedGroupId } from "../../slices/invokeFunction";
 import { StatusBar } from "expo-status-bar";
 import { setLogsInStorage } from "../../utils/functions";
+import { getGroupsInWorkPlace } from "../../services/group";
+import { setWorkPlace } from "../../slices/workPlaceSlice";
+import { getWorkPlace } from "../../services/workPlace";
 
 const currentDate = new Date();
 
@@ -24,7 +27,7 @@ export default function Page() {
     const groups = useSelector(selectGroups)
     const navigation = useNavigation()
     const selectedGroupId = useSelector(selectSelectedGroupId)
-    
+    const pathname = usePathname()
     useLayoutEffect(() => {
       navigation.setOptions({
         headerTitle: `Harmonogram ${groupName}`,
@@ -67,6 +70,85 @@ export default function Page() {
       };
 
       getData()
+    }, [])
+
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+      console.log('działą sueEffect')
+      const getData = async () => {
+        try {
+          const jsonValue = await AsyncStorage.getItem('my-key');
+          if(jsonValue != null) {
+            if(!JSON.parse(jsonValue).user.id) {
+              router.push('/login')
+            }
+  
+            const userFromDb =  await getUser(JSON.parse(jsonValue).authToken, JSON.parse(jsonValue).user?.id)
+            
+            if(userFromDb.status === 401) {
+              await AsyncStorage.removeItem('my-key');
+      
+              router.push('/')
+              
+              router.push('/messageModal')
+              router.setParams({ message: "Zostałeś automatycznie wylogowany", type: 'ERROR' })
+            }
+  
+            const user = await userFromDb.json()
+  
+            if(user && user.workPlaceId) {
+              await AsyncStorage.setItem('my-key', JSON.stringify({authToken: JSON.parse(jsonValue).authToken, user}))
+  
+              const workPlace = await getWorkPlace(JSON.parse(jsonValue).authToken, user.workPlaceId)
+              if(workPlace.status === 200) {
+                dispatch(setWorkPlace(await workPlace.json()))
+              }
+              else if(workPlace.status === 401){
+                router.push('/messageModal')
+                router.setParams({ message: "Nie jesteś przydzielony do żadnego miejsca pracy", type: 'ERROR' })
+              }
+              else {
+                alert('Coś poszło nie tak, spróbuj włączyć od nowa aplikacje') 
+              }
+            }
+          
+          }                
+        } catch (e) {
+          alert('Coś poszło nie tak, spróbuj włączyć od nowa aplikacje') 
+          setLogsInStorage({file: '/drawer/layout', error: 'trycatch', date: new Date()})
+        }
+      };
+
+      if(pathname === '/schedule'){
+        console.log(pathname, 'dada')
+        getData()
+      }
+    }, [pathname])
+  
+    useEffect(() => {
+      const tryGetGroupsData = async () => {
+        const jsonValue = await AsyncStorage.getItem('my-key');
+  
+        if(jsonValue != null && JSON.parse(jsonValue)?.user?.workPlaceId) {
+          const groups = await getGroupsInWorkPlace(
+            JSON.parse(jsonValue).authToken, JSON.parse(jsonValue)?.user?.workPlaceId)
+          
+          if(groups.status === 200) {
+            const groupsData = await groups.json()
+            dispatch(setGroups(groupsData))
+            const findMyGroup = groupsData.find((group: Group) => group.id === JSON.parse(jsonValue)?.user?.groupId)
+            if(findMyGroup) {
+              dispatch(setSelectedGroupId(findMyGroup.id))
+            }
+          } else {
+            setLogsInStorage({file: '/drawer/layout', error: 'error tryGetGroupsData', date: new Date()})
+          }
+        }
+      }
+  
+      tryGetGroupsData()
+  
     }, [])
 
   if(!user) {

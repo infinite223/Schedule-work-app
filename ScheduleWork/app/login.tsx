@@ -45,7 +45,7 @@ const Page = () => {
                 const userData = await res.json()
                 await AsyncStorage.setItem('my-key',  JSON.stringify(userData));
 
-                 router.push('/(Drawer)/schedule')
+                 router.push('/(tabs)/schedule')
 
                  router.push('/messageModal')
                  router.setParams({ message: `Udało się zalogować`, type: 'SUCCESS' })                

@@ -1,19 +1,19 @@
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Platform } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { UserInDay } from '../../utils/types'
-import { getAllUsersInDay, removeUserInDay } from '../../services/userInDay'
+import { UserInDay } from '../utils/types'
+import { getAllUsersInDay, removeUserInDay } from '../services/userInDay'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { FlatList } from 'react-native-gesture-handler'
-import {  globalStyles } from '../../utils/globalStyles'
+import {  globalStyles } from '../utils/globalStyles'
 import { Ionicons } from '@expo/vector-icons'
 import { usePathname } from 'expo-router/src/hooks'
 import { router } from 'expo-router'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectInvokeFunction, setInvokeFunction } from '../../slices/invokeFunction'
+import { selectInvokeFunction, setInvokeFunction } from '../slices/invokeFunction'
 import { StatusBar } from 'expo-status-bar'
-import { formatStringToDate } from '../../utils/functions'
-import { monthNames, shortDayNames } from '../../utils/data'
-import Loading from '../../components/Loading'
+import { formatStringToDate } from '../utils/functions'
+import { monthNames, shortDayNames } from '../utils/data'
+import Loading from '../components/Loading'
 
 const Page = () => {
     const [userInDays, setUserInDays] = useState<UserInDay[]>([])
@@ -122,6 +122,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         flex: 1,
         paddingHorizontal: 10,
+        paddingTop: 20
     },
     userInDay: {
         alignItems: 'center',

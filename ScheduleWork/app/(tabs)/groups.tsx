@@ -35,7 +35,7 @@ export default function Page() {
       getData()
       
   }, [])
-
+  console.log(workPlace, 'tutau')
   const tryRemoveUserFromGroup = async (user: User) => {
     const jsonValue = await AsyncStorage.getItem('my-key');
 
@@ -132,7 +132,7 @@ export default function Page() {
                       <TouchableOpacity
                         onPress={() => {
                           dispatch(setSelectedGroupId(item.id))
-                          router.push('/(Drawer)/schedule')
+                          router.push('/(tabs)/schedule')
                         }} 
                         
                         activeOpacity={.6} 
@@ -156,7 +156,7 @@ export default function Page() {
                       <Link 
                         asChild
                         href={{
-                          pathname: '/(Drawer)/profile',
+                          pathname: '/profile',
                           params: { userId: item.id },
                         }}
                       >

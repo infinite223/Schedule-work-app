@@ -32,18 +32,18 @@ const DrawerContent = () => {
     
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-        <Pressable onPress={() => router.push('/(tabs)/schedule')}>
-            <Image style={{width: 185, height: 50, marginBottom: 20}} source={logo}/>
+        <Pressable onPress={() => router.push('/(tabs)/schedule')} style={{alignSelf:'center'}}>
+            <Image style={{width: 185, height: 50, marginBottom: 40, marginTop: 20}} source={logo}/>
         </Pressable>
 
-        {user?.id&&<Link href={{pathname: '/profile', params: {userId: user?.id}}}>
-            <View style={styles.personDetails}>
-                <Ionicons name='person-sharp' size={35}/> 
+        {user?.id&&<Link href={{pathname: '/profile', params: {userId: user?.id}}} asChild>
+            <TouchableOpacity style={styles.personDetails} activeOpacity={.7}>
+                <Ionicons name='person-sharp' size={25} color={'white'}/> 
                 <View>
                     <Text style={styles.nameText}>{user?.name}</Text>
                     <Text style={styles.userNameText}>{user?.userName}</Text>
                 </View>
-            </View>
+            </TouchableOpacity>
         </Link>}
         <Text style={styles.headerText}>Zalogowany jako: 
             {isAdmin?' administrator':' pracownik'}
@@ -56,7 +56,7 @@ const DrawerContent = () => {
                         onPress={() => router.push('/inviteWorkerModal')}
                         style={[styles.item, globalStyles.boxShadow]}
                     >
-                        <AntDesign name="addusergroup" size={23} color={'white'}/>
+                        <AntDesign name="addusergroup" size={23} color={'black'}/>
                         <Text style={styles.itemText}>Zaproś pracowników</Text>
                     </TouchableOpacity>
                 }
@@ -70,14 +70,14 @@ const DrawerContent = () => {
                     <Text style={styles.optionText}>Utwórz grupe</Text>
                 </TouchableOpacity>}
 
-                {!isAdmin&&<TouchableOpacity onPress={() => router.push('/(Drawer)/timelineWork')} style={styles.optionButton}>
+                {!isAdmin&&<TouchableOpacity onPress={() => router.push('/timelineWork')} style={styles.optionButton}>
                     <MaterialCommunityIcons name='timeline-clock-outline' size={23}/>
                     <Text style={styles.optionText}>Najbliższe dni pracy</Text>
                 </TouchableOpacity>}
             </View>
 
             <TouchableOpacity
-                onPress={() => router.push('/(Drawer)/settings')}
+                onPress={() => router.push('/settings')}
                 style={styles.optionButton}
             >
                 <Ionicons name='settings-outline' size={25}/> 
@@ -91,35 +91,51 @@ const DrawerContent = () => {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      alignItems: 'center',
+      paddingHorizontal: 10,
+      paddingVertical:10,
+      paddingTop:50,
       backgroundColor: 'white',
-      marginVertical: 20,
     },
     headerText: {
-        width: 240,
-        paddingHorizontal: 10,
-        fontSize: 9,
-        fontWeight: '400'
+        paddingHorizontal: 30,
+        fontSize: 11,
+        fontWeight: '400',
+        marginTop:10
     },
     nameText: {
         fontSize: 17,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        color: 'white'
     },
     userNameText: {
         fontWeight: '400',
         fontSize: 12,
+        color: 'white'
     },
     personDetails: {
-        paddingHorizontal: 10,
-        borderRadius: 10,
-        width: 240,
+        paddingHorizontal: 20,
+        marginHorizontal: 5,
+        paddingVertical:10,
+        borderRadius: 50,
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 10
+        gap: 10,
+        backgroundColor: colors.baseColor,
+
+        shadowColor: "black",
+        shadowOffset: {
+            width: 0,
+            height: 41,
+        },
+        shadowOpacity: 0.30,
+        shadowRadius: 4.65,
+
+        elevation: 10,
     },
     main: {
         flex: 1,
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        
     },
     optionButton: {
         flexDirection: 'row',
@@ -134,7 +150,7 @@ const styles = StyleSheet.create({
         fontWeight: '500'
     },
     item: {
-        backgroundColor: colors.baseColor,
+        backgroundColor: '#eee',
         flexDirection: 'row',
         alignItems: 'center',
         width: 240,
@@ -145,7 +161,7 @@ const styles = StyleSheet.create({
     },
     itemText: {
         fontSize: 14,
-        color: 'white',
+        color: 'black',
         fontWeight:'700'
     }
 })

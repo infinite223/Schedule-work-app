@@ -13,16 +13,41 @@ export default function Layout() {
           }}
         />
         <Stack.Screen
-          name="(Drawer)"
+          name="timelineWork"
+          options={{
+            headerTitle:'Najbliższe dni pracy',
+            headerTitleStyle: {
+              fontSize: 17
+            }
+          }}
+        />
+        <Stack.Screen
+          name="settings"
+          options={{
+            headerTitle:'Ustawienia',
+            headerTitleStyle: {
+              fontSize: 17
+            }
+          }}
+        />
+        <Stack.Screen
+          name="(tabs)"
           options={{
             headerShown: false,
-            animation: 'none'
           }}
         />
         <Stack.Screen
           name="editUser"
           options={{
             headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="profile"
+          options={{
+            headerTitleStyle: {
+              fontSize: 17
+            }
           }}
         />
         <Stack.Screen

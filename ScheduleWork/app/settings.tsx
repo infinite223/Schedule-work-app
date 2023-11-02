@@ -43,7 +43,7 @@ export default function Page() {
           </TouchableOpacity>
           <TouchableOpacity 
               onPress={logout}
-              style={[styles.option, {backgroundColor: '#eee', marginTop: 10}]}
+              style={[styles.option, {backgroundColor: '#eee', marginTop: 10, paddingHorizontal: 25}]}
           >
               <Ionicons name="log-out-outline" size={25} color={'#f33'}/>
               <Text style={styles.optionText}>Wyloguj mnie</Text>
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   },
   option: {
     borderRadius: 50,
-    paddingHorizontal: 25,
+    paddingHorizontal: 5,
     paddingVertical: 10,
     flexDirection: 'row',
     alignItems:'center',
