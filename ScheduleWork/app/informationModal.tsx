@@ -8,7 +8,7 @@ const widthScreen = Dimensions.get('screen').width
 const infoElements = [
     {
         name: 'Aktualna wersja',
-        content: '1.0.1'
+        content: '1.0.2'
     },
     {
         name: "Cel aplikacji",

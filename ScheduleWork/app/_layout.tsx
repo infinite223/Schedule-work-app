@@ -1,6 +1,8 @@
 import { Stack } from 'expo-router';
 import { Provider } from 'react-redux';
 import { store } from '../store';
+import { View } from 'react-native'
+import { colors } from '../utils/globalStyles';
 
 export default function Layout() {
   return (
@@ -47,7 +49,7 @@ export default function Layout() {
           options={{
             headerTitleStyle: {
               fontSize: 17
-            }
+            },
           }}
         />
         <Stack.Screen

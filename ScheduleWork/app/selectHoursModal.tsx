@@ -8,8 +8,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createUserInDay } from '../services/userInDay';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectInvokeFunction, setInvokeFunction } from '../slices/invokeFunction';
-import { setLogsInStorage } from '../utils/functions';
+import { formatStringToDate, setLogsInStorage } from '../utils/functions';
 import Loading from '../components/Loading';
+import { shortDayNames } from '../utils/data';
 const widthScreen = Dimensions.get('screen').width
 
 const getTimeFromTimestamp = (timestamp?: number) => {
@@ -78,8 +79,18 @@ const Page = () => {
   return (
     <Pressable style={[styles.container]} onPress={() => router.back()}>
       <Pressable onPress={() => {}} style={[styles.content, globalStyles.boxShadow]}>
-        <Text style={styles.dateText}>{params.day}</Text>
+
+       <View style={styles.nav}>
+        <View style={[styles.dateContainer]}>
+            <Text style={styles.dayNumber}>
+                {formatStringToDate(params.day).getDate()}
+            </Text>
+            <Text style={styles.dayName}>
+                {shortDayNames[formatStringToDate(params.day).getDay() - 1]}
+            </Text>
+        </View>
         <Text style={styles.headerText}>Wybierz godziny pracy</Text>
+       </View>
         
         <Text style={{marginTop: 10, fontWeight: '300', fontSize: 12}}>
           Najczęściej wybierane:
@@ -155,6 +166,17 @@ const styles = StyleSheet.create({
         width: widthScreen,
         height:'100%'
     },
+    nav: {
+      flexDirection:'row',
+      alignItems:'center',
+      gap:20
+    },
+    dateContainer: {
+      padding: 10,
+      paddingHorizontal:15,
+      borderRightWidth:1,
+      borderColor: colors.baseColor,
+    },
     content: {
       width: widthScreen - 30,
       borderRadius: 10,
@@ -162,6 +184,16 @@ const styles = StyleSheet.create({
       padding: 10,
       paddingVertical: 15,
       marginTop: -100,
+    },
+    dayNumber: {
+      letterSpacing: 1,
+      fontWeight: '700',
+      fontSize: 20 
+    },
+    dayName: {
+        letterSpacing: 1,
+        fontWeight: '400',
+        fontSize: 13 
     },
     headerText: {
       textAlign: 'center',
@@ -187,19 +219,20 @@ const styles = StyleSheet.create({
       // backgroundColor: 'rgba(200, 200, 200, .2)'
     },
     optionText: {
-      fontSize: 15,
+      fontSize: 17,
       fontWeight: '400'
     },
     saveButton: {
       paddingVertical: 7,
-      borderRadius: 5,
+      borderRadius: 50,
       backgroundColor: colors.baseColor,
       alignItems:'center',
       marginTop: 20
     },
     buttonText: {
       color: 'white',
-      fontWeight:'700'
+      fontWeight:'900',
+      fontSize: 17
     }
 })
 

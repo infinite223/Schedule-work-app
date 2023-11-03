@@ -6,7 +6,7 @@ import Loading from '../components/Loading'
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router'
 import { getUser } from '../services/user'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { colors } from '../utils/globalStyles'
+import { colors, globalStyles } from '../utils/globalStyles'
 import * as Linking from "expo-linking";
 import { useSelector } from 'react-redux'
 import { selectGroups } from '../slices/groupsSlice'
@@ -103,17 +103,39 @@ const Page = () => {
 
       {!loading&&<View>
         {workplace.adminId?.toString() === user?.id?.toString()?
-        <Text style={{fontSize: 14, fontWeight: '400'}}>{isMyProfile?'Jesteś ':'Jest to '}
+        <Text style={styles.leftText}>{isMyProfile?'Jesteś ':'Jest to '}
             <Text style={{fontSize: 15, fontWeight: '600'}}> 
               administrator miejsca pracy/szef
             </Text>
         </Text>:
-         <Text style={{fontSize: 14, fontWeight: '400'}}>{isMyProfile?'Należysz':'Należy'} do grupy: {' '}
+         <Text style={styles.leftText}>{isMyProfile?'Należysz':'Należy'} do grupy: {' '}
          <Text style={{fontSize: 15, fontWeight: '700'}}> 
            {groups.find((group) => group.id === user.groupId)?.name}
          </Text>
       </Text>}
       </View>}
+
+      {!loading&&<View>
+        {isMyProfile?<View style={styles.rightOptions}>
+          {(user?.phoneNumber && user?.phoneNumber>100)?<>
+            <Text style={styles.leftText}>Zadzwoń do {user.name}: </Text>
+            <TouchableOpacity style={[styles.phoneButton, globalStyles.boxShadow]} 
+              onPress={() => Linking.openURL(`tel:${user?.phoneNumber}`)}>
+              <Entypo name='phone' color={'white'} size={18}/>
+            </TouchableOpacity>
+          </>:<View></View>}
+        </View>:
+        <View style={styles.rightOptions}>
+          <Text style={styles.leftText}>Edytuj swój profil: </Text>
+          <TouchableOpacity 
+            onPress={() => router.push('/editUser')}
+            style={[styles.option, globalStyles.boxShadow]}
+          >
+            <Feather name='edit-3' size={20} color={'black'}/>
+          </TouchableOpacity>
+        </View>
+      }
+    </View>}
       
       <View>
         {/* <Text>Najbliższe dni pracy:</Text> */}
@@ -124,15 +146,24 @@ const Page = () => {
 
 const styles = StyleSheet.create({
     rightOptions: {
-      marginHorizontal: 15,
       flexDirection: 'row',
-      gap: 5,
+      gap: 10,
       alignItems:'center'
     },
     dataContainer: {
       flexDirection: 'column',
       alignItems: 'flex-start',
       gap: -1
+    },
+    leftText:{
+      fontSize: 14, 
+      fontWeight: '700',
+      color: '#555'
+    },
+    option: {
+      backgroundColor: 'white',
+      borderRadius: 50,
+      padding: 9
     },
     phoneButton: {
       backgroundColor: '#19f',

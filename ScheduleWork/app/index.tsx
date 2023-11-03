@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, Image } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { colors, globalStyles } from '../utils/globalStyles'
-import { Link, useRouter } from 'expo-router'
+import { Link, usePathname, useRouter } from 'expo-router'
 import calendar from './../assets/images/calendar.png'
 import logo from './../assets/images/logo.png'
 import * as SplashScreen from 'expo-splash-screen';
@@ -13,7 +13,8 @@ SplashScreen.preventAutoHideAsync();
 
 const HomeScreen = () => {
     const router = useRouter()
-
+    const pathname = usePathname()
+    const [logged, setLogged] = useState(false)
     useEffect(() => {
         const getData = async () => {
             try {
@@ -26,6 +27,7 @@ const HomeScreen = () => {
                     }
                     else {
                         router.replace('/(tabs)/schedule')
+                        setLogged(true)
                     }
                 }
             } catch (e) {
@@ -33,9 +35,11 @@ const HomeScreen = () => {
             }
         };
 
-        getData()
+        if(pathname === '/index') { 
+            getData()
+        }
 
-    }, [])
+    }, [pathname])
 
   return (
     <View style={styles.container}>
@@ -51,13 +55,13 @@ const HomeScreen = () => {
             onLongPress={() => router.push('/logsListModal')}
             style={styles.hideButton}/>
 
-        <Link href={'/login'}
+        <Link href={!logged?'/(tabs)/schedule':'/login'}
             asChild
             style={[styles.loginButton, globalStyles.boxShadow]}
         >
             <TouchableOpacity>
                 <Text style={{color: 'white', fontWeight: '700'}}>
-                    Zaloguj się 
+                    {logged?'Zaloguj się':'Wejdź do aplikacji'} 
                 </Text>
             </TouchableOpacity>
         </Link>

@@ -45,7 +45,7 @@ const Page = () => {
                 const userData = await res.json()
                 await AsyncStorage.setItem('my-key',  JSON.stringify(userData));
 
-                 router.push('/(tabs)/schedule')
+                 router.replace('/(tabs)/schedule')
 
                  router.push('/messageModal')
                  router.setParams({ message: `Udało się zalogować`, type: 'SUCCESS' })                
@@ -56,20 +56,21 @@ const Page = () => {
             }    
         }
         else {
-            const res = await sendEmail(inputValue)
+            router.replace('/(tabs)/schedule')
+            // const res = await sendEmail(inputValue)
 
-            if(res === 'SUCCESS'){
-                setEmailSended(inputValue)
+            // if(res === 'SUCCESS'){
+            //     setEmailSended(inputValue)
 
-                router.push('/messageModal')
-                router.setParams({ message: `Kod został wysłany na: ${inputValue}`, type: 'SUCCESS' })
+            //     router.push('/messageModal')
+            //     router.setParams({ message: `Kod został wysłany na: ${inputValue}`, type: 'SUCCESS' })
                 
-                goToNextStep()
-            }
-            else {
-                router.push('/messageModal')
-                router.setParams({ message: `Coś poszło nie tak`, type: 'ERROR' })
-            }              
+            //     goToNextStep()
+            // }
+            // else {
+            //     router.push('/messageModal')
+            //     router.setParams({ message: `Coś poszło nie tak`, type: 'ERROR' })
+            // }              
         }
        
         setInputValue('')

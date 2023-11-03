@@ -131,7 +131,7 @@ const DayDetails:FC<{selectedDate: Date}> = ({selectedDate}) => {
                     </View>}
                     renderItem={({ item }) => 
                         <Link
-                            href={{pathname: '/(Drawer)/profile', params: {userId: item?.user.id}}}
+                            href={{pathname: '/profile', params: {userId: item?.user.id}}}
                             asChild
                             style={[
                                 styles.userItem,  globalStyles.boxShadow_light
@@ -169,7 +169,9 @@ const DayDetails:FC<{selectedDate: Date}> = ({selectedDate}) => {
            
             {(pathname!=='/selectHoursModal' && isMyGroup && !isAdmin)&&
                 <TouchableOpacity 
-                    style={[styles.plusButton, globalStyles.boxShadow]}
+                    style={[styles.plusButton, globalStyles.boxShadow, {
+                        backgroundColor: isMyDay?colors.errorColor:colors.baseColor
+                    }]}
                     onPress={() => { 
                         if(!isMyDay){
                             router.push({ pathname: "/selectHoursModal", params: { day: formatDateToString(selectedDate) } })
