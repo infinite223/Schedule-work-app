@@ -9,7 +9,6 @@ import { selectGroups, setGroups } from '../slices/groupsSlice';
 import { useDispatch, useSelector } from 'react-redux';
 const widthScreen = Dimensions.get('screen').width
 
-
 const createGroupModal = () => {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
@@ -25,8 +24,6 @@ const createGroupModal = () => {
         const res = await createGroup(JSON.parse(jsonValue).authToken, name, description)
   
         if(res.status === 200) {
-          // console.log(newGroups, 'groups')
-
           const newGroup = await res.json()
 
           if(newGroup) {         

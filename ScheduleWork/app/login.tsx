@@ -1,4 +1,4 @@
-import { View, Image, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions, Platform, FlatList, FlatListProps } from 'react-native'
+import { View, Image, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions, Platform, FlatList } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { useRouter } from 'expo-router'
 import { colors, globalStyles } from '../utils/globalStyles'

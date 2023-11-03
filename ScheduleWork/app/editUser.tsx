@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, Text, TextInput, StyleSheet, SafeAreaView, Dimensions, Platform } from 'react-native'
+import { View, TouchableOpacity, Text, TextInput, StyleSheet, Dimensions } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { colors, globalStyles } from '../utils/globalStyles'
 import {
@@ -7,7 +7,7 @@ import {
 } from 'react-native-safe-area-context';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { router, useRouter, useNavigation } from 'expo-router';
+import { router } from 'expo-router';
 import { updateUser } from '../services/user';
 import { User } from '../utils/types';
 

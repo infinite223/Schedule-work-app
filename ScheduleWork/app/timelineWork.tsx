@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Platform } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { UserInDay } from '../utils/types'
 import { getAllUsersInDay, removeUserInDay } from '../services/userInDay'

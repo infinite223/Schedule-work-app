@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Text, View, TouchableOpacity, StyleSheet, Dimensions, FlatList } from "react-native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Link, router  } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { selectGroups, setGroups } from "../../slices/groupsSlice";
@@ -9,11 +8,10 @@ import { FontAwesome5, Ionicons, MaterialCommunityIcons, Octicons } from "@expo/
 import { colors, globalStyles } from "../../utils/globalStyles";
 import { selectWorkPlace } from "../../slices/workPlaceSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { removeUserFromGroup, updateUser } from "../../services/user";
+import { removeUserFromGroup } from "../../services/user";
 import { getGroupsInWorkPlace } from "../../services/group";
 import { setSelectedGroupId } from "../../slices/invokeFunction";
 import { StatusBar } from "expo-status-bar";
-// import { StatusBar } from "expo-status-bar";
 
 const widthScreen = Dimensions.get('screen').width
 

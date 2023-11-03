@@ -1,4 +1,4 @@
-import { Redirect, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
 import { Provider } from 'react-redux';
 import { store } from '../store';
 

@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import { colors, globalStyles } from '../utils/globalStyles'
 import { router } from 'expo-router'
 import { Log } from '../utils/types'
-import { formatDateToString } from '../utils/functions'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const widthScreen = Dimensions.get('screen').width

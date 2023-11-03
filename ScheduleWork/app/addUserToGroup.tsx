@@ -1,15 +1,14 @@
-import { View, Text, Pressable, StyleSheet, Dimensions, TouchableOpacity, TextInput, FlatList } from 'react-native'
+import { View, Text, Pressable, StyleSheet, Dimensions, TouchableOpacity, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { colors, globalStyles } from '../utils/globalStyles'
 import { router, useLocalSearchParams } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons';
-import { addUserToGroup, getGroupsInWorkPlace, removeGroup, updateGroup } from '../services/group';
+import { addUserToGroup, getGroupsInWorkPlace } from '../services/group';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectInvokeGetGroupsFunction, setInvokeGetGroupsFunction } from '../slices/invokeFunction';
-import { selectGroups, setGroups } from '../slices/groupsSlice';
-import { Group, User } from '../utils/types';
-import { getUsersWithOutGroup, updateUser } from '../services/user';
+import { useDispatch } from 'react-redux';
+import { setGroups } from '../slices/groupsSlice';
+import { User } from '../utils/types';
+import { getUsersWithOutGroup } from '../services/user';
 import { setLogsInStorage } from '../utils/functions';
 import Loading from '../components/Loading';
 

@@ -6,7 +6,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { removeGroup, updateGroup } from '../services/group';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectInvokeGetGroupsFunction, setInvokeGetGroupsFunction } from '../slices/invokeFunction';
 import { selectGroups, setGroups } from '../slices/groupsSlice';
 import { Group } from '../utils/types';
 
