@@ -8,5 +8,5 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-, "components/datePicker.js"  ]
+, "components/datePicker.js", "hooks/useAuth.js"  ]
 }

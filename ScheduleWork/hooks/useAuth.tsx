@@ -52,7 +52,6 @@ export const AuthProvider = ({children}: any) => {
   }
 
 
-  
     const memoedValue = useMemo(() => ({
       user,
       setUser,

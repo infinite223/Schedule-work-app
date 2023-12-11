@@ -1,10 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, TouchableOpacity, StyleSheet, Dimensions, FlatList } from "react-native";
-import { Link, router  } from "expo-router";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+  FlatList,
+} from "react-native";
+import { Link, router } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { selectGroups, setGroups } from "../../slices/groupsSlice";
 import { Group, User } from "../../utils/types";
-import { FontAwesome5, Ionicons, MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
+import {
+  FontAwesome5,
+  Ionicons,
+  MaterialCommunityIcons,
+  Octicons,
+} from "@expo/vector-icons";
 import { colors, globalStyles } from "../../utils/globalStyles";
 import { selectWorkPlace } from "../../slices/workPlaceSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -13,194 +25,221 @@ import { getGroupsInWorkPlace } from "../../services/group";
 import { setSelectedGroupId } from "../../slices/invokeFunction";
 import { StatusBar } from "expo-status-bar";
 
-const widthScreen = Dimensions.get('screen').width
+const widthScreen = Dimensions.get("screen").width;
 
 export default function Page() {
-    const [isAdmin, setIsAdmin] = useState(false)
-    const workPlace = useSelector(selectWorkPlace)
-    const dispatch = useDispatch()
-    const groups:Group[] = useSelector(selectGroups)
-    const [refresh, setRefresh] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false);
+  const workPlace = useSelector(selectWorkPlace);
+  const dispatch = useDispatch();
+  const groups: Group[] = useSelector(selectGroups);
+  const [refresh, setRefresh] = useState(false);
 
-    useEffect(() => {
-      const getData = async () => {
-          const jsonValue:any = await AsyncStorage.getItem('my-key');
-          const user = (jsonValue != null ? JSON.parse(jsonValue).user : null)
+  useEffect(() => {
+    const getData = async () => {
+      const jsonValue: any = await AsyncStorage.getItem("my-key");
+      const user = jsonValue != null ? JSON.parse(jsonValue).user : null;
 
-          setIsAdmin(workPlace.adminId === user?.id.toString())
-      }
+      setIsAdmin(workPlace.adminId === user?.id.toString());
+    };
 
-      getData()
-      
-  }, [])
-  console.log(workPlace, 'tutau')
+    getData();
+  }, []);
+  console.log(workPlace, "tutau");
   const tryRemoveUserFromGroup = async (user: User) => {
-    const jsonValue = await AsyncStorage.getItem('my-key');
+    const jsonValue = await AsyncStorage.getItem("my-key");
 
-    if(jsonValue != null) {
-        const res = await removeUserFromGroup(
-            JSON.parse(jsonValue).authToken,
-            user.id,
-            user.groupId
-        )
+    if (jsonValue != null) {
+      const res = await removeUserFromGroup(
+        JSON.parse(jsonValue).authToken,
+        user.id,
+        user.groupId,
+      );
 
-        if(res.status === 200) {
-          updateGroupsData()
-        }
+      if (res.status === 200) {
+        updateGroupsData();
+      }
     }
-  }
+  };
 
   const updateGroupsData = async () => {
-    setRefresh(true)
-    const jsonValue = await AsyncStorage.getItem('my-key');
+    setRefresh(true);
+    const jsonValue = await AsyncStorage.getItem("my-key");
 
-    if(jsonValue != null) {
+    if (jsonValue != null) {
       const groups = await getGroupsInWorkPlace(
-        JSON.parse(jsonValue).authToken, 
-        JSON.parse(jsonValue)?.user.workPlaceId
-      )
+        JSON.parse(jsonValue).authToken,
+        JSON.parse(jsonValue)?.user.workPlaceId,
+      );
 
-      if(groups.status === 200) {
-        dispatch(setGroups(await groups.json()))
+      if (groups.status === 200) {
+        dispatch(setGroups(await groups.json()));
       }
     }
-    await setRefresh(false)
-  } 
+    await setRefresh(false);
+  };
 
   return (
     <View style={[styles.container]}>
-        <StatusBar style='dark' />
-        <FlatList
-          style={{flex:1}}
-          contentContainerStyle={{ gap: 10}}
-          data={groups}
-          overScrollMode="never"
-          refreshing={refresh}
-          onRefresh={() => updateGroupsData()}
-          renderItem={({ item }) => 
+      <StatusBar style="dark" />
+      <FlatList
+        style={{ flex: 1 }}
+        contentContainerStyle={{ gap: 10 }}
+        data={groups}
+        overScrollMode="never"
+        refreshing={refresh}
+        onRefresh={() => updateGroupsData()}
+        renderItem={({ item }) => (
+          <View style={[styles.groupContainer, globalStyles.boxShadow]}>
+            <View style={styles.headerGroup}>
               <View
-                style={[styles.groupContainer, globalStyles.boxShadow]}
+                style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
               >
-                  <View style={styles.headerGroup}>
-                    <View style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
-                      <View style={styles.leftBox}>
-                        <MaterialCommunityIcons color={'black'} name='account-group' size={27}/>
-                        <View>
-                          <Text style={styles.headerTitle}>{item.name}</Text>
-                          <Text style={[styles.countPersons, {fontSize: 11}]}>
-                            {item.users?.length} osób/a w grupie
-                          </Text>
-                        </View>
+                <View style={styles.leftBox}>
+                  <MaterialCommunityIcons
+                    color={"black"}
+                    name="account-group"
+                    size={27}
+                  />
+                  <View>
+                    <Text style={styles.headerTitle}>{item.name}</Text>
+                    <Text style={[styles.countPersons, { fontSize: 11 }]}>
+                      {item.users?.length} osób/a w grupie
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              <View
+                style={{ flexDirection: "row", alignItems: "center", gap: 2 }}
+              >
+                {isAdmin && (
+                  <>
+                    <Link
+                      asChild
+                      href={{
+                        pathname: "/addUserToGroup",
+                        params: {
+                          groupId: item?.id,
+                          groupName: item.name,
+                        },
+                      }}
+                    >
+                      <TouchableOpacity style={{ padding: 7 }}>
+                        <Octicons name="person-add" size={22} color={"black"} />
+                      </TouchableOpacity>
+                    </Link>
+
+                    <Link
+                      asChild
+                      href={{
+                        pathname: "/editGroup",
+                        params: {
+                          groupId: item?.id,
+                          groupName: item.name,
+                          groupDescription: item.description
+                            ? item.description
+                            : "",
+                        },
+                      }}
+                    >
+                      <TouchableOpacity style={{ padding: 7 }}>
+                        <FontAwesome5 name="edit" size={20} color={"black"} />
+                      </TouchableOpacity>
+                    </Link>
+                  </>
+                )}
+                <TouchableOpacity
+                  onPress={() => {
+                    dispatch(setSelectedGroupId(item.id));
+                    router.push("/(tabs)/schedule");
+                  }}
+                  activeOpacity={0.6}
+                  style={styles.button}
+                >
+                  <Text
+                    style={{ fontSize: 12, color: "white", fontWeight: "700" }}
+                  >
+                    Zobacz grafik
+                  </Text>
+                  <Ionicons name="search" size={17} color={"white"} />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {item.description?.length > 0 && (
+              <Text style={styles.description}>
+                <Text style={{ fontWeight: "300" }}>Opis:</Text>{" "}
+                {item.description}
+              </Text>
+            )}
+
+            <FlatList
+              data={item.users}
+              renderItem={({ item }) => (
+                <Link
+                  asChild
+                  href={{
+                    pathname: "/profile",
+                    params: { userId: item.id },
+                  }}
+                >
+                  <TouchableOpacity style={styles.userItem}>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 20,
+                      }}
+                    >
+                      <View>
+                        <Text style={styles.name}>{item.name}</Text>
+                        <Text style={styles.userName}>{item.userName}</Text>
                       </View>
                     </View>
-                   <View style={{flexDirection:'row', alignItems: 'center', gap: 2}}>
-                       {isAdmin&&
-                        <>
-                          <Link
-                            asChild
-                            href={{pathname: '/addUserToGroup', 
-                            params: {
-                              groupId: item?.id,
-                              groupName: item.name,
-                            }}}
-                          >
-                            <TouchableOpacity 
-                              style={{ padding: 7 }}
-                            >
-                              <Octicons name='person-add' size={22} color={'black'}/>
-                            </TouchableOpacity>
-                          </Link>
 
-                          <Link
-                            asChild
-                            href={{pathname: '/editGroup', params: {
-                              groupId: item?.id,
-                              groupName: item.name,
-                              groupDescription: item.description?item.description: ''
-                            }}}
-                          >
-                            <TouchableOpacity 
-                              style={{ padding: 7 }}
-                            >
-                              <FontAwesome5 name='edit' size={20} color={'black'}/>
-                            </TouchableOpacity>
-                          </Link>
-                        </>
-                      }
-                      <TouchableOpacity
-                        onPress={() => {
-                          dispatch(setSelectedGroupId(item.id))
-                          router.push('/(tabs)/schedule')
-                        }} 
-                        
-                        activeOpacity={.6} 
-                        style={styles.button}
-                      >
-                        <Text style={{fontSize: 12, color: 'white', fontWeight: '700'}}>Zobacz grafik</Text>
-                        <Ionicons name='search' size={17} color={'white'}/> 
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-
-                  {item.description?.length>0&&
-                    <Text style={styles.description}>
-                      <Text style={{fontWeight: '300'}}>Opis:</Text> {item.description}
-                    </Text>
-                  }
-
-                  <FlatList
-                    data={item.users}
-                    renderItem={({ item }) => 
-                      <Link 
-                        asChild
-                        href={{
-                          pathname: '/profile',
-                          params: { userId: item.id },
-                        }}
-                      >
-                        <TouchableOpacity style={styles.userItem}>
-                          <View style={{flexDirection: 'row', alignItems: 'center', gap: 20}}>
-                            <View>
-                              <Text style={styles.name}>{item.name}</Text>
-                              <Text style={styles.userName}>{item.userName}</Text>
-                            </View>
-                          </View>
-
-                          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                            {isAdmin&&<TouchableOpacity onPress={() => tryRemoveUserFromGroup(item)} style={{paddingHorizontal: 10}}>
-                              <Ionicons name='ios-trash-outline' size={24}/>
-                            </TouchableOpacity>}
-
-                            <Ionicons name='md-arrow-forward' size={22}/> 
-                          </View>
-                         
+                    <View
+                      style={{ flexDirection: "row", alignItems: "center" }}
+                    >
+                      {isAdmin && (
+                        <TouchableOpacity
+                          onPress={() => tryRemoveUserFromGroup(item)}
+                          style={{ paddingHorizontal: 10 }}
+                        >
+                          <Ionicons name="ios-trash-outline" size={24} />
                         </TouchableOpacity>
-                      </Link>}
-                  />
-                  {(!item.users || item.users?.length===0)&&
-                    <View style={styles.nousersError}>
-                      <Text style={styles.text}>W tej grupie nie ma jeszcze osób...</Text>
+                      )}
+
+                      <Ionicons name="md-arrow-forward" size={22} />
                     </View>
-                    } 
+                  </TouchableOpacity>
+                </Link>
+              )}
+            />
+            {(!item.users || item.users?.length === 0) && (
+              <View style={styles.nousersError}>
+                <Text style={styles.text}>
+                  W tej grupie nie ma jeszcze osób...
+                </Text>
               </View>
-          }
-        />
+            )}
+          </View>
+        )}
+      />
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
-    flex: 1, 
-    alignItems: 'center',
+    backgroundColor: "white",
+    flex: 1,
+    alignItems: "center",
     gap: 10,
-    paddingVertical: 10, 
+    paddingVertical: 10,
   },
   headerGroup: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 5
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 5,
   },
   button: {
     backgroundColor: colors.baseColor,
@@ -208,18 +247,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingVertical: 8,
     maxWidth: 100,
-    flexDirection:'row',
-    alignItems:'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 5,
-    height: 50
+    height: 50,
   },
-  nousersError: {
-
-  },
+  nousersError: {},
   text: {
     paddingBottom: 5,
-    fontWeight: '300',
-    fontSize: 12
+    fontWeight: "300",
+    fontSize: 12,
   },
   leftBox: {
     borderRadius: 50,
@@ -227,53 +264,53 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     width: 145,
     marginBottom: 10,
-    flexDirection:'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 15,
-    height: 50
+    height: 50,
   },
   headerTitle: {
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   countPersons: {
     fontSize: 15,
   },
   description: {
     fontSize: 14,
-    fontWeight: '400'
+    fontWeight: "400",
   },
   groupContainer: {
     width: widthScreen,
     paddingHorizontal: 15,
-    backgroundColor:'white',
+    backgroundColor: "white",
     paddingVertical: 5,
   },
   option: {
     borderRadius: 5,
     paddingHorizontal: 15,
     paddingVertical: 7,
-    backgroundColor: '#eee',
-    width: widthScreen - 30
+    backgroundColor: "#eee",
+    width: widthScreen - 30,
   },
   userItem: {
-    paddingHorizontal: 5 ,
+    paddingHorizontal: 5,
     paddingVertical: 7,
     borderRadius: 5,
     marginVertical: 5,
-    flexDirection: 'row',
-    alignItems:'center',
-    justifyContent: 'space-between'
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   name: {
     fontSize: 14,
-    fontWeight: '700'
+    fontWeight: "700",
   },
   userName: {
-    fontSize: 13
+    fontSize: 13,
   },
   email: {
     fontSize: 12,
-    fontWeight: '300'
-  }
-})
+    fontWeight: "300",
+  },
+});
