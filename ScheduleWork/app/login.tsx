@@ -7,8 +7,8 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { authenticateEmail, sendEmail } from '../services/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import logo from './../assets/images/logo.png'
-import useAuth from '../hooks/useAuth'
-import { User } from 'firebase/auth';
+import useAuth, { auth } from '../hooks/useAuth'
+import { User, signInWithEmailAndPassword } from 'firebase/auth';
 
 const widthScreen = Dimensions.get('screen').width
 const widthFlatList = Platform.OS ==='web'?450:widthScreen
@@ -19,13 +19,15 @@ const stagesLogin = [
         header: 'Zaloguj się do swojego konta',
         input: 'Email',
         type: 'Email',
-        buttonText: 'Zweryfikuj'
+        buttonText: 'Zaloguj się',
+        buttonText2: 'Utwórz konto'
     },
     {
         header: 'Utwórz nowe konto',
         input: 'Email',
         type: 'Code',
-        buttonText: 'Zaluguj się'
+        buttonText: 'Utwórz konto',
+        buttonText2: 'Zaloguj się',
     }
 ]
 
@@ -42,42 +44,62 @@ const Page = () => {
 
     if(email.length>4 && password.length>=3){
         if(index){
-            const res = await authenticateEmail(emailSended, inputValue)
-            console.log(res)
+            const res = await signInWithEmailAndPassword(auth, email, password)
 
-            if(res.ok){
-                const userData = await res.json()
-                await AsyncStorage.setItem('my-key',  JSON.stringify(userData));
-
-                 router.replace('/(tabs)/schedule')
-
-                 router.push('/messageModal')
-                 router.setParams({ message: `Udało się zalogować`, type: 'SUCCESS' })                
+            if(res.user) {
+                router.push('/messageModal')
+                router.setParams({ message: `Udało się zalogować`, type: 'SUCCESS' })   
             }
             else {
                 router.push('/messageModal')
                 router.setParams({ message: "Nie prawidłowy kod", type: 'ERROR' })
-            }    
+            }
+            // const res = await authenticateEmail(emailSended, inputValue)
+            // console.log(res)
+
+            // if(res.ok){
+            //     const userData = await res.json()
+            //     await AsyncStorage.setItem('my-key',  JSON.stringify(userData));
+
+            //      router.replace('/(tabs)/schedule')
+
+            //      router.push('/messageModal')
+            //      router.setParams({ message: `Udało się zalogować`, type: 'SUCCESS' })                
+            // }
+            // else {
+            //     router.push('/messageModal')
+            //     router.setParams({ message: "Nie prawidłowy kod", type: 'ERROR' })
+            // }    
         }
         else {
-            // router.replace('/(tabs)/schedule')
-            const res = await sendEmail(inputValue)
+            const res = await signInWithEmailAndPassword(auth, email, password)
 
-            if(res === 'SUCCESS'){
-                setEmailSended(inputValue)
-
+            if(res.user) {
                 router.push('/messageModal')
-                router.setParams({ message: `Kod został wysłany na: ${inputValue}`, type: 'SUCCESS' })
-                
-                goToNextStep()
+                router.setParams({ message: `Udało się zalogować`, type: 'SUCCESS' })   
             }
             else {
                 router.push('/messageModal')
-                router.setParams({ message: `Coś poszło nie tak`, type: 'ERROR' })
-            }              
+                router.setParams({ message: "Nie prawidłowy kod", type: 'ERROR' })
+            }
+            // router.replace('/(tabs)/schedule')
+            // const res = await sendEmail(inputValue)
+
+            // if(res === 'SUCCESS'){
+            //     setEmailSended(inputValue)
+
+            //     router.push('/messageModal')
+            //     router.setParams({ message: `Kod został wysłany na: ${inputValue}`, type: 'SUCCESS' })
+                
+            //     goToNextStep()
+            // }
+            // else {
+            //     router.push('/messageModal')
+            //     router.setParams({ message: `Coś poszło nie tak`, type: 'ERROR' })
+            // }              
         }
        
-        setInputValue('')
+        setEmail(''); setPassword("")
     }
     else {
         const errorType = index?"Kod":"Email"
@@ -126,7 +148,7 @@ const Page = () => {
             </View>
             <Image style={{width: 255, height: 70}} source={logo}/>
 
-            <View>
+            <View style={{flex: .6}}>
                 <FlatList
                     scrollEnabled={false}
                     ref={flatListRef}
@@ -152,12 +174,12 @@ const Page = () => {
                             />
 
                             <TextInput
-                                placeholder={item.input}
+                                placeholder={"Hasło"}
                                 style={[styles.emailInput, globalStyles.boxShadow]}
                                 value={password}
                                 onChangeText={setPassword}
-                                textContentType={index?'oneTimeCode':'emailAddress'}
-                                keyboardType={index?'numeric':'default'}
+                                textContentType={'password'}
+                                keyboardType={'default'}
                                 placeholderTextColor={'rgba(23, 23, 23, .4)'}
                             />
             
@@ -167,6 +189,17 @@ const Page = () => {
                             >
                                 <Text style={{color: 'white', fontWeight: '700'}}>
                                     {item.buttonText}
+                                </Text>
+                                <Ionicons name="arrow-forward-outline" size={20} color="white" />
+            
+                            </TouchableOpacity>
+
+                            <TouchableOpacity 
+                                onPress={index?goBack:goToNextStep}
+                                style={[styles.sendButton2, globalStyles.boxShadow]}
+                            >
+                                <Text style={{color: 'gray', fontWeight: '400', fontSize: 15}}>
+                                    {item.buttonText2}
                                 </Text>
                                 <Ionicons name="arrow-forward-outline" size={20} color="white" />
             
@@ -186,9 +219,9 @@ const Page = () => {
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         alignItems:'center',
         justifyContent: 'center', 
-        flex: 1,
         gap: 30,
         backgroundColor:'white'
     },
@@ -217,6 +250,9 @@ const styles = StyleSheet.create({
         alignItems:'center',
         marginTop: 20,
         gap: 15
+    },
+    sendButton2: {
+        marginTop: 10
     },
     descriptionText: {
         textAlign: 'center',
