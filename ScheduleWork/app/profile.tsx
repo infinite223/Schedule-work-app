@@ -116,7 +116,7 @@ const Page = () => {
       </View>}
 
       {!loading&&<View>
-        {isMyProfile?<View style={styles.rightOptions}>
+        {!isMyProfile?<View style={styles.rightOptions}>
           {(user?.phoneNumber && user?.phoneNumber>100)?<>
             <Text style={styles.leftText}>Zadzwoń do {user.name}: </Text>
             <TouchableOpacity style={[styles.phoneButton, globalStyles.boxShadow]} 

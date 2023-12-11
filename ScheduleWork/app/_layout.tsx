@@ -3,10 +3,12 @@ import { Provider } from 'react-redux';
 import { store } from '../store';
 import { View } from 'react-native'
 import { colors } from '../utils/globalStyles';
+import { AuthProvider } from './../hooks/useAuth';
 
 export default function Layout() {
   return (
     <Provider store={store}>
+      <AuthProvider>
       <Stack>
         <Stack.Screen
           name="index"
@@ -138,6 +140,7 @@ export default function Layout() {
           }}
         />
       </Stack>
+      </AuthProvider>
     </Provider>
   );
 }

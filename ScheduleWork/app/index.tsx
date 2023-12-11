@@ -15,7 +15,7 @@ const HomeScreen = () => {
     const router = useRouter()
     const pathname = usePathname()
     const [logged, setLogged] = useState(false)
-    useEffect(() => {
+    useEffect(() => {    
         const getData = async () => {
             try {
                 const jsonValue = await AsyncStorage.getItem('my-key');
@@ -30,12 +30,16 @@ const HomeScreen = () => {
                         setLogged(true)
                     }
                 }
+                else {
+                    setLogged(false)
+                }
             } catch (e) {
                 setLogsInStorage({file: '/index', error: 'trycatch', date: new Date()})
             }
+            console.log('dad')
         };
-
-        if(pathname === '/index') { 
+        console.log(pathname)
+        if(pathname === '/') { 
             getData()
         }
 
@@ -48,20 +52,20 @@ const HomeScreen = () => {
         <Image style={{width: 255, height: 70}} source={logo}/>
 
         <Text style={styles.descriptionText}>
-            Zaloguj się do włąsnego miejsca pracy aby ułatwić sobie zarządzanie pracą.
+            Zaloguj się do włąsnego miejsca pracy aby ułatwić zarządzanie harmonogramem.
         </Text>
 
         <TouchableOpacity 
             onLongPress={() => router.push('/logsListModal')}
             style={styles.hideButton}/>
 
-        <Link href={!logged?'/(tabs)/schedule':'/login'}
+        <Link href={logged?'/(tabs)/schedule':'/login'}
             asChild
             style={[styles.loginButton, globalStyles.boxShadow]}
         >
             <TouchableOpacity>
                 <Text style={{color: 'white', fontWeight: '700'}}>
-                    {logged?'Zaloguj się':'Wejdź do aplikacji'} 
+                    {logged?'Wejdź do aplikacji':'Zaloguj się'} 
                 </Text>
             </TouchableOpacity>
         </Link>

@@ -157,7 +157,7 @@ export default function Page() {
 
   return (
     <SafeAreaProvider style={[styles.container]}>
-      <StatusBar style='dark'/>
+      <StatusBar style='light' />
       {(user && user?.workPlaceId)?
         <>
           <CustomCalendar selectedDate={selectedDate} setSelectedDate={setSelectedDate}/>

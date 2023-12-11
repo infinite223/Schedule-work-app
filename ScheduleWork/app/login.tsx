@@ -7,6 +7,8 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { authenticateEmail, sendEmail } from '../services/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import logo from './../assets/images/logo.png'
+import useAuth from '../hooks/useAuth'
+import { User } from 'firebase/auth';
 
 const widthScreen = Dimensions.get('screen').width
 const widthFlatList = Platform.OS ==='web'?450:widthScreen
@@ -14,14 +16,14 @@ const isWeb = Platform.OS === 'web'
 
 const stagesLogin = [
     {
-        header: 'Podaj swój email by dołączyć',
+        header: 'Zaloguj się do swojego konta',
         input: 'Email',
         type: 'Email',
         buttonText: 'Zweryfikuj'
     },
     {
-        header: 'Wpisz kod otrzymany na maila',
-        input: 'Kod ',
+        header: 'Utwórz nowe konto',
+        input: 'Email',
         type: 'Code',
         buttonText: 'Zaluguj się'
     }
@@ -29,14 +31,16 @@ const stagesLogin = [
 
 const Page = () => {
   const router = useRouter()
-  const [inputValue, setInputValue] = useState('')
   const [emailSended, setEmailSended] = useState('')
+  const [password, setPassword] = useState("")
+  const [email, setEmail] = useState("")
 
   const flatListRef = useRef<FlatList>(null)
   const [index, setIndex] = useState(0)
-
+  const { user }: any = useAuth()
   const hendleClickButton = async () => {   
-    if(inputValue.length>4){
+
+    if(email.length>4 && password.length>=3){
         if(index){
             const res = await authenticateEmail(emailSended, inputValue)
             console.log(res)
@@ -56,21 +60,21 @@ const Page = () => {
             }    
         }
         else {
-            router.replace('/(tabs)/schedule')
-            // const res = await sendEmail(inputValue)
+            // router.replace('/(tabs)/schedule')
+            const res = await sendEmail(inputValue)
 
-            // if(res === 'SUCCESS'){
-            //     setEmailSended(inputValue)
+            if(res === 'SUCCESS'){
+                setEmailSended(inputValue)
 
-            //     router.push('/messageModal')
-            //     router.setParams({ message: `Kod został wysłany na: ${inputValue}`, type: 'SUCCESS' })
+                router.push('/messageModal')
+                router.setParams({ message: `Kod został wysłany na: ${inputValue}`, type: 'SUCCESS' })
                 
-            //     goToNextStep()
-            // }
-            // else {
-            //     router.push('/messageModal')
-            //     router.setParams({ message: `Coś poszło nie tak`, type: 'ERROR' })
-            // }              
+                goToNextStep()
+            }
+            else {
+                router.push('/messageModal')
+                router.setParams({ message: `Coś poszło nie tak`, type: 'ERROR' })
+            }              
         }
        
         setInputValue('')
@@ -110,11 +114,8 @@ const Page = () => {
             <Ionicons name="arrow-back-sharp" size={20} color="black" />
         </TouchableOpacity>
 
-        <View>
-
-        </View>
         
-        <View style={{alignItems:'center', gap: 20}}>
+        <View style={{alignItems:'center', gap: 20, flex: 1, justifyContent: 'center'}}>
             <View style={styles.header}>
                 <MaterialCommunityIcons 
                     name="account-clock-outline" 
@@ -125,7 +126,7 @@ const Page = () => {
             </View>
             <Image style={{width: 255, height: 70}} source={logo}/>
 
-            <View style={{height: 200}}>
+            <View>
                 <FlatList
                     scrollEnabled={false}
                     ref={flatListRef}
@@ -133,8 +134,9 @@ const Page = () => {
                     showsHorizontalScrollIndicator={false}
                     data={stagesLogin}
                     style={{maxWidth: widthFlatList}}
+                    contentContainerStyle={{height: 400}}
                     renderItem={({ item }) =>
-                        <View style={{alignItems:'center', gap: 10, width: widthFlatList}}>
+                        <View style={{alignItems:'center', gap: 10, width: widthFlatList, justifyContent: 'center'}}>
                             <Text style={styles.text}>
                                 {item.header}
                             </Text>
@@ -142,8 +144,18 @@ const Page = () => {
                             <TextInput
                                 placeholder={item.input}
                                 style={[styles.emailInput, globalStyles.boxShadow]}
-                                value={inputValue}
-                                onChangeText={setInputValue}
+                                value={email}
+                                onChangeText={setEmail}
+                                textContentType={index?'oneTimeCode':'emailAddress'}
+                                keyboardType={index?'numeric':'default'}
+                                placeholderTextColor={'rgba(23, 23, 23, .4)'}
+                            />
+
+                            <TextInput
+                                placeholder={item.input}
+                                style={[styles.emailInput, globalStyles.boxShadow]}
+                                value={password}
+                                onChangeText={setPassword}
                                 textContentType={index?'oneTimeCode':'emailAddress'}
                                 keyboardType={index?'numeric':'default'}
                                 placeholderTextColor={'rgba(23, 23, 23, .4)'}
@@ -175,7 +187,7 @@ const Page = () => {
 const styles = StyleSheet.create({
     container: {
         alignItems:'center',
-        justifyContent: 'space-between', 
+        justifyContent: 'center', 
         flex: 1,
         gap: 30,
         backgroundColor:'white'
