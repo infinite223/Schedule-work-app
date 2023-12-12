@@ -35,13 +35,13 @@ const Page = () => {
         setUser(data.user);
 
         if (data.user.name) {
-          setName(data.user.name);
+          setName(data.name);
         }
         if (data.user.userName) {
-          setUserName(data.user.userName);
+          setUserName(data.userName);
         }
         if (data.user.phoneNumber) {
-          setPhoneNumber(data.user.phoneNumber.toString());
+          setPhoneNumber(data.phoneNumber.toString());
         }
       }
     };
@@ -58,16 +58,13 @@ const Page = () => {
         userName,
         phoneNumber,
         name,
-        data.user.id,
+        data.id,
       );
 
       if (res.status === 200) {
         const updatedUser = await res.json();
-        const newData = {
-          user: updatedUser,
-        };
 
-        await AsyncStorage.setItem("my-key", JSON.stringify(newData));
+        await AsyncStorage.setItem("my-key", JSON.stringify(updatedUser));
 
         router.push("/(tabs)/schedule");
       } else {

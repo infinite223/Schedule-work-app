@@ -23,9 +23,9 @@ const HomeScreen = () => {
       try {
         const jsonValue = await AsyncStorage.getItem("my-key");
 
-        if (jsonValue != null && user) {
+        if (jsonValue != null) {
           const data = JSON.parse(jsonValue);
-          if (data.user) {
+          if (data) {
             router.replace("/(tabs)/schedule");
             setLogged(true);
           }
@@ -46,7 +46,6 @@ const HomeScreen = () => {
       getData();
     }
   }, [pathname, user]);
-  console.log(user)
 
   return (
     <View style={styles.container}>

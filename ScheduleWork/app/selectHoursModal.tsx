@@ -60,7 +60,7 @@ const Page = () => {
       if (jsonValue != null) {
         const res = await getDay(
           params.day,
-          JSON.parse(jsonValue).user.groupId,
+          JSON.parse(jsonValue).groupId,
         );
 
         if (res.status === 200) {

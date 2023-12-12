@@ -62,7 +62,7 @@ const CustomCalendar: FC<CustomCalendarProps> = ({
       const endDate = new Date(year, month + 1, 1);
 
       if (jsonValue != null) {
-        setMyId(JSON.parse(jsonValue).user.id);
+        setMyId(JSON.parse(jsonValue).id);
         const res = await getScheduleForMonth(
           formatDateToString(startDate),
           formatDateToString(endDate),

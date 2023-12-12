@@ -37,7 +37,7 @@ export default function Page() {
   useEffect(() => {
     const getData = async () => {
       const jsonValue: any = await AsyncStorage.getItem("my-key");
-      const user = jsonValue != null ? JSON.parse(jsonValue).user : null;
+      const user = jsonValue != null ? JSON.parse(jsonValue) : null;
 
       setIsAdmin(workPlace.adminId === user?.id.toString());
     };
@@ -66,7 +66,7 @@ export default function Page() {
 
     if (jsonValue != null) {
       const groups = await getGroupsInWorkPlace(
-        JSON.parse(jsonValue)?.user.workPlaceId,
+        JSON.parse(jsonValue)?.workPlaceId,
       );
 
       if (groups.status === 200) {

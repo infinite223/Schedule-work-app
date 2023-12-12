@@ -41,7 +41,7 @@ const Page = () => {
 
       if (jsonValue != null) {
         const res = await getUsersWithOutGroup(
-          JSON.parse(jsonValue).user.workPlaceId,
+          JSON.parse(jsonValue).workPlaceId,
         );
 
         if (res.status === 200) {
@@ -73,7 +73,7 @@ const Page = () => {
       if (res.status === 200) {
         console.log(res.status);
         const groups = await getGroupsInWorkPlace(
-          JSON.parse(jsonValue)?.user.workPlaceId,
+          JSON.parse(jsonValue).workPlaceId,
         );
 
         if (groups.status === 200) {
@@ -171,7 +171,6 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingVertical: 15,
     marginTop: -100,
-    //   alignItems: 'center',
     gap: 10,
   },
   descriptionText: {

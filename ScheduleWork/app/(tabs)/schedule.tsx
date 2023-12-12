@@ -53,12 +53,13 @@ export default function Page() {
       try {
         const jsonValue = await AsyncStorage.getItem("my-key");
         if (jsonValue != null) {
-          if (!JSON.parse(jsonValue).user.id) {
+          if (!JSON.parse(jsonValue)) {
             router.push("/login");
           }
+          const userData = await JSON.parse(jsonValue)
 
           const userFromDb = await getUser(
-            JSON.parse(jsonValue).user?.id,
+            userData.id
           );
           if (userFromDb.status === 200) {
             setUser(await userFromDb.json());
@@ -75,6 +76,7 @@ export default function Page() {
           }
         }
       } catch (e) {
+        console.log(e, "ekk ")
         alert("Coś poszło nie tak, spróbuj włączyć od nowa aplikacje");
         setLogsInStorage({
           file: "/drawer/schedule",
@@ -94,13 +96,16 @@ export default function Page() {
     const getData = async () => {
       try {
         const jsonValue = await AsyncStorage.getItem("my-key");
+
+
         if (jsonValue != null) {
-          if (!JSON.parse(jsonValue).user.id) {
+          if (!JSON.parse(jsonValue)) {
             router.push("/login");
           }
-
+          const userData = await JSON.parse(jsonValue)
+          
           const userFromDb = await getUser(
-            JSON.parse(jsonValue).authToken,
+            userData.id
           );
 
           if (userFromDb.status === 401) {
@@ -121,7 +126,7 @@ export default function Page() {
             await AsyncStorage.setItem(
               "my-key",
               JSON.stringify({            
-                user,
+                ...user,
               }),
             );
 
@@ -137,6 +142,7 @@ export default function Page() {
                 type: "ERROR",
               });
             } else {
+              console.log( "ekk ")
               alert("Coś poszło nie tak, spróbuj włączyć od nowa aplikacje");
             }
           }
@@ -161,16 +167,16 @@ export default function Page() {
     const tryGetGroupsData = async () => {
       const jsonValue = await AsyncStorage.getItem("my-key");
 
-      if (jsonValue != null && JSON.parse(jsonValue)?.user?.workPlaceId) {
+      if (jsonValue != null && JSON.parse(jsonValue)?.workPlaceId) {
         const groups = await getGroupsInWorkPlace(
-          JSON.parse(jsonValue)?.user?.workPlaceId,
+          JSON.parse(jsonValue)?.workPlaceId,
         );
 
         if (groups.status === 200) {
           const groupsData = await groups.json();
           dispatch(setGroups(groupsData));
           const findMyGroup = groupsData.find(
-            (group: Group) => group.id === JSON.parse(jsonValue)?.user?.groupId,
+            (group: Group) => group.id === JSON.parse(jsonValue)?.groupId,
           );
           if (findMyGroup) {
             dispatch(setSelectedGroupId(findMyGroup.id));

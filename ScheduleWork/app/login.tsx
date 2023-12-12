@@ -9,7 +9,7 @@ import {
   Platform,
   FlatList,
 } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "expo-router";
 import { colors, globalStyles } from "../utils/globalStyles";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -54,7 +54,16 @@ const Page = () => {
   const flatListRef = useRef<FlatList>(null);
   const [index, setIndex] = useState(0);
   const { user }: any = useAuth();
-  
+
+  // useEffect(() => {
+  //   const getUserData = async () => {
+  //     const jsonValue = await AsyncStorage.getItem("my-key");
+  //     if (jsonValue != null) {
+  //       console.log(JSON.parse(jsonValue).id, 'tutaj')
+  //     }
+  //   } 
+  //   getUserData()
+  // },  [])
   const hendleClickButton = async () => {
     if (email.length > 4 && password.length >= 3) {
       if (index) {
@@ -85,10 +94,10 @@ const Page = () => {
 
           if (resFirebase.user) {
             await AsyncStorage.setItem('my-key',  JSON.stringify(userData));
-
+            router.push("/(tabs)/schedule");
             router.push("/messageModal");
             router.setParams({ message: `Udało się zalogować`, type: "SUCCESS" });
-            router.push("/(tabs)/schedule");
+            
 
           } else {
             router.push("/messageModal");

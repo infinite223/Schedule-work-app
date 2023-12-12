@@ -41,7 +41,8 @@ export const updateUser = async (
 };
 
 export const getUser = async (userId: string) => {
-  const res = await fetch(`${appConfig.endpointsUrl}/user/${userId}`, {
+  console.log(userId)
+  const res = await fetch(`${appConfig.endpointsUrl}/user/${parseInt(userId).toString()}`, {
     method: "GET",
   });
 

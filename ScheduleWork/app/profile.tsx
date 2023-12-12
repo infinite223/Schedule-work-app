@@ -70,7 +70,7 @@ const Page = () => {
         if (res.status === 200) {
           setUser(await res.json());
 
-          if (JSON.parse(jsonValue).user?.id?.toString() === userId) {
+          if (JSON.parse(jsonValue)?.id?.toString() === userId) {
             setIsMyProfile(true);
           } else {
             setIsMyProfile(false);

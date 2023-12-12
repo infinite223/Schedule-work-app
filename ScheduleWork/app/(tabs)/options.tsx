@@ -30,7 +30,7 @@ const DrawerContent = () => {
   useEffect(() => {
     const getUserFromStorage = async () => {
       const jsonValue: any = await AsyncStorage.getItem("my-key");
-      setUser(jsonValue != null ? JSON.parse(jsonValue).user : null);
+      setUser(jsonValue != null ? JSON.parse(jsonValue) : null);
       console.log(workPlace.adminId, "tutaj ", user?.id);
       setIsAdmin(workPlace.adminId === user?.id.toString());
     };

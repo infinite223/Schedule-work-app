@@ -77,7 +77,7 @@ const DayDetails: FC<{ selectedDate: Date }> = ({ selectedDate }) => {
 
       const jsonValue = await AsyncStorage.getItem("my-key");
       if (jsonValue != null) {
-        setUser(JSON.parse(jsonValue).user);
+        setUser(JSON.parse(jsonValue));
         const res = await getDay(
           formatDateToString(selectedDate),
           selectedGroup,
@@ -104,7 +104,7 @@ const DayDetails: FC<{ selectedDate: Date }> = ({ selectedDate }) => {
       const jsonValue = await AsyncStorage.getItem("my-key");
       if (jsonValue != null) {
         const findMe = users?.find(
-          (userInDay) => userInDay.user.id === JSON.parse(jsonValue).user.id,
+          (userInDay) => userInDay.user.id === JSON.parse(jsonValue).id,
         );
 
         if (findMe) {
