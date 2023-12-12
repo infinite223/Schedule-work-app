@@ -13,6 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { addUserToWorkPlace } from "../services/workPlace";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setLogsInStorage } from "../utils/functions";
+
 const widthScreen = Dimensions.get("screen").width;
 
 const Page = () => {

@@ -4,7 +4,6 @@ import {
   Pressable,
   StyleSheet,
   Dimensions,
-  Image,
   FlatList,
   TouchableOpacity,
 } from "react-native";

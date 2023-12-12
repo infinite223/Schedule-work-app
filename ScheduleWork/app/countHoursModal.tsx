@@ -43,7 +43,7 @@ const Page = () => {
 
     tryGetHoursPrediction();
   }, []);
-  console.log(monthPrediction);
+  
   return (
     <Pressable style={[styles.container]} onPress={() => router.back()}>
       <Pressable

@@ -14,11 +14,11 @@ import { useRouter } from "expo-router";
 import { colors, globalStyles } from "../utils/globalStyles";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { authenticateEmail, authenticateEmailV2, sendEmail } from "../services/auth";
+import { authenticateEmailV2 } from "../services/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import logo from "./../assets/images/logo.png";
 import useAuth, { auth } from "../hooks/useAuth";
-import { User, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { createUser } from "../services/user";
 
 const widthScreen = Dimensions.get("screen").width;

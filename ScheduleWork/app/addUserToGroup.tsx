@@ -41,7 +41,6 @@ const Page = () => {
 
       if (jsonValue != null) {
         const res = await getUsersWithOutGroup(
-          JSON.parse(jsonValue).authToken,
           JSON.parse(jsonValue).user.workPlaceId,
         );
 
@@ -67,7 +66,6 @@ const Page = () => {
 
     if (jsonValue != null) {
       const res = await addUserToGroup(
-        JSON.parse(jsonValue).authToken,
         user.id,
         groupId,
       );
@@ -75,7 +73,6 @@ const Page = () => {
       if (res.status === 200) {
         console.log(res.status);
         const groups = await getGroupsInWorkPlace(
-          JSON.parse(jsonValue).authToken,
           JSON.parse(jsonValue)?.user.workPlaceId,
         );
 
