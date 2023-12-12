@@ -8,6 +8,7 @@ import * as SplashScreen from "expo-splash-screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setLogsInStorage } from "../utils/functions";
 import { TouchableOpacity } from "react-native";
+import useAuth from "../hooks/useAuth";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -15,21 +16,22 @@ const HomeScreen = () => {
   const router = useRouter();
   const pathname = usePathname();
   const [logged, setLogged] = useState(false);
+  const { user, setUser }: any = useAuth()
+
   useEffect(() => {
     const getData = async () => {
       try {
         const jsonValue = await AsyncStorage.getItem("my-key");
 
-        if (jsonValue != null) {
+        if (jsonValue != null && user) {
           const data = JSON.parse(jsonValue);
-          if (!data.user.userName || !data.user.name) {
-            router.push("/editUser");
-          } else {
+          if (data.user) {
             router.replace("/(tabs)/schedule");
             setLogged(true);
           }
         } else {
           setLogged(false);
+          setUser(null)
         }
       } catch (e) {
         setLogsInStorage({
@@ -38,13 +40,13 @@ const HomeScreen = () => {
           date: new Date(),
         });
       }
-      console.log("dad");
     };
-    console.log(pathname);
+
     if (pathname === "/") {
       getData();
     }
-  }, [pathname]);
+  }, [pathname, user]);
+  console.log(user)
 
   return (
     <View style={styles.container}>

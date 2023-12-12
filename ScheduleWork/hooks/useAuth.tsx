@@ -7,6 +7,8 @@ import * as WebBrowser from 'expo-web-browser';
 import { doc, getDoc } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 import { getStorage } from 'firebase/storage';
+import { authenticateEmail, authenticateEmailV2 } from '../services/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 WebBrowser.maybeCompleteAuthSession();
@@ -36,8 +38,17 @@ export const AuthProvider = ({children}: any) => {
   useEffect(() => 
     onAuthStateChanged(auth, async (user) => {
 
-      if(user){
+      if(user && user.email){
         setUser(user)
+        // async () => {
+        //   const res = await authenticateEmailV2(user.email)
+
+        //   if(res.ok) {
+        //     setUser(user)
+        //     const userData = await res.json()
+        //     await AsyncStorage.setItem('my-key',  JSON.stringify(userData));
+        //   }
+        // }
       }
       else {
         setUser(null)
@@ -50,8 +61,6 @@ export const AuthProvider = ({children}: any) => {
    signInWithEmailAndPassword(auth, 'test@gmail.com', 'test123')
    .catch((e) => console.log(e))
   }
-
-
     const memoedValue = useMemo(() => ({
       user,
       setUser,

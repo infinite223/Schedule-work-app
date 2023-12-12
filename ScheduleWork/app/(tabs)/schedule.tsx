@@ -58,7 +58,6 @@ export default function Page() {
           }
 
           const userFromDb = await getUser(
-            JSON.parse(jsonValue).authToken,
             JSON.parse(jsonValue).user?.id,
           );
           if (userFromDb.status === 200) {
@@ -102,7 +101,6 @@ export default function Page() {
 
           const userFromDb = await getUser(
             JSON.parse(jsonValue).authToken,
-            JSON.parse(jsonValue).user?.id,
           );
 
           if (userFromDb.status === 401) {
@@ -122,14 +120,12 @@ export default function Page() {
           if (user && user.workPlaceId) {
             await AsyncStorage.setItem(
               "my-key",
-              JSON.stringify({
-                authToken: JSON.parse(jsonValue).authToken,
+              JSON.stringify({            
                 user,
               }),
             );
 
             const workPlace = await getWorkPlace(
-              JSON.parse(jsonValue).authToken,
               user.workPlaceId,
             );
             if (workPlace.status === 200) {
@@ -167,7 +163,6 @@ export default function Page() {
 
       if (jsonValue != null && JSON.parse(jsonValue)?.user?.workPlaceId) {
         const groups = await getGroupsInWorkPlace(
-          JSON.parse(jsonValue).authToken,
           JSON.parse(jsonValue)?.user?.workPlaceId,
         );
 

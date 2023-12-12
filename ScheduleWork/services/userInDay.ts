@@ -1,7 +1,6 @@
 import { appConfig } from "../appConfig";
 
 export const createUserInDay = async (
-  authToken: string,
   from: string,
   to: string,
   dayId: string,
@@ -10,7 +9,6 @@ export const createUserInDay = async (
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: `Bearer ${authToken}`,
     },
     method: "POST",
     body: JSON.stringify({ from, to, dayId }),
@@ -20,14 +18,10 @@ export const createUserInDay = async (
 };
 
 export const getUsersInDay = async (
-  authToken: string,
   date: Date,
   groupId: string,
 ) => {
   const res = await fetch(`${appConfig.endpointsUrl}/day`, {
-    headers: {
-      Authorization: `Bearer ${authToken}`,
-    },
     method: "GET",
     body: JSON.stringify({ date, groupId }),
   });
@@ -35,13 +29,10 @@ export const getUsersInDay = async (
   return res;
 };
 
-export const getAllUsersInDay = async (authToken: string) => {
+export const getAllUsersInDay = async () => {
   const res = await fetch(
     `${appConfig.endpointsUrl}/userInDay/getAllFutureUserInDays`,
     {
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-      },
       method: "GET",
     },
   );
@@ -49,13 +40,10 @@ export const getAllUsersInDay = async (authToken: string) => {
   return res;
 };
 
-export const getCurrentMonthUserInDays = async (authToken: string) => {
+export const getCurrentMonthUserInDays = async () => {
   const res = await fetch(
     `${appConfig.endpointsUrl}/userInDay/getCurrentMonthUserInDays`,
     {
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-      },
       method: "GET",
     },
   );
@@ -63,12 +51,11 @@ export const getCurrentMonthUserInDays = async (authToken: string) => {
   return res;
 };
 
-export const removeUserInDay = async (authToken: string, id: string) => {
+export const removeUserInDay = async (id: string) => {
   const res = await fetch(`${appConfig.endpointsUrl}/userInDay/${id}`, {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: `Bearer ${authToken}`,
     },
     method: "DELETE",
     //   body: JSON.stringify({ from, to, dayId })

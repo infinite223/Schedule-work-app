@@ -29,9 +29,7 @@ const Page = () => {
       const jsonValue = await AsyncStorage.getItem("my-key");
       if (jsonValue != null) {
         // const res = await getHoursPrediction(JSON.parse(jsonValue).authToken)
-        const res = await getCurrentMonthUserInDays(
-          JSON.parse(jsonValue).authToken,
-        );
+        const res = await getCurrentMonthUserInDays();
         console.log(res.status);
         if (res.status === 200) {
           const data = await res.json();

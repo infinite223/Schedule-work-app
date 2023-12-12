@@ -38,7 +38,6 @@ const Page = () => {
 
     if (jsonValue) {
       const res = await updateGroup(
-        JSON.parse(jsonValue).authToken,
         name,
         description,
         groupId,
@@ -68,7 +67,7 @@ const Page = () => {
   const tryRemoveGroup = async () => {
     const jsonValue = await AsyncStorage.getItem("my-key");
     if (jsonValue) {
-      const res = await removeGroup(JSON.parse(jsonValue).authToken, groupId);
+      const res = await removeGroup(groupId);
 
       if (res.status === 200) {
         console.log(groupId, "groupId");

@@ -29,7 +29,6 @@ const createGroupModal = () => {
       const jsonValue = await AsyncStorage.getItem("my-key");
       if (jsonValue) {
         const res = await createGroup(
-          JSON.parse(jsonValue).authToken,
           name,
           description,
         );

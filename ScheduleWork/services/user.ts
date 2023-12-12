@@ -1,7 +1,27 @@
 import { appConfig } from "../appConfig";
 
+export const createUser = async (
+  userName: string,
+  phoneNumber: string | null,
+  name: string,
+  email: string
+
+) => {
+  const res = await fetch(
+    `${appConfig.endpointsUrl}/user`,
+    {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({ userName, name, phoneNumber, email }),
+    },
+  );
+
+  return res;
+}
 export const updateUser = async (
-  authToken: string,
   userName: string,
   phoneNumber: string | null,
   name: string,
@@ -12,7 +32,6 @@ export const updateUser = async (
   const res = await fetch(`${appConfig.endpointsUrl}/user/${id}`, {
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${authToken}`,
     },
     method: "PUT",
     body: JSON.stringify({ userName, name, phoneNumber }),
@@ -21,11 +40,8 @@ export const updateUser = async (
   return res;
 };
 
-export const getUser = async (authToken: string, userId: string) => {
+export const getUser = async (userId: string) => {
   const res = await fetch(`${appConfig.endpointsUrl}/user/${userId}`, {
-    headers: {
-      Authorization: `Bearer ${authToken}`,
-    },
     method: "GET",
   });
 
@@ -33,15 +49,11 @@ export const getUser = async (authToken: string, userId: string) => {
 };
 
 export const getUsersWithOutGroup = async (
-  authToken: string,
   workPlaceId: string,
 ) => {
   const res = await fetch(
     `${appConfig.endpointsUrl}/user/usersInWorkPace/${workPlaceId}`,
     {
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-      },
       method: "GET",
     },
   );
@@ -49,13 +61,10 @@ export const getUsersWithOutGroup = async (
   return res;
 };
 
-export const getHoursPrediction = async (authToken: string) => {
+export const getHoursPrediction = async () => {
   const res = await fetch(
     `${appConfig.endpointsUrl}/user/getHoursPrediction/currentMonth`,
     {
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-      },
       method: "GET",
     },
   );
@@ -64,7 +73,6 @@ export const getHoursPrediction = async (authToken: string) => {
 };
 
 export const removeUserFromGroup = async (
-  authToken: string,
   userId: string,
   groupId: string,
 ) => {
@@ -74,7 +82,6 @@ export const removeUserFromGroup = async (
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${authToken}`,
       },
       method: "POST",
       body: JSON.stringify({ userId, groupId }),

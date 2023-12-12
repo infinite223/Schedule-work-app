@@ -14,11 +14,12 @@ import { useRouter } from "expo-router";
 import { colors, globalStyles } from "../utils/globalStyles";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { authenticateEmail, sendEmail } from "../services/auth";
+import { authenticateEmail, authenticateEmailV2, sendEmail } from "../services/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import logo from "./../assets/images/logo.png";
 import useAuth, { auth } from "../hooks/useAuth";
-import { User, signInWithEmailAndPassword } from "firebase/auth";
+import { User, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { createUser } from "../services/user";
 
 const widthScreen = Dimensions.get("screen").width;
 const widthFlatList = Platform.OS === "web" ? 450 : widthScreen;
@@ -46,6 +47,9 @@ const Page = () => {
   const [emailSended, setEmailSended] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [nickName, setNickName] = useState("");
+  const [phonenumber, setPhonenumber] = useState(null);
 
   const flatListRef = useRef<FlatList>(null);
   const [index, setIndex] = useState(0);
@@ -53,59 +57,47 @@ const Page = () => {
   const hendleClickButton = async () => {
     if (email.length > 4 && password.length >= 3) {
       if (index) {
-        const res = await signInWithEmailAndPassword(auth, email, password);
+        const resFirebase = await createUserWithEmailAndPassword(auth, email, password);
 
-        if (res.user) {
-          router.push("/messageModal");
-          router.setParams({ message: `Udało się zalogować`, type: "SUCCESS" });
+        if (resFirebase.user) {
+          const resApi = await createUser(nickName, phonenumber, name, email)
+
+          if(resApi.status === 200) {
+            router.push("/messageModal");
+            router.setParams({ message: `Udało się utworzyć konto`, type: "SUCCESS" });
+          }
+          else {
+            console.log(resApi.status)
+            console.log(resApi)
+          }
+
         } else {
           router.push("/messageModal");
           router.setParams({ message: "Nie prawidłowy kod", type: "ERROR" });
         }
-        // const res = await authenticateEmail(emailSended, inputValue)
-        // console.log(res)
-
-        // if(res.ok){
-        //     const userData = await res.json()
-        //     await AsyncStorage.setItem('my-key',  JSON.stringify(userData));
-
-        //      router.replace('/(tabs)/schedule')
-
-        //      router.push('/messageModal')
-        //      router.setParams({ message: `Udało się zalogować`, type: 'SUCCESS' })
-        // }
-        // else {
-        //     router.push('/messageModal')
-        //     router.setParams({ message: "Nie prawidłowy kod", type: 'ERROR' })
-        // }
       } else {
-        const res = await signInWithEmailAndPassword(auth, email, password);
+        const resApi = await authenticateEmailV2(email)
+        
+        if(resApi.ok) {
+          const userData = await resApi.json()
+          const resFirebase = await signInWithEmailAndPassword(auth, email, password);
 
-        if (res.user) {
-          router.push("/messageModal");
-          router.setParams({ message: `Udało się zalogować`, type: "SUCCESS" });
-        } else {
-          router.push("/messageModal");
-          router.setParams({ message: "Nie prawidłowy kod", type: "ERROR" });
-          if(2/4) {
-            return 2 +  2
+          if (resFirebase.user) {
+            await AsyncStorage.setItem('my-key',  JSON.stringify(userData));
+
+            router.push("/messageModal");
+            router.setParams({ message: `Udało się zalogować`, type: "SUCCESS" });
+            router.push("/(tabs)/schedule");
+
+          } else {
+            router.push("/messageModal");
+            router.setParams({ message: "Błąd, konto o podanych danych nie istnieje", type: "ERROR" });
           }
         }
-        // router.replace('/(tabs)/schedule')
-        // const res = await sendEmail(inputValue)
-
-        // if(res === 'SUCCESS'){
-        //     setEmailSended(inputValue)
-
-        //     router.push('/messageModal')
-        //     router.setParams({ message: `Kod został wysłany na: ${inputValue}`, type: 'SUCCESS' })
-
-        //     goToNextStep()
-        // }
-        // else {
-        //     router.push('/messageModal')
-        //     router.setParams({ message: `Coś poszło nie tak`, type: 'ERROR' })
-        // }
+        else {
+          router.push("/messageModal");
+          router.setParams({ message: "Błąd, konto o podanych danych nie istnieje", type: "ERROR" });
+        }
       }
 
       setEmail("");
@@ -141,7 +133,7 @@ const Page = () => {
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        onPress={goBack}
+        onPress={() => router.back()}
         style={[styles.backButton, globalStyles.boxShadow]}
       >
         <Ionicons name="arrow-back-sharp" size={20} color="black" />
@@ -161,11 +153,13 @@ const Page = () => {
             size={35}
             color="#2b3"
           />
-          <Text style={styles.headerText}>logowanie</Text>
+          <Text style={styles.headerText}>
+            {!index?"logowanie":"Rejestracja"}
+          </Text>
         </View>
         <Image style={{ width: 255, height: 70 }} source={logo} />
 
-        <View style={{ flex: 0.6 }}>
+        <View style={{ flex: 0.7 }}>
           <FlatList
             scrollEnabled={false}
             ref={flatListRef}
@@ -185,13 +179,32 @@ const Page = () => {
               >
                 <Text style={styles.text}>{item.header}</Text>
 
+                {index?<>
+                  <TextInput
+                    placeholder={"Nick"}
+                    style={[styles.emailInput, globalStyles.boxShadow]}
+                    value={nickName}
+                    onChangeText={setNickName}
+                    keyboardType={"default"}
+                    placeholderTextColor={"rgba(23, 23, 23, .4)"}
+                  />
+                  <TextInput
+                    placeholder={"Imię"}
+                    style={[styles.emailInput, globalStyles.boxShadow]}
+                    value={name}
+                    onChangeText={setName}
+                    keyboardType={"default"}
+                    placeholderTextColor={"rgba(23, 23, 23, .4)"}
+                  />
+                </>:<></>}
+
                 <TextInput
                   placeholder={item.input}
                   style={[styles.emailInput, globalStyles.boxShadow]}
                   value={email}
                   onChangeText={setEmail}
-                  textContentType={index ? "oneTimeCode" : "emailAddress"}
-                  keyboardType={index ? "numeric" : "default"}
+                  textContentType={"emailAddress"}
+                  keyboardType={"default"}
                   placeholderTextColor={"rgba(23, 23, 23, .4)"}
                 />
 
@@ -263,6 +276,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 20,
     top: isWeb ? 20 : 50,
+    zIndex: 2
   },
   header: {
     alignItems: "center",

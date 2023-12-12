@@ -55,7 +55,6 @@ const Page = () => {
     if (jsonValue != null) {
       const data = JSON.parse(jsonValue);
       const res = await updateUser(
-        data.authToken,
         userName,
         phoneNumber,
         name,
@@ -66,12 +65,11 @@ const Page = () => {
         const updatedUser = await res.json();
         const newData = {
           user: updatedUser,
-          authToken: data.authToken,
         };
 
         await AsyncStorage.setItem("my-key", JSON.stringify(newData));
 
-        router.push("/(Drawer)/schedule");
+        router.push("/(tabs)/schedule");
       } else {
         // logout()
       }

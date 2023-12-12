@@ -22,7 +22,6 @@ const Page = () => {
     const jsonValue = await AsyncStorage.getItem("my-key");
     if (jsonValue != null) {
       const res = await addUserToWorkPlace(
-        JSON.parse(jsonValue).authToken,
         JSON.parse(jsonValue).user.id,
         email,
       );

@@ -7,8 +7,8 @@ import { AuthProvider } from "./../hooks/useAuth";
 
 export default function Layout() {
   return (
+    <AuthProvider>
     <Provider store={store}>
-      <AuthProvider>
         <Stack>
           <Stack.Screen
             name="index"
@@ -140,7 +140,7 @@ export default function Layout() {
             }}
           />
         </Stack>
-      </AuthProvider>
     </Provider>
+      </AuthProvider>
   );
 }

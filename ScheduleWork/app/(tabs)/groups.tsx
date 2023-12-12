@@ -50,7 +50,6 @@ export default function Page() {
 
     if (jsonValue != null) {
       const res = await removeUserFromGroup(
-        JSON.parse(jsonValue).authToken,
         user.id,
         user.groupId,
       );
@@ -67,7 +66,6 @@ export default function Page() {
 
     if (jsonValue != null) {
       const groups = await getGroupsInWorkPlace(
-        JSON.parse(jsonValue).authToken,
         JSON.parse(jsonValue)?.user.workPlaceId,
       );
 

@@ -1,12 +1,9 @@
 import { appConfig } from "../appConfig";
 
-export const getWorkPlace = async (authToken: string, workPlaceId: string) => {
+export const getWorkPlace = async (workPlaceId: string) => {
   const res = await fetch(
     `${appConfig.endpointsUrl}/workPlace/${workPlaceId}`,
     {
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-      },
       method: "GET",
     },
   );
@@ -15,7 +12,6 @@ export const getWorkPlace = async (authToken: string, workPlaceId: string) => {
 };
 
 export const addUserToWorkPlace = async (
-  authToken: string,
   workPlaceId: string,
   email: string,
 ) => {
@@ -25,7 +21,6 @@ export const addUserToWorkPlace = async (
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${authToken}`,
       },
       method: "PUT",
       body: JSON.stringify({ email }),
