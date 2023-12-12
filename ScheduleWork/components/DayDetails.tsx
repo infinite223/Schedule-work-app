@@ -47,7 +47,6 @@ const DayDetails: FC<{ selectedDate: Date }> = ({ selectedDate }) => {
       );
       if (findMe) {
         const res = await removeUserInDay(
-          JSON.parse(jsonValue).authToken,
           findMe.id,
         );
 
@@ -62,7 +61,6 @@ const DayDetails: FC<{ selectedDate: Date }> = ({ selectedDate }) => {
 
       if (jsonValue != null && users) {
         const res = await removeUserInDay(
-          JSON.parse(jsonValue).authToken,
           userInDay.id,
         );
         if (res.status === 200) {
@@ -81,7 +79,6 @@ const DayDetails: FC<{ selectedDate: Date }> = ({ selectedDate }) => {
       if (jsonValue != null) {
         setUser(JSON.parse(jsonValue).user);
         const res = await getDay(
-          JSON.parse(jsonValue).authToken,
           formatDateToString(selectedDate),
           selectedGroup,
         );

@@ -36,9 +36,7 @@ const Page = () => {
       setLoading(true);
       const jsonValue = await AsyncStorage.getItem("my-key");
       if (jsonValue != null) {
-        const allUsersInDay = await getAllUsersInDay(
-          JSON.parse(jsonValue).authToken,
-        );
+        const allUsersInDay = await getAllUsersInDay();
         if (allUsersInDay.status === 200) {
           setUserInDays(await allUsersInDay.json());
         }
@@ -56,7 +54,7 @@ const Page = () => {
 
     if (jsonValue != null) {
       if (id) {
-        const res = await removeUserInDay(JSON.parse(jsonValue).authToken, id);
+        const res = await removeUserInDay(id);
         if (res.status) {
           setUserInDays(userInDays.filter((userIdDay) => userIdDay.id !== id));
           dispatch(setInvokeFunction(!invokeFunction));

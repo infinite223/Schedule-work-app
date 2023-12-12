@@ -65,7 +65,7 @@ const Page = () => {
       setLoading(true);
       const jsonValue = await AsyncStorage.getItem("my-key");
       if (jsonValue) {
-        const res = await getUser(JSON.parse(jsonValue).authToken, userId);
+        const res = await getUser(userId);
 
         if (res.status === 200) {
           setUser(await res.json());

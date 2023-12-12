@@ -59,7 +59,6 @@ const Page = () => {
       const jsonValue = await AsyncStorage.getItem("my-key");
       if (jsonValue != null) {
         const res = await getDay(
-          JSON.parse(jsonValue).authToken,
           params.day,
           JSON.parse(jsonValue).user.groupId,
         );
@@ -67,7 +66,6 @@ const Page = () => {
         if (res.status === 200) {
           const day = await res.json();
           const newUserInDay = await createUserInDay(
-            JSON.parse(jsonValue).authToken,
             from,
             to,
             day.id,
@@ -79,14 +77,12 @@ const Page = () => {
         } else {
           console.log(params.day, "tuatjjjj");
           const newDay = await createDay(
-            JSON.parse(jsonValue).authToken,
             params.day,
           );
 
           if (newDay.status === 200) {
             const day = await newDay.json();
             const newUserInDay = await createUserInDay(
-              JSON.parse(jsonValue).authToken,
               from,
               to,
               day.id,
