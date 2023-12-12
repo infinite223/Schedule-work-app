@@ -54,6 +54,7 @@ const Page = () => {
   const flatListRef = useRef<FlatList>(null);
   const [index, setIndex] = useState(0);
   const { user }: any = useAuth();
+  
   const hendleClickButton = async () => {
     if (email.length > 4 && password.length >= 3) {
       if (index) {
