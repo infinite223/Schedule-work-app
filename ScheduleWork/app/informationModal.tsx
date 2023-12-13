@@ -11,6 +11,8 @@ import React from "react";
 import { globalStyles } from "../utils/globalStyles";
 import { router } from "expo-router";
 import logo from "./../assets/images/logo.png";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { Ionicons } from "@expo/vector-icons";
 
 const widthScreen = Dimensions.get("screen").width;
 const infoElements = [
@@ -91,6 +93,7 @@ const styles = StyleSheet.create({
     width: widthScreen - 165,
   },
   content: {
+    position: "relative",
     width: widthScreen - 20,
     borderRadius: 10,
     backgroundColor: "white",
@@ -99,6 +102,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 150,
     alignItems: "center",
+    zIndex: 4,
     gap: 10,
   },
   appVersion: {

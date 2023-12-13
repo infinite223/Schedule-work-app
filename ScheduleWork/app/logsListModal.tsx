@@ -17,11 +17,16 @@ const widthScreen = Dimensions.get("screen").width;
 
 const Page = () => {
   const [logs, setLogs] = useState<Log[] | null>([]);
+  const [countRequest, setCountRequest] = useState(0);
 
   useEffect(() => {
     const getLogsFromStorage = async () => {
       const logsValue = await AsyncStorage.getItem("logs");
+      const countRequestStorage = await AsyncStorage.getItem("countRequest");
 
+      if (countRequestStorage != null) {
+        setCountRequest(JSON.parse(countRequestStorage));
+      }
       if (logsValue != null) {
         setLogs(JSON.parse(logsValue));
       } else {
@@ -47,12 +52,27 @@ const Page = () => {
     }
   };
 
+  const getTextColor = () => {
+    let color = "green";
+
+    if (countRequest > 50) {
+      color = "orange";
+    } else if (countRequest > 200) {
+      color = "red";
+    }
+
+    return color;
+  };
+
   return (
     <Pressable style={[styles.container]} onPress={() => router.back()}>
       <Pressable
         onPress={() => {}}
         style={[styles.content, globalStyles.boxShadow_light]}
       >
+        <Text style={{ color: getTextColor(), fontWeight: "bold" }}>
+          Requests to API {countRequest}
+        </Text>
         <Text>Error logs in scheduleWork</Text>
 
         <FlatList

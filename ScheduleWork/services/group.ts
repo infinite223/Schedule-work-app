@@ -1,4 +1,5 @@
 import { appConfig } from "../appConfig";
+import { setCountRequestStorage } from "../utils/functions";
 
 export const createGroup = async (
   name: string,
@@ -68,6 +69,8 @@ export const addUserToGroup = async (
     body: JSON.stringify({ groupId, userId }),
   });
 
+  setCountRequestStorage()
+
   return res;
 };
 
@@ -79,6 +82,8 @@ export const removeGroup = async (id: string) => {
     },
     method: "DELETE",
   });
+
+  setCountRequestStorage()
 
   return res;
 };

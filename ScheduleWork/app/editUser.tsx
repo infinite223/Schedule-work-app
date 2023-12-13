@@ -32,15 +32,15 @@ const Page = () => {
       const jsonValue = await AsyncStorage.getItem("my-key");
       if (jsonValue != null) {
         const data = JSON.parse(jsonValue);
-        setUser(data.user);
+        setUser(data);
 
-        if (data.user.name) {
+        if (data.name) {
           setName(data.name);
         }
-        if (data.user.userName) {
+        if (data.userName) {
           setUserName(data.userName);
         }
-        if (data.user.phoneNumber) {
+        if (data.phoneNumber) {
           setPhoneNumber(data.phoneNumber.toString());
         }
       }
@@ -54,12 +54,7 @@ const Page = () => {
 
     if (jsonValue != null) {
       const data = JSON.parse(jsonValue);
-      const res = await updateUser(
-        userName,
-        phoneNumber,
-        name,
-        data.id,
-      );
+      const res = await updateUser(userName, phoneNumber, name, data.id);
 
       if (res.status === 200) {
         const updatedUser = await res.json();
@@ -83,9 +78,15 @@ const Page = () => {
   console.log(user, "dada");
   return (
     <SafeAreaProvider style={[styles.container, { paddingTop: insets.top }]}>
-      {user?.name && (
-        <Text style={styles.descriptionText}>Jescze jeden krok!</Text>
-      )}
+      <TouchableOpacity
+        onPress={() => router.back()}
+        style={[styles.backButton, globalStyles.boxShadow]}
+      >
+        <Ionicons name="arrow-back-sharp" size={20} color="black" />
+      </TouchableOpacity>
+
+      <Text style={styles.descriptionText}>Edytuj swój profil</Text>
+
       <Text style={styles.headerText}>Uzupełnij dane profilu</Text>
 
       <TextInput
@@ -151,6 +152,15 @@ const styles = StyleSheet.create({
     maxWidth: 300,
     fontSize: 12,
     marginBottom: 20,
+  },
+  backButton: {
+    borderRadius: 50,
+    backgroundColor: "#fff",
+    padding: 10,
+    position: "absolute",
+    left: 20,
+    top: 50,
+    zIndex: 2,
   },
   headerText: {
     marginHorizontal: 30,

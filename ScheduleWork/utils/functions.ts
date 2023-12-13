@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { colors } from "./globalStyles";
 import { timeCounter } from "./timeCounter";
 import { Log, UserInDay } from "./types";
+import { router } from "expo-router";
 
 export const formatDateToString = (date: Date) => {
   const year = date.getFullYear();
@@ -114,3 +115,19 @@ export const setLogsInStorage = async (newLog: Log) => {
     await AsyncStorage.setItem("logs", JSON.stringify([newLog]));
   }
 };
+
+export const setCountRequestStorage = async () => {
+  const countRequestStorage = await AsyncStorage.getItem("countRequest");
+  console.log("logs  +1", countRequestStorage)
+  if (countRequestStorage != null) {
+    let countRequest = JSON.parse(countRequestStorage);
+    if(countRequest>200) {
+      await AsyncStorage.removeItem('my-key');
+    }
+
+    await AsyncStorage.setItem("countRequest", JSON.stringify(countRequest + 1));
+  } else {
+    await AsyncStorage.setItem("countRequest", JSON.stringify(1));
+  }
+};
+

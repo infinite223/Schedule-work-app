@@ -20,7 +20,7 @@ import {
   setInvokeFunction,
 } from "../slices/invokeFunction";
 import { StatusBar } from "expo-status-bar";
-import { formatStringToDate } from "../utils/functions";
+import { formatStringToDate, setCountRequestStorage } from "../utils/functions";
 import { monthNames, shortDayNames } from "../utils/data";
 import Loading from "../components/Loading";
 
@@ -37,6 +37,7 @@ const Page = () => {
       const jsonValue = await AsyncStorage.getItem("my-key");
       if (jsonValue != null) {
         const allUsersInDay = await getAllUsersInDay();
+
         if (allUsersInDay.status === 200) {
           setUserInDays(await allUsersInDay.json());
         }
@@ -55,6 +56,7 @@ const Page = () => {
     if (jsonValue != null) {
       if (id) {
         const res = await removeUserInDay(id);
+
         if (res.status) {
           setUserInDays(userInDays.filter((userIdDay) => userIdDay.id !== id));
           dispatch(setInvokeFunction(!invokeFunction));

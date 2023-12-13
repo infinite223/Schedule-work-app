@@ -16,12 +16,13 @@ const HomeScreen = () => {
   const router = useRouter();
   const pathname = usePathname();
   const [logged, setLogged] = useState(false);
-  const { user, setUser }: any = useAuth()
+  const { user, setUser }: any = useAuth();
 
   useEffect(() => {
     const getData = async () => {
       try {
         const jsonValue = await AsyncStorage.getItem("my-key");
+        console.log(jsonValue, "t");
 
         if (jsonValue != null) {
           const data = JSON.parse(jsonValue);
@@ -31,7 +32,7 @@ const HomeScreen = () => {
           }
         } else {
           setLogged(false);
-          setUser(null)
+          setUser(null);
         }
       } catch (e) {
         setLogsInStorage({

@@ -1,4 +1,5 @@
 import { appConfig } from "../appConfig";
+import { setCountRequestStorage } from "../utils/functions";
 
 export const createUser = async (
   userName: string,
@@ -19,6 +20,8 @@ export const createUser = async (
     },
   );
 
+  setCountRequestStorage()
+
   return res;
 }
 export const updateUser = async (
@@ -37,6 +40,8 @@ export const updateUser = async (
     body: JSON.stringify({ userName, name, phoneNumber }),
   });
 
+  setCountRequestStorage()
+
   return res;
 };
 
@@ -45,6 +50,8 @@ export const getUser = async (userId: string) => {
   const res = await fetch(`${appConfig.endpointsUrl}/user/${parseInt(userId).toString()}`, {
     method: "GET",
   });
+
+  setCountRequestStorage()
 
   return res;
 };
@@ -59,6 +66,8 @@ export const getUsersWithOutGroup = async (
     },
   );
 
+  setCountRequestStorage()
+
   return res;
 };
 
@@ -69,6 +78,8 @@ export const getHoursPrediction = async () => {
       method: "GET",
     },
   );
+
+  setCountRequestStorage()
 
   return res;
 };
@@ -88,6 +99,8 @@ export const removeUserFromGroup = async (
       body: JSON.stringify({ userId, groupId }),
     },
   );
+
+  setCountRequestStorage()
 
   return res;
 };

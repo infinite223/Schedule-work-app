@@ -1,4 +1,5 @@
 import { appConfig } from "../appConfig";
+import { setCountRequestStorage } from "../utils/functions";
 
 export const createDay = async (date: string) => {
   const res = await fetch(`${appConfig.endpointsUrl}/day`, {
@@ -10,6 +11,8 @@ export const createDay = async (date: string) => {
     body: JSON.stringify({ date }),
   });
 
+  setCountRequestStorage()
+  
   return res;
 };
 
@@ -25,6 +28,8 @@ export const getDay = async (
     method: "POST",
     body: JSON.stringify({ date, groupId }),
   });
+
+  setCountRequestStorage()
 
   return res;
 };

@@ -1,4 +1,5 @@
 import { appConfig } from "../appConfig";
+import { setCountRequestStorage } from "../utils/functions";
 
 export const getWorkPlace = async (workPlaceId: string) => {
   const res = await fetch(
@@ -26,6 +27,8 @@ export const addUserToWorkPlace = async (
       body: JSON.stringify({ email }),
     },
   );
+
+  setCountRequestStorage();
 
   return res;
 };

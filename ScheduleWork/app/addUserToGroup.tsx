@@ -33,6 +33,7 @@ const Page = () => {
   const [users, setUsers] = useState<User[]>([]);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
+  const [myUserId, setMyUserId] = useState<Number | null>(null);
 
   useEffect(() => {
     const getUsersData = async () => {
@@ -43,6 +44,8 @@ const Page = () => {
         const res = await getUsersWithOutGroup(
           JSON.parse(jsonValue).workPlaceId,
         );
+
+        setMyUserId(JSON.parse(jsonValue).id);
 
         if (res.status === 200) {
           setUsers(await res.json());
@@ -65,10 +68,7 @@ const Page = () => {
     const jsonValue = await AsyncStorage.getItem("my-key");
 
     if (jsonValue != null) {
-      const res = await addUserToGroup(
-        user.id,
-        groupId,
-      );
+      const res = await addUserToGroup(user.id, groupId);
 
       if (res.status === 200) {
         console.log(res.status);
@@ -101,7 +101,7 @@ const Page = () => {
 
         {!loading ? (
           <FlatList
-            data={users}
+            data={users.filter((user) => parseInt(user.id) !== myUserId)}
             renderItem={({ item }) => (
               <TouchableOpacity
                 onPress={() => tryAddUserToGroup(item)}
