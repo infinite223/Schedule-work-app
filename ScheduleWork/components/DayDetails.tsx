@@ -43,12 +43,10 @@ const DayDetails: FC<{ selectedDate: Date }> = ({ selectedDate }) => {
 
     if (jsonValue != null && users) {
       const findMe = users?.find(
-        (userInDay) => userInDay.user.id === JSON.parse(jsonValue).user.id,
+        (userInDay) => userInDay.user.id === JSON.parse(jsonValue).id,
       );
       if (findMe) {
-        const res = await removeUserInDay(
-          findMe.id,
-        );
+        const res = await removeUserInDay(findMe.id);
 
         dispatch(setInvokeFunction(!invokeFunction));
       }
@@ -60,9 +58,7 @@ const DayDetails: FC<{ selectedDate: Date }> = ({ selectedDate }) => {
       const jsonValue = await AsyncStorage.getItem("my-key");
 
       if (jsonValue != null && users) {
-        const res = await removeUserInDay(
-          userInDay.id,
-        );
+        const res = await removeUserInDay(userInDay.id);
         if (res.status === 200) {
           dispatch(setInvokeFunction(!invokeFunction));
         }

@@ -250,6 +250,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: 10,
     zIndex: 2,
+    marginRight: 15,
   },
 });
 
