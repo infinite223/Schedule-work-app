@@ -29,7 +29,7 @@ const Page = () => {
       const jsonValue = await AsyncStorage.getItem("my-key");
       if (jsonValue != null) {
         // const res = await getHoursPrediction(JSON.parse(jsonValue).authToken)
-        const res = await getCurrentMonthUserInDays();
+        const res = await getCurrentMonthUserInDays(JSON.parse(jsonValue).id);
         console.log(res.status);
         if (res.status === 200) {
           const data = await res.json();
@@ -43,7 +43,7 @@ const Page = () => {
 
     tryGetHoursPrediction();
   }, []);
-  
+
   return (
     <Pressable style={[styles.container]} onPress={() => router.back()}>
       <Pressable

@@ -5,6 +5,7 @@ export const createUserInDay = async (
   from: string,
   to: string,
   dayId: string,
+  userId: string
 ) => {
   const res = await fetch(`${appConfig.endpointsUrl}/userInDay`, {
     headers: {
@@ -12,7 +13,7 @@ export const createUserInDay = async (
       "Content-Type": "application/json",
     },
     method: "POST",
-    body: JSON.stringify({ from, to, dayId }),
+    body: JSON.stringify({ from, to, dayId, userId }),
   });
 
   return res;
@@ -30,9 +31,9 @@ export const getUsersInDay = async (
   return res;
 };
 
-export const getAllUsersInDay = async () => {
+export const getAllUsersInDay = async (userId: string) => {
   const res = await fetch(
-    `${appConfig.endpointsUrl}/userInDay/getAllFutureUserInDays`,
+    `${appConfig.endpointsUrl}/userInDay/getAllFutureUserInDays/${userId}`,
     {
       method: "GET",
     },
@@ -41,9 +42,9 @@ export const getAllUsersInDay = async () => {
   return res;
 };
 
-export const getCurrentMonthUserInDays = async () => {
+export const getCurrentMonthUserInDays = async (userId: String) => {
   const res = await fetch(
-    `${appConfig.endpointsUrl}/userInDay/getCurrentMonthUserInDays`,
+    `${appConfig.endpointsUrl}/userInDay/getCurrentMonthUserInDays/${userId}`,
     {
       method: "GET",
     },

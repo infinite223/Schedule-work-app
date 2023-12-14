@@ -66,18 +66,31 @@ const Page = () => {
 
         if (res.status === 200) {
           const day = await res.json();
-          const newUserInDay = await createUserInDay(from, to, day.id);
+          const newUserInDay = await createUserInDay(
+            from,
+            to,
+            day.id,
+            JSON.parse(jsonValue).id,
+          );
           if (newUserInDay.status === 200) {
             dispatch(setInvokeFunction(!invokeFunction));
             router.back();
           }
         } else {
           console.log(params.day, "tuatjjjj");
-          const newDay = await createDay(params.day);
+          const newDay = await createDay(
+            params.day,
+            JSON.parse(jsonValue).groupId,
+          );
 
           if (newDay.status === 200) {
             const day = await newDay.json();
-            const newUserInDay = await createUserInDay(from, to, day.id);
+            const newUserInDay = await createUserInDay(
+              from,
+              to,
+              day.id,
+              JSON.parse(jsonValue).id,
+            );
             if (newUserInDay.status === 200) {
               dispatch(setInvokeFunction(!invokeFunction));
               router.back();

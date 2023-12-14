@@ -11,8 +11,6 @@ import React from "react";
 import { globalStyles } from "../utils/globalStyles";
 import { router } from "expo-router";
 import logo from "./../assets/images/logo.png";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { Ionicons } from "@expo/vector-icons";
 
 const widthScreen = Dimensions.get("screen").width;
 const infoElements = [

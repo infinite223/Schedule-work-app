@@ -31,6 +31,7 @@ const createGroupModal = () => {
         const res = await createGroup(
           name,
           description,
+          JSON.parse(jsonValue).workPlaceId,
         );
 
         if (res.status === 200) {

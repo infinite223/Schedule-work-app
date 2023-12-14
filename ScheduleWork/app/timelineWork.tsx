@@ -36,7 +36,7 @@ const Page = () => {
       setLoading(true);
       const jsonValue = await AsyncStorage.getItem("my-key");
       if (jsonValue != null) {
-        const allUsersInDay = await getAllUsersInDay();
+        const allUsersInDay = await getAllUsersInDay(JSON.parse(jsonValue).id);
 
         if (allUsersInDay.status === 200) {
           setUserInDays(await allUsersInDay.json());

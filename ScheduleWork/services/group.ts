@@ -4,13 +4,14 @@ import { setCountRequestStorage } from "../utils/functions";
 export const createGroup = async (
   name: string,
   description: string,
+  workPlaceId: string
 ) => {
   const res = await fetch(`${appConfig.endpointsUrl}/group`, {
     headers: {
       "Content-Type": "application/json",
     },
     method: "POST",
-    body: JSON.stringify({ name, description }),
+    body: JSON.stringify({ name, description, workPlaceId }),
   });
 
   return res;
