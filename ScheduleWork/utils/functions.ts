@@ -121,7 +121,7 @@ export const setCountRequestStorage = async () => {
   console.log("logs  +1", countRequestStorage)
   if (countRequestStorage != null) {
     let countRequest = JSON.parse(countRequestStorage);
-    if(countRequest>200) {
+    if(countRequest>400) {
       await AsyncStorage.removeItem('my-key');
     }
 

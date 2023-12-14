@@ -23,7 +23,7 @@ const Page = () => {
     const jsonValue = await AsyncStorage.getItem("my-key");
     if (jsonValue != null) {
       const res = await addUserToWorkPlace(
-        JSON.parse(jsonValue).id,
+        JSON.parse(jsonValue).workPlaceId,
         email,
       );
 
@@ -64,7 +64,7 @@ const Page = () => {
         <Text style={styles.mainText}>Zaproś pracownika do aplikacji</Text>
         <Text style={styles.descriptionText}>
           wpisz poniżej jego email by dodać pracownika, pamiętaj że użytkownik
-          musi mieć pierw utworzone konto w aplikacji
+          musi mieć pierw utworzone konto w aplikacji.
         </Text>
         <TextInput
           style={[styles.input, globalStyles.boxShadow]}

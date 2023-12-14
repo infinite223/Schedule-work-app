@@ -1,4 +1,5 @@
 import { appConfig } from "../appConfig";
+import { setCountRequestStorage } from "../utils/functions";
 
 export const createUserInDay = async (
   from: string,
@@ -60,6 +61,8 @@ export const removeUserInDay = async (id: string) => {
     method: "DELETE",
     //   body: JSON.stringify({ from, to, dayId })
   });
+
+  setCountRequestStorage()
 
   return res;
 };

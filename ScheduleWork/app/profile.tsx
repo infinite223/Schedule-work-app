@@ -25,6 +25,14 @@ const Page = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: isMyProfile ? "Twój profil" : user?.name,
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={() => router.back()}
+          style={[styles.backButton, globalStyles.boxShadow]}
+        >
+          <Ionicons name="arrow-back-sharp" size={20} color="black" />
+        </TouchableOpacity>
+      ),
       headerRight: () => {
         !loading && (
           <View>
@@ -236,6 +244,12 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontSize: 18,
+  },
+  backButton: {
+    borderRadius: 50,
+    backgroundColor: "#fff",
+    padding: 10,
+    zIndex: 2,
   },
 });
 

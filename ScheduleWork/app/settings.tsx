@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import {
   Text,
   View,
@@ -10,15 +10,32 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "expo-router";
+import { globalStyles } from "../utils/globalStyles";
 
 const widthScreen = Dimensions.get("screen").width;
 
 export default function Page() {
+  const navigation = useNavigation();
+
   const logout = async () => {
     await AsyncStorage.removeItem("my-key");
 
     router.push("/");
   };
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={() => router.back()}
+          style={[styles.backButton, globalStyles.boxShadow]}
+        >
+          <Ionicons name="arrow-back-sharp" size={20} color="black" />
+        </TouchableOpacity>
+      ),
+    });
+  }, []);
 
   return (
     <SafeAreaProvider style={[styles.container]}>
@@ -74,6 +91,12 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingBottom: 20,
     justifyContent: "space-between",
+  },
+  backButton: {
+    borderRadius: 50,
+    backgroundColor: "#fff",
+    padding: 10,
+    zIndex: 2,
   },
   options: {
     gap: 5,
