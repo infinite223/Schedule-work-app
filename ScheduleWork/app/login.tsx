@@ -18,7 +18,10 @@ import { authenticateEmailV2 } from "../services/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import logo from "./../assets/images/logo.png";
 import useAuth, { auth } from "../hooks/useAuth";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { createUser } from "../services/user";
 
 const widthScreen = Dimensions.get("screen").width;
@@ -61,52 +64,67 @@ const Page = () => {
   //     if (jsonValue != null) {
   //       console.log(JSON.parse(jsonValue).id, 'tutaj')
   //     }
-  //   } 
+  //   }
   //   getUserData()
   // },  [])
   const hendleClickButton = async () => {
     if (email.length > 4 && password.length >= 3) {
       if (index) {
-        const resFirebase = await createUserWithEmailAndPassword(auth, email, password);
+        const resFirebase = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password,
+        );
 
         if (resFirebase.user) {
-          const resApi = await createUser(nickName, phonenumber, name, email)
+          const resApi = await createUser(nickName, phonenumber, name, email);
 
-          if(resApi.status === 200) {
+          if (resApi.status === 200) {
             router.push("/messageModal");
-            router.setParams({ message: `Udało się utworzyć konto`, type: "SUCCESS" });
+            router.setParams({
+              message: `Udało się utworzyć konto`,
+              type: "SUCCESS",
+            });
+          } else {
+            console.log(resApi.status);
+            console.log(resApi);
           }
-          else {
-            console.log(resApi.status)
-            console.log(resApi)
-          }
-
         } else {
           router.push("/messageModal");
           router.setParams({ message: "Nie prawidłowy kod", type: "ERROR" });
         }
       } else {
-        const resApi = await authenticateEmailV2(email)
-        
-        if(resApi.ok) {
-          const userData = await resApi.json()
-          const resFirebase = await signInWithEmailAndPassword(auth, email, password);
+        const resApi = await authenticateEmailV2(email);
+
+        if (resApi.ok) {
+          const userData = await resApi.json();
+          const resFirebase = await signInWithEmailAndPassword(
+            auth,
+            email,
+            password,
+          );
 
           if (resFirebase.user) {
-            await AsyncStorage.setItem('my-key',  JSON.stringify(userData));
+            await AsyncStorage.setItem("my-key", JSON.stringify(userData));
             router.push("/(tabs)/schedule");
             router.push("/messageModal");
-            router.setParams({ message: `Udało się zalogować`, type: "SUCCESS" });
-            
-
+            router.setParams({
+              message: `Udało się zalogować`,
+              type: "SUCCESS",
+            });
           } else {
             router.push("/messageModal");
-            router.setParams({ message: "Błąd, konto o podanych danych nie istnieje", type: "ERROR" });
+            router.setParams({
+              message: "Błąd, konto o podanych danych nie istnieje",
+              type: "ERROR",
+            });
           }
-        }
-        else {
+        } else {
           router.push("/messageModal");
-          router.setParams({ message: "Błąd, konto o podanych danych nie istnieje", type: "ERROR" });
+          router.setParams({
+            message: "Błąd, konto o podanych danych nie istnieje",
+            type: "ERROR",
+          });
         }
       }
 
@@ -164,7 +182,7 @@ const Page = () => {
             color="#2b3"
           />
           <Text style={styles.headerText}>
-            {!index?"logowanie":"Rejestracja"}
+            {!index ? "logowanie" : "Rejestracja"}
           </Text>
         </View>
         <Image style={{ width: 255, height: 70 }} source={logo} />
@@ -189,24 +207,28 @@ const Page = () => {
               >
                 <Text style={styles.text}>{item.header}</Text>
 
-                {index?<>
-                  <TextInput
-                    placeholder={"Nick"}
-                    style={[styles.emailInput, globalStyles.boxShadow]}
-                    value={nickName}
-                    onChangeText={setNickName}
-                    keyboardType={"default"}
-                    placeholderTextColor={"rgba(23, 23, 23, .4)"}
-                  />
-                  <TextInput
-                    placeholder={"Imię"}
-                    style={[styles.emailInput, globalStyles.boxShadow]}
-                    value={name}
-                    onChangeText={setName}
-                    keyboardType={"default"}
-                    placeholderTextColor={"rgba(23, 23, 23, .4)"}
-                  />
-                </>:<></>}
+                {index ? (
+                  <>
+                    <TextInput
+                      placeholder={"Nick"}
+                      style={[styles.emailInput, globalStyles.boxShadow]}
+                      value={nickName}
+                      onChangeText={setNickName}
+                      keyboardType={"default"}
+                      placeholderTextColor={"rgba(23, 23, 23, .4)"}
+                    />
+                    <TextInput
+                      placeholder={"Imię"}
+                      style={[styles.emailInput, globalStyles.boxShadow]}
+                      value={name}
+                      onChangeText={setName}
+                      keyboardType={"default"}
+                      placeholderTextColor={"rgba(23, 23, 23, .4)"}
+                    />
+                  </>
+                ) : (
+                  <></>
+                )}
 
                 <TextInput
                   placeholder={item.input}
@@ -286,7 +308,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 20,
     top: isWeb ? 20 : 50,
-    zIndex: 2
+    zIndex: 2,
   },
   header: {
     alignItems: "center",
